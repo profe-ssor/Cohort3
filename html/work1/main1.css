@@ -1,0 +1,97 @@
+/* Global Styles */
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    background-color: #fafafa;  /* Very light grey background */
+}
+
+/* Header Styles */
+header {
+    background-color: #8e44ad;  /* Purple background */
+    color: white;
+    text-align: center;
+    padding: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    font-size: 3rem;
+    margin: 0;
+}
+
+header p {
+    font-size: 1.1rem;
+    margin-top: 0.5rem;
+}
+
+/* Main Content Section */
+main {
+    display: flex;
+    justify-content: space-between;
+    padding: 2rem;
+    gap: 1.5rem;
+}
+
+section {
+    flex: 1;
+    background-color: #ffffff;  /* White background */
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+section h2 {
+    font-size: 2rem;
+    color: #2c3e50;  /* Dark blue-grey */
+    margin-bottom: 1rem;
+}
+
+section p {
+    font-size: 1.1rem;
+    color: #7f8c8d;  /* Light grey */
+}
+
+/* Aside Section */
+aside {
+    flex: 0.35;
+    background-color: #f39c12;  /* Yellow-orange background */
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+aside h3 {
+    font-size: 1.8rem;
+    color: #2c3e50;  /* Dark blue-grey */
+    margin-bottom: 1rem;
+}
+
+aside p {
+    font-size: 1rem;
+    color: #34495e;  /* Dark grey */
+}
+
+/* Footer Styles */
+footer {
+    background-color: #16a085;  /* Teal */
+    color: white;
+    text-align: center;
+    padding: 1rem;
+    margin-top: 2rem;
+}
+
+footer p {
+    font-size: 1rem;
+    margin: 5px 0;
+}
+
+footer a {
+    color: #ecf0f1;  /* Light grey */
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}

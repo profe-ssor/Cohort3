@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <article class="order-form">
+        <h2>Oder Form</h2>
+        <form action="#" method="post" enctype="text/plain">
+            <section class="form-group">
+                <label for="item-name" class="item-name">Item Name:</label>
+                <select name="item-name" id="item-name">
+                    <option value="iph15">iphone15-GHC15000</option>
+                    <option value="infnx">Infinix Play-GHC50000</option>
+                    <option value="Huaw">Huawei-GHC9000</option>
+                </select>
+            </section>
+            <section class="form-group">
+                <label for="quantity">quantity:</label>
+                <input type="number" name="quantity" id="quantity", min="1" required>
+            </section>
+           
+            <section class="form-group">
+                <label for="screen_size">Scree Sizes:</label>
+                <select name="screen_size" id="screen_size">
+                    <option value="min">Min Screen</option>
+                    <option value="sm">Small Screen</option>
+                    <option value="lg">Large Screen</option>
+                    <option value="xl">Extral Screen</option>
+                    <option value="df">Default Screen</option>
+                </select>
+            </section>
+            <section class="form-group">
+                <label for="delivery" id="delivery"> Delivery</label>
+                <select name="delivery" id="delivery">
+                    <option value="bike">By Bike</option>
+                    <option value="motor">By Motor</option>
+                    <option value="car">By Car</option>
+                    <option value="person">By Person </option>
+                </select>
+            </section>
+            <section class="form-group">
+                <input type="submit" value="submit-order">
+            </section>
+
+        </form>
+        
+    </article>
+</body>
+</html>

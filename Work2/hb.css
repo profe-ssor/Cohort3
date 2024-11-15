@@ -1,0 +1,21 @@
+
+html, body, p, h1, h2{
+    padding: 0px;
+    margin: 0px;
+}
+body {
+    background: #f4f4f4;
+    width: 80%;
+    margin: 0px auto;
+    padding: 0px 25px;
+    
+}
+h1, h2{
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+img {
+  width: 50%;
+  height: 60%;
+}

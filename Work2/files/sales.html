@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="table_styles.css">
+</head>
+<body>
+    <h2>Advanced Table with Spanning Rows and Columns</h2>
+    <table>
+        <thead>
+            <tr>
+                <th rowspan="2">Day</th>
+                <th colspan="2">Sales Data</th>
+                <th rowspan="2">Comments</th>
+            </tr>
+            <tr>
+                <th>Morning (Ghc)</th>
+                <th>Afternoon (Ghc)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Monday</td>
+                <td>800</td>
+                <td>900</td>
+                <td rowspan="2">Steady sales</td>
+            </tr>
+            <tr>
+                <td>Tuesday</td>
+                <td>950</td>
+                <td>1050</td>
+            </tr>
+            <tr>
+                <td>Wednesday</td>
+                <td>700</td>
+                <td>850</td>
+                <td>Low morning traffic</td>
+            </tr>
+            <tr>
+                <td rowspan="2">Thursday</td>
+                <td colspan="2">Full-day sale: 2300</td>
+                <td>Big promotional event</td>
+            </tr>
+            <tr>
+                <td>---</td>
+                <td>---</td>
+                <td>No separate morning/afternoon data</td>
+            </tr>
+            <tr>
+                <td>Friday</td>
+                <td>1100</td>
+                <td>1200</td>
+                <td>Good sales overall</td>
+            </tr>
+            <tr>
+                <td>Saturday</td>
+                <td>1300</td>
+                <td>1400</td>
+                <td>Strong weekend sales</td>
+            </tr>
+            <tr>
+                <td rowspan="2">Sunday</td>
+                <td>1500</td>
+                <td>1600</td>
+                <td>Best day of the week</td>
+            </tr>
+            <tr>
+                <td colspan="2">Total: 3100</td>
+                <td>Peak performance</td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="4">Weekly Summary: Great week with a high sales peak on Sunday</td>
+            </tr>
+        </tfoot>
+    </table>
+    
+</body>
+</html>
+
+
