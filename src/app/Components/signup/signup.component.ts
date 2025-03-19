@@ -8,13 +8,14 @@ import { NgIf } from '@angular/common';
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, FormsModule, NgIf],
+  imports: [RouterOutlet, FormsModule, NgIf],
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.css']
 })
 
 export class SignupComponent {
-
+  isLoading = false;
+  isLoginLoading = false;
   user: User = {
     username: '',
     date_of_birth: '',
@@ -68,6 +69,9 @@ export class SignupComponent {
 
 
 onSubmit(): void {
+  if (this.isLoading) return;
+
+  this.isLoading = true;
   this.formatDates();
   console.log('User data being sent:', this.user);
 
@@ -105,6 +109,7 @@ onSubmit(): void {
       // Display error to the user
       alert(this.errorMessage);
       console.error('Registration error:', error);
+      this.isLoading = false;
       // Clear form fields
       this.user = {
         username: '',
@@ -125,12 +130,21 @@ onSubmit(): void {
     complete: () => {
 
       console.log('Registration request completed.');
+      this.isLoading = false;
     },
 
   });
 }
 
-// logout user
+
+onLogin(): void {
+  this.isLoginLoading = true;
+
+  setTimeout(() => {
+    this.isLoginLoading = false;
+    this.router.navigate(['/login']);
+  }, 1000); // Simulates a short delay before navigating
+}
 }
 
 

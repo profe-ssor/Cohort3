@@ -20,11 +20,14 @@ interface LoginResponse {
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, NgIf, RouterOutlet, RouterLink],
+  imports: [FormsModule, NgIf, RouterOutlet],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
+  isLoading = false;
+  isLoginLoading = false;
+
   constant = Constant;
   credentials: Credentials = { email: '', password: '' };
   errorMessage: string = '';
@@ -33,13 +36,11 @@ export class LoginComponent {
   constructor(private authService: AuthService, private router: Router) {}
 
   onLogin() {
+    if (this.isLoading) return;
+
+    this.isLoading = true;
     this.authService.login(this.credentials).subscribe({
       next: (response: LoginResponse) => {
-        // Check if response contains a success message
-        // if (response.message) {
-        //   this.successMessage = response.message;
-        //   window.alert(this.successMessage);
-        // }
         this.successMessage = response.message;
         console.log('Logged in successfully:', response);
 
@@ -47,10 +48,12 @@ export class LoginComponent {
       error: (error) => {
         console.error('Login error:', error);
         this.handleError(error);
+        this.isLoading = false;
       },
 
       complete: () => {
         console.log('Login request completed.');
+        this.isLoading = false;
       },
 
     });
@@ -89,5 +92,14 @@ export class LoginComponent {
 
     alert(this.errorMessage);
     console.error('Error details:', error);
+  };
+
+  onSignUp(): void {
+    this.isLoginLoading = true;
+
+    setTimeout(() => {
+      this.isLoginLoading = false;
+      this.router.navigate(['/signup']);
+    }, 1000); // Simulates a short delay before navigating
   }
 }

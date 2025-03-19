@@ -5,24 +5,24 @@
 }
 
 main {
+  display: flex;
   justify-content: center;
   align-items: center;
   font-size: 14px;
   padding: 20px;
-  margin: 150px;
-  width: 80%;
-  min-width: 300px;
-  max-width:1280px;
+  margin: auto;
+  width: 90%;
+  max-width: 1280px;
 }
 
 form {
   padding: 20px;
-  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.7); /* Darker shadow */
-  background-color: #fff; /* Ensure background is visible */
-  width: 30vw;
-  overflow: hidden;
-  margin: 0 auto;
-  border-radius: 10px; /* Optional: Adds rounded corners */
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.7);
+  background-color: #fff;
+  width: 100%;
+  max-width: 400px;
+  margin: 100px auto;
+  border-radius: 10px;
 }
 
 label {
@@ -34,120 +34,107 @@ label {
 }
 
 .email, .password1, .password2 {
-  float: left;
   width: 100%;
   margin-bottom: 15px;
-
-}
-
-
-.password1, .password2 {
-
-  width: 100%;
-  margin-right: 2%;
-}
-
-.password2 {
-  margin-right: 0;
 }
 
 input[type="email"],
 input[type="password"] {
   width: 100%;
   height: 40px;
-  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.6); /* Dark shadow for inputs */
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.6);
   padding: 5px;
   border: 1px solid #ccc;
   border-radius: 5px;
   transition: box-shadow 0.3s ease-in-out;
 }
 
-
 input[type="email"]:focus,
 input[type="password"]:focus {
-  box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.8); /* More intense shadow on focus */
+  box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.8);
   outline: none;
 }
 
 section {
-  clear: both;
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-top: 15px;
+  gap: 10px;
 }
 
 .button {
-  display: inline-block;
+  flex: 1; /* Ensures equal width for both buttons */
   text-decoration: none;
   text-align: center;
-  padding: 10px 20px;
+  padding: 10px;
   font-size: 14px;
   color: #fff;
   background-color: green;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  margin: 0 5px;
 }
-.button + .button{
+
+.button + .button {
   background-color: blue;
 }
 
 .button:hover {
   background-color: darkgreen;
 }
+
 .button:disabled {
   background-color: gray;
   cursor: not-allowed;
   opacity: 0.6;
 }
 
-/* Responsiveness */
+/* Responsive Design */
 
-/* 1. Extra Small Devices (Up to 480px) */
+/* Extra Small Devices (Up to 480px) */
 @media (max-width: 480px) {
-  .password1, .password2 {
-    width: 100%;
-  }
-  .signup {
-    margin-top: 5px;
+  form {
+    width: 90%;
+    padding: 15px;
   }
 }
 
-/* 2. Small Devices (481px to 767px) */
+/* Small Devices (481px to 767px) */
 @media (min-width: 481px) and (max-width: 767px) {
-  .password1, .password2 {
-    width: 100%;
-  }
- .signup {
-    margin-left: 15px;
+  form {
+    width: 80%;
   }
 }
 
-
-/* 3. Medium Devices (Tablets) */
+/* Medium Devices (Tablets, 768px to 1024px) */
 @media (min-width: 768px) and (max-width: 1024px) {
-  .password1, .password2 {
-    width: 100%;
+  form {
+    width: 60%;
   }
- .signup {
-    margin-left: 15px;
-  }
-
 }
 
-/* 4. Large Devices (Laptops and Small Desktops) */
+/* Large Devices (Laptops and Small Desktops, 1025px to 1280px) */
 @media (min-width: 1025px) and (max-width: 1280px) {
-  /* Styles for laptops and small desktops */
+  form {
+    width: 40%;
+  }
 }
 
-/* Styling for authentication */
+/* Extra Large Devices (1281px and above) */
+@media (min-width: 1281px) {
+  form {
+    width: 30%;
+  }
+}
 
-.alert
-{
+/* Styling for authentication messages */
+.alert {
   color: red;
 }
-input.ng-invalid{
-  border:1px solid red;
+
+input.ng-invalid {
+  border: 1px solid red;
 }
 
 .success-message {

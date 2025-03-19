@@ -234,8 +234,20 @@
 
       <!-- Action Buttons -->
       <section class="process">
-        <a [routerLink]="'/login'" class="button login">LOGIN</a>
-        <button type="submit" [disabled]="f.invalid" (click)="onSubmit()" class="button signup">Submit</button>
+        <button
+        type="button"
+        [disabled]="isLoginLoading"
+        (click)="onLogin()"
+        class="btn button login">
+
+        <span *ngIf="isLoginLoading" class="spinner-border spinner-border-sm text-info"></span>
+        Login
+      </button>
+
+        <button type="submit" [disabled]="f.invalid" (click)="onSubmit()" class=" btn button signup disabled">
+          <span *ngIf="isLoading" class="spinner-border spinner-border-sm text-success"></span>
+          Submit
+        </button>
       </section>
 
 

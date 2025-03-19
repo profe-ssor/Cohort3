@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="">
+
 </head>
 <body>
+
     <main class="page">
         <form #f="ngForm" (ngSubmit)="onLogin()">
             <div class="wrapper">
@@ -49,9 +50,20 @@
 
             </div>
             <section>
-              <a routerLink="/signup" class="button login">SIGNUP</a>
+              <button
+              type="button"
+              [disabled]="isLoginLoading"
+              (click)="onSignUp()"
+              class="btn button login">
 
-              <button type="submit" [disabled]="f.invalid" class="button signup">LOGIN</button>
+              <span *ngIf="isLoginLoading" class="spinner-border spinner-border-sm text-info"></span>
+             SIGNUP
+            </button>
+
+              <button type="submit" [disabled]="f.invalid" class="button signup">
+                <span *ngIf="isLoading" class="spinner-border spinner-border-sm text-success"></span>
+                LOGIN
+              </button>
           </section>
           <div *ngIf="successMessage" class="success-message">
             {{ successMessage }}
