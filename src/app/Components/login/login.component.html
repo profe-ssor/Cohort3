@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="">
+</head>
+<body>
+    <main class="page">
+        <form #f="ngForm" (ngSubmit)="onLogin()">
+            <div class="wrapper">
+                <div class="email">
+                    <label for="mail">Email:</label>
+                    <input type="email" class="email" name="email"  id="email" [(ngModel)]="credentials.email"
+                    ngModel
+                    #email="ngModel"
+                    [pattern]="constant.emailRegex"
+                    placeholder="example@gmail.com"
+                    [class.ng-invalid]="email.invalid && email.touched"
+                    required>
+                    <div *ngIf="email.invalid && email.touched"  class="alert">
+                      <p *ngIf="email.errors?.['required']">{{ constant.REQUIRED }}</p>
+                      <p *ngIf="email.errors?.['pattern']">{{ constant.EMAIL_INVALID }}</p>
+                      <p *ngIf="email.errors?.['maxlength']">{{ constant.MAX_LENGTH(constant.maxLength) }}</p>
+                    </div>
+                </div>
+
+                <div class="password1">
+                    <label for="password">Password:</label>
+                    <input type="password" name="password" [(ngModel)]="credentials.password" class="password1" placeholder="Set Password"
+                    ngModel
+                    #password ="ngModel"
+                    [minlength]="constant.minLength"
+                    [class.ng-invalid]="password.invalid && password.touched"
+                     required>
+                     <div class="alert">
+                      @if(password.invalid && password.touched){
+                        @if(password.hasError('required')){
+                          <p>{{ constant.REQUIRED }}</p>
+                        }
+                        @if(password.hasError('minPasswordLength')){
+                          <p>{{ constant.minLength}}</p>
+                        }
+                        }
+                    </div>
+                </div>
+
+
+            </div>
+            <section>
+              <a routerLink="/signup" class="button login">SIGNUP</a>
+
+              <button type="submit" [disabled]="f.invalid" class="button signup">LOGIN</button>
+          </section>
+          <div *ngIf="successMessage" class="success-message">
+            {{ successMessage }}
+          </div>
+        </form>
+    </main>
+    <router-outlet></router-outlet>
+</body>
+</html>

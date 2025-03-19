@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+
+<!-- Container for the entire content -->
+<div class="container-content">
+
+   <!-- Aside Section (Sidebar Navigation) -->
+    <div class="aside">
+      <!-- Logo/Image Section -->
+      <div class="image">
+        <img src="images/nss-image.jpeg" alt="no image found">
+      </div>
+
+      <!-- Navigation Toggle for Mobile -->
+      <input type="checkbox" id="nav-checkbox" class="nav-checkbox">
+      <label for="nav-checkbox" class="nav-toggle-label">
+        <span></span>
+      </label>
+
+      <!-- Navigation Menu -->
+      <nav>
+        <ul>
+          <li class="dashboard items" routerLinkActive="active-item">
+              <a [routerLink]="'/persneldashboard'">
+                <i class="fa fa-home fa-2x" aria-hidden="true"></i>
+                <p>DASHBOARD</p>
+              </a>
+          </li>
+          <li class="book-appointment items" routerLinkActive="active-item">
+              <a routerLink="/footer">
+                <i class="fa fa-bookmark fa-2x" aria-hidden="true"></i>
+                <p>BOOK APPOINTMENT</p>
+              </a>
+          </li>
+          <li class="appointment items" routerLinkActive="active-item">
+              <a href="#">
+                <i class="fa fa-user fa-2x" aria-hidden="true"></i>
+                <p>YOUR APPOINTMENT</p>
+              </a>
+          </li>
+          <li class="history items" routerLinkActive="active-item">
+              <a href="#">
+                <i class="fa fa-history fa-2x" aria-hidden="true"></i>
+                <p>ORDER HISTORY</p>
+              </a>
+          </li>
+          <li class="allawa items" routerLinkActive="active-item">
+              <a href="#">
+                <i class="fa fa-money fa-2x" aria-hidden="true"></i>
+                <p>YOUR ALLAWA</p>
+              </a>
+          </li>
+          <li class="resertpassword items" routerLinkActive="active-item">
+              <a href="#">
+                <i class="fa fa-key fa-2x" aria-hidden="true"></i>
+                <p>RESET PASSWORD</p>
+              </a>
+          </li>
+          <li class="logout items">
+            <a href="#" (click)="logout()">
+              <i class="fa fa-sign-out fa-2x" aria-hidden="true"></i>
+              <p>LOGOUT</p>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <!-- Main Content Section -->
+    <div class="main-content">
+      <main>
+        <router-outlet></router-outlet>
+      </main>
+    </div>
+
+    <!-- Evaluation Form Button -->
+
+    <!-- Footer Section -->
+    <div class="footer">
+      <footer>
+        <p>© Copyright 2018 - 2024. All Rights Reserved.</p>
+      </footer>
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NSS Personnel Registration Portal</title>
+
+</head>
+
+<body>
+
+  <main>
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+
+    <form #f="ngForm">
+      <section class="personel_info">
+        <h3>PERSONAL INFORMATION</h3>
+<div class="p1">
+          <div>
+            <label for="username">FULL NAME:</label>
+            <input type="text" id="username" [(ngModel)]="user.username" autocomplete="username" name="username" ngModel
+              #username="ngModel" [minlength]="constant.minLength" [maxlength]="constant.maxLength"
+              [class.ng-invalid]="username.invalid && username.touched" required />
+            <div *ngIf="username.invalid && username.touched">
+              <p *ngIf="username.errors?.['required']">{{ constant.REQUIRED }}</p>
+              <p *ngIf="username.errors?.['minlength']">{{ constant.MIN_LENGTH(constant.minLength) }}</p>
+              <p *ngIf="username.errors?.['maxlength']">{{ constant.MAX_LENGTH(constant.maxLength) }}</p>
+            </div>
+
+          </div>
+
+          <div>
+            <label for="date_of_birth">DATE OF BIRTH:</label>
+            <input type="text" id="date_of_birth" [(ngModel)]="user.date_of_birth" name="date_of_birth" ngModel
+              placeholder="YYYY-MM-DD" #date_of_birth="ngModel"
+              [class.ng-invalid]="date_of_birth.invalid && date_of_birth.touched" required />
+            <div *ngIf="date_of_birth.invalid && date_of_birth.touched" class="alert">
+              <p *ngIf="date_of_birth.errors?.['required']">{{ constant.REQUIRED }}</p>
+            </div>
+          </div>
+</div>
+
+ <div class="p2">
+          <div>
+            <label for="gender">GENDER:</label>
+            <select id="gender" [(ngModel)]="user.gender" name="gender" ngModel #gender="ngModel"
+              [class.ng-invalid]="gender.invalid && gender.touched" required>
+              <option value="">Select Gender</option>
+              <option value="M">Male</option>
+              <option value="F">Female</option>
+            </select>
+            <div class="alert">
+              @if(gender.invalid && gender.touched){
+              @if(gender.hasError('required')){
+              <p>{{ constant.REQUIRED }}</p>
+              }
+              }
+            </div>
+          </div>
+
+          <div>
+            <label for="ghana_card">NATIONAL ID NUMBER:</label>
+            <input type="text" id="ghana_card" [(ngModel)]="user.ghana_card" name="ghana_card" ngModel
+              #ghana_card="ngModel" required [minlength]="constant.minLength"
+              [class.ng-invalid]="ghana_card.invalid && ghana_card.touched" />
+            <div class="alert">
+              @if(ghana_card.invalid && ghana_card.touched){
+              @if(ghana_card.hasError('required')){
+              <p>{{ constant.REQUIRED }}</p>
+              }
+              @if(ghana_card.hasError('minlength')){
+              <p>{{ constant.MIN_LENGTH(constant.minLength) }}</p>
+              }
+              }
+
+            </div>
+          </div>
+ </div>
+
+
+        <div>
+          <label for="nss_id">NSS NUMBER:</label>
+          <input type="text" id="nss_id" [(ngModel)]="user.nss_id" name="nss_id" ngModel #nss_id="ngModel"
+            [class.ng-invalid]="nss_id.invalid && nss_id.touched" required />
+        </div>
+        <div class="alert">
+          @if(nss_id.invalid && nss_id.touched){
+          @if(nss_id.hasError('required')){
+          <p>{{ constant.REQUIRED }}</p>
+          }
+          @if(nss_id.hasError('minlength')){
+          <p>{{ constant.MAX_LENGTH(constant.maxLength) }}</p>
+          }
+          }
+
+        </div>
+      </section>
+
+      <section class="contact_info">
+        <h3>CONTACT INFORMATION</h3>
+        <div>
+          <label for="email">EMAIL:</label>
+          <input type="email" id="email" [(ngModel)]="user.email" name="email" autocomplete="email" #email="ngModel"
+            [class.ng-invalid]="email.invalid && email.touched" required [pattern]="constant.emailRegex" />
+          <div *ngIf="email.invalid && email.touched" class="alert">
+            <p *ngIf="email.errors?.['required']">{{ constant.REQUIRED }}</p>
+            <p *ngIf="email.errors?.['pattern']">{{ constant.EMAIL_INVALID }}</p>
+            <p *ngIf="email.errors?.['maxlength']">{{ constant.MAX_LENGTH(constant.maxLength) }}</p>
+          </div>
+        </div>
+        <div>
+          <label for="phone">PHONE NUMBER:</label>
+          <input type="text" id="phone" [(ngModel)]="user.phone" autocomplete="phone" name="phone" #phone="ngModel"
+            [class.ng-invalid]="phone.invalid && phone.touched" required [pattern]="constant.phoneRegex" />
+          <div *ngIf="phone.invalid && phone.touched" class="alert">
+            <p *ngIf="phone.errors?.['required']">{{ constant.REQUIRED }}</p>
+            <p *ngIf="phone.errors?.['pattern']">{{ constant.HONE_REGEX_INVALID }}</p>
+
+          </div>
+        </div>
+
+        <div>
+          <label for="resident_address">RESIDENTIAL ADDRESS:</label>
+          <input type="text" id="resident_address" [(ngModel)]="user.resident_address" name="resident_address" ngModel
+            #resident_address="ngModel" [class.ng-invalid]="resident_address.invalid && resident_address.touched"
+            required />
+          <div class="alert">
+            @if(resident_address.invalid && resident_address.touched){
+            @if(phone.hasError('required')){
+            <p>{{ constant.REQUIRED }}</p>
+            }
+            }
+          </div>
+        </div>
+      </section>
+
+      <section class="service_details">
+        <h3>SERVICE DETAILS</h3>
+        <div>
+          <label for="assigned_institution">ASSIGNED INSTITUTION:</label>
+          <input type="text" id="assigned_institution" [(ngModel)]="user.assigned_institution"
+            name="assigned_institution" ngModel #assigned_institution="ngModel"
+            [class.ng-invalid]="assigned_institution.invalid && assigned_institution.touched" required />
+          <div class="alert">
+            @if(assigned_institution.invalid && assigned_institution.touched){
+            @if(assigned_institution.hasError('required')){
+            <p>{{ constant.REQUIRED }}</p>
+            }
+            }
+          </div>
+        </div>
+       <div class="s1">
+          <div>
+            <label for="start_date">START DATE:</label>
+            <input type="text" id="start_date" [(ngModel)]="user.start_date" name="start_date" placeholder="YYYY-MM-DD"
+              ngModel #start_date="ngModel" [class.ng-invalid]="start_date.invalid && start_date.touched" required />
+            <div class="alert">
+              @if(start_date.invalid && start_date.touched){
+              @if(start_date.hasError('required')){
+              <p>{{ constant.REQUIRED }}</p>
+              }
+              }
+            </div>
+          </div>
+          <div>
+            <label for="end_date">END DATE:</label>
+            <input type="text" placeholder="YYYY-MM-DD" id="end_date" [(ngModel)]="user.end_date" name="end_date" ngModel
+              #end_date="ngModel" [class.ng-invalid]="end_date.invalid && end_date.touched" required />
+            <div class="alert">
+              @if(end_date.invalid && end_date.touched){
+              @if(end_date.hasError('required')){
+              <p>{{ constant.REQUIRED }}</p>
+              }
+              }
+            </div>
+          </div>
+       </div>
+        <div>
+          <div>
+            <label for="region_of_posting">REGION OF POSTING:</label>
+            <select id="region_of_posting" [(ngModel)]="user.region_of_posting" name="region_of_posting" ngModel
+              #region_of_posting="ngModel" [class.ng-invalid]="region_of_posting.invalid && region_of_posting.touched"
+              required>
+              <option value="">Select Gender</option>
+              <option value=" 1">Greater Accra</option>
+              <option value="2">Western</option>
+              <option value="3">Ashanti</option>
+              <option value="4">Eastern</option>
+              <option value="5">Central</option>
+              <option value="6">Volta</option>
+              <option value="7">Northern</option>
+              <option value="8">Western North</option>
+              <option value="9">Oti</option>
+              <option value="10">Ahafo</option>
+              <option value="11">Bono</option>
+              <option value="12">Bono East</option>
+              <option value="13">Upper East</option>
+              <option value="14">Upper West</option>
+              <option value="15">North East</option>
+              <option value="16">Western Region</option>
+
+
+            </select>
+            <div class="alert">
+              @if(region_of_posting.invalid && region_of_posting.touched){
+              @if(region_of_posting.hasError('required')){
+              <p>{{ constant.REQUIRED }}</p>
+              }
+              }
+            </div>
+          </div>
+        </div>
+
+        <label for="region_of_posting">Password:</label>
+        <input type="password" id="password" placeholder="Enter your password" [(ngModel)]="user.password"
+          name="password" autocomplete="current-password" #password="ngModel" [minlength]="constant.minLength"
+          [class.ng-invalid]="password.invalid && password.touched" required />
+        <div class="alert">
+          @if(password.invalid && password.touched){
+          @if(password.hasError('required')){
+          <p>{{ constant.REQUIRED }}</p>
+          }
+          @if(password.hasError('minPasswordLength')){
+          <p>{{ constant.minLength}}</p>
+          }
+          }
+        </div>
+
+
+      </section>
+
+      <!-- Action Buttons -->
+      <section class="process">
+        <a [routerLink]="'/login'" class="button login">LOGIN</a>
+        <button type="submit" [disabled]="f.invalid" (click)="onSubmit()" class="button signup">Submit</button>
+      </section>
+
+
+    </form>
+  </main>
+  <router-outlet></router-outlet>
+</body>
+
+</html>

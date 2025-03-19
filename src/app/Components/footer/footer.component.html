@@ -1,0 +1,31 @@
+<!-- footer.component.html -->
+<div class="pdf-list">
+  <h3>PDF Documents</h3>
+
+  <!-- Loading state -->
+  <div *ngIf="loading" class="loading">
+    Loading PDFs...
+  </div>
+
+  <!-- Error state -->
+  <div *ngIf="error" class="error">
+    {{ error }}
+  </div>
+
+  <!-- Loaded state -->
+  <div *ngIf="!loading && !error">
+    <!-- Show message if no PDFs -->
+    <div *ngIf="pdfs.length === 0" class="no-pdfs">
+      No PDF documents found.
+    </div>
+
+    <!-- PDF list -->
+    <div *ngFor="let pdf of pdfs" class="pdf-item">
+      <div class="pdf-info">
+        <span class="pdf-name">{{ pdf.file_name }}</span>
+        <span class="pdf-id">ID: {{ pdf.id }}</span>
+      </div>
+      <!-- Add more fields as needed -->
+    </div>
+  </div>
+</div>
