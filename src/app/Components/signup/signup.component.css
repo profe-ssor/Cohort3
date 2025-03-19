@@ -101,19 +101,6 @@ input:focus, select:focus {
   margin: 0;
 }
 
-/* Add media query for better responsiveness */
-@media (max-width: 768px) {
-  main {
-    width: 95%;
-    padding: 15px;
-    min-width: 320px;
-  }
-
-  .p1 div, .p2 div, .s1 div {
-    flex: 1 1 100%;
-  }
-}
-
 /* Button Styles */
 .process {
   display: flex;

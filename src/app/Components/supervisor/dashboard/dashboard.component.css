@@ -1,24 +1,47 @@
+:root {
+  /* Colors */
+  --color-primary: #6200ea;
+  --color-primary-dark: #4e00bb;
+  --color-purple: #6610f2;
+  --color-orange: #fd7e14;
+  --color-purple-dark: #9c27b0;
+  --color-green: #198754;
+  --color-blue: #0d6efd;
+  --color-text: #424242;
+  --color-text-dark: #212121;
+  --color-text-light: #616161;
+  --color-text-lighter: #9e9e9e;
+  --color-border: #e0e0e0;
+  --color-bg: #fff;
+  --color-bg-light: #f5f5f5;
+  --color-bg-lighter: #f9f9f9;
+  /* Spacing */
+  --spacing-xs: 5px;
+  --spacing-sm: 10px;
+  --spacing-md: 15px;
+  --spacing-lg: 20px;
+  /* Shadows */
+  --shadow-sm: 0px 1px 5px rgba(0, 0, 0, 0.1);
+  /* Transitions */
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.9s ease;
+  /* Border radius */
+  --border-radius-sm: 0.25rem;
+  --border-radius-circle: 50%;
+}
+
 * {
   margin: 0;
   box-sizing: border-box;
 }
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
 body {
-  margin: 0;
-  padding: 0;
   font-family: "Roboto", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   font-size: 1rem;
   line-height: 1.5;
-  color: #424242;
-  background-color: #fff;
-  border-radius: 0.25rem;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  border-radius: var(--border-radius-sm);
 }
-
 .wrapper {
   overflow-x: hidden;
 }
@@ -29,261 +52,238 @@ body {
   display: grid;
   grid-template-columns: 250px 1fr;
 }
-
 header {
   grid-column: 2/3;
-  background: #f5f5f5;
-  padding: 15px;
-  color: #616161;
-  border-bottom: 1px solid #e0e0e0;
+  background: var(--color-bg-light);
+  padding: var(--spacing-md);
+  color: var(--color-text-light);
+  border-bottom: 1px solid var(--color-border);
   text-align: center;
 }
-
 .section1 {
   display: flex;
-  padding: 10px;
-  border-bottom: 1px solid #e0e0e0;
+  padding: var(--spacing-sm);
+  border-bottom: 1px solid var(--color-border);
   text-align: center;
   justify-content: space-between;
-  margin: 0px 15px 0px 10px;
+  margin: 0 var(--spacing-md) 0 var(--spacing-sm);
 }
 
 .context h3 {
   font-size: 25px;
-  margin-bottom: 5px;
+  margin-bottom: var(--spacing-xs);
   text-align: center;
   font-family: "Roboto Mono", SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  color: #212121;
+  color: var(--color-text-dark);
   font-weight: bold;
-  transition: color 0.3s ease;
+  transition: color var(--transition-normal);
 }
-
 .context h3:hover {
-  color: #6200ea;
+  color: var(--color-primary);
   transform: scale(1.1);
   cursor: pointer;
-  transition: color 0.3s ease;
 }
-
 .profile {
   display: flex;
   justify-content: center;
-  gap: 15px;
+  gap: var(--spacing-md);
 }
-
 .profile i {
   font-size: 35px;
   color: #20c997;
   cursor: pointer;
-  transition: color 0.3s ease;
+  transition: color var(--transition-normal);
 }
-
 .profile a {
   display: inline-block;
   font-size: 18px;
-  margin-top: 10px;
+  margin-top: var(--spacing-sm);
   font-weight: bold;
   text-decoration: none;
-  color: #6200ea;
-  transition: color 0.9s ease;
+  color: var(--color-primary);
+  transition: color var(--transition-slow);
 }
-
 .profile i:hover {
-  color: #6200ea;
+  color: var(--color-primary);
   transform: scale(1.1);
   cursor: pointer;
-  transition: color 0.3s ease;
 }
-
 .profile a:hover {
-  color: #4e00bb;
+  color: var(--color-primary-dark);
   cursor: pointer;
   text-decoration: underline;
   text-decoration-thickness: 3px;
-  transition: color 0.9s ease;
 }
-
 .section2 {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
-  margin: 10px 15px 0px 10px;
-  padding: 10px;
-  border-bottom: 1px solid #e0e0e0;
+  gap: var(--spacing-lg);
+  margin: var(--spacing-sm) var(--spacing-md) 0 var(--spacing-sm);
+  padding: var(--spacing-sm);
+  border-bottom: 1px solid var(--color-border);
   justify-content: space-between;
   align-items: center;
-  transition: background-color 0.3s ease;
-  background-color: #f5f5f5;
-  color: #616161;
+  transition: background-color var(--transition-normal);
+  background-color: var(--color-bg-light);
+  color: var(--color-text-light);
   cursor: pointer;
-  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
 }
-
-.totalNSS, .submitted, .review, .pending {
+.stat-card {
   display: flex;
-  gap: 10px;
-  padding: 5px;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs);
   justify-content: space-between;
-  transition: border-color 0.3s ease;
-  border-radius: 5px;
-  background-color: #fff;
-  color: #616161;
+  border-radius: var(--spacing-xs);
+  background-color: var(--color-bg);
+  color: var(--color-text-light);
   cursor: pointer;
-  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.1);
-  transition: border-color 0.3s ease;
-  border-left: 5px solid #6610f2;
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--transition-normal);
   width: 20%;
   line-height: 1.8;
 }
-
+.totalNSS, .submitted, .review, .pending {
+  border-left: 5px solid var(--color-purple);
+}
+.submitted {
+  border-left: 5px solid var(--color-orange);
+}
+.review {
+  border-left: 5px solid var(--color-purple-dark);
+}
+.pending {
+  border-left: 5px solid var(--color-green);
+}
 .text {
   text-align: left;
-  padding: 5px;
-  transition: border-color 0.3s ease;
+  padding: var(--spacing-xs);
+  transition: border-color var(--transition-normal);
   width: 60%;
 }
-
 h6 {
   font-size: 18px;
   font-weight: bold;
-  transition: color 0.3s ease;
-  color: #212121;
+  color: var(--color-text-dark);
   cursor: pointer;
-  transition: color 0.3s ease;
+  transition: color var(--transition-normal);
   line-height: 0.9;
 }
-
 small {
   font-size: 16px;
-  transition: color 0.3s ease;
-  color: #9e9e9e;
+  color: var(--color-text-lighter);
   cursor: pointer;
-  transition: color 0.3s ease;
+  transition: color var(--transition-normal);
   line-height: 3;
 }
-
 .icons {
-  margin-right: 10px;
-  margin-top: 5px;
-  border-radius: 50%;
+  margin-right: var(--spacing-sm);
+  margin-top: var(--spacing-xs);
+  border-radius: var(--border-radius-circle);
   cursor: pointer;
-  transition: border-color 0.3s ease;
+  transition: border-color var(--transition-normal);
 }
-icons:hover{
-  border-color: #6200ea;
-  color: #6200ea;
-  cursor: pointer;
-  transition: color 0.3s ease;
+.icons:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
-.icons i{
-  color: #e0e0e0;
-  background-color: #6610f2;
-  padding: 10px;
-  border-radius: 50%;
+.icons i {
+  color: var(--color-border);
+  background-color: var(--color-purple);
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius-circle);
   font-size: 20px;
 }
-.submitted {
-  border-left: 5px solid #fd7e14;
+.submitted i {
+  background-color: var(--color-orange);
 }
-.submitted i{
-  background-color: #fd7e14;
+.review i {
+  background-color: var(--color-purple-dark);
 }
-.review{
-  border-left: 5px solid #9c27b0;
+.pending i {
+  background-color: var(--color-green);
 }
-.review i{
-  background-color: #9c27b0;
-}
-.pending {
-  border-left: 5px solid #198754;
-}
-.pending i{
-  background-color: #198754;
-}
-
 /* Aside Started */
-.nav-checkbox{
+.nav-checkbox {
   display: none;
   cursor: pointer;
 }
-.nav-toggle-label{
+.nav-toggle-label {
   display: block;
-  margin-left: 20px;
+  margin-left: var(--spacing-lg);
 }
 .nav-toggle-label span,
 .nav-toggle-label span::before,
-.nav-toggle-label span::after{
-    display: block;
-    background-color: red;
-    height: 2px;
-    width: 2em;
-    border-radius: 2px;
-    position: relative;
+.nav-toggle-label span::after {
+  display: block;
+  background-color: red;
+  height: 2px;
+  width: 2em;
+  border-radius: 2px;
+  position: relative;
 }
-.nav-toggle-label span::before{
+.nav-toggle-label span::before {
   bottom: 7px;
 }
-.nav-toggle-label span::after{
+.nav-toggle-label span::after {
   top: 7px;
 }
-.nav-checkbox:checked ~ nav{
+.nav-checkbox:checked ~ nav {
   display: flex;
 }
-
-nav{
+nav {
   grid-column: 1/2;
-  padding: 10px;
-  color: #616161;
+  padding: var(--spacing-sm);
+  color: var(--color-text-light);
   position: sticky;
   top: 0;
   left: 0;
   z-index: 1000;
-  transition: background-color 0.3s ease;
-  border-bottom: none;
-  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.1);
+  transition: background-color var(--transition-normal);
+  box-shadow: var(--shadow-sm);
   min-height: 70vh;
 }
-nav ul{
+nav ul {
   list-style: none;
   margin: 0;
   padding: 0;
   text-align: left;
-  transition: background-color 0.3s ease;
-  background-color: #fff;
+  transition: background-color var(--transition-normal);
+  background-color: var(--color-bg);
   position: relative;
   overflow-y: auto;
   max-height: 500px;
   scrollbar-width: thin;
   scrollbar-color: #eeeeee #eeeeee;
-  scrollbar-track-color: #eeeeee;
 }
-nav ul li{
-  margin-bottom: 20px;
-  transition: background-color 0.3s ease;
-  background-color: #f5f5f5;
-  padding: 10px;
-  border-bottom: 1px solid #e0e0e0;
+nav ul li {
+  margin-bottom: var(--spacing-lg);
+  transition: background-color var(--transition-normal);
+  background-color: var(--color-bg-light);
+  padding: var(--spacing-sm);
+  border-bottom: 1px solid var(--color-border);
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: var(--spacing-xs);
 }
-nav ul li a{
+nav ul li a {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--spacing-sm);
   text-decoration: none;
-  color: #616161;
-  transition: color 0.3s ease;
+  color: var(--color-text-light);
+  transition: color var(--transition-normal);
   font-weight: bold;
   line-height: 1.5;
 }
-nav ul li a:hover{
-  color: #6200ea;
+nav ul li a:hover {
+  color: var(--color-primary);
   transform: scale(1.1);
 }
 .ui-toolkit {
   width: 250px;
 }
-.menu-item i{
+
+.menu-item i {
   margin-left: -7px;
 }
 .menu-button {
@@ -291,102 +291,82 @@ nav ul li a:hover{
   text-align: left;
   background: none;
   border: none;
-  color: #fd7e14;
+  color: var(--color-orange);
   font-size: 16px;
   cursor: pointer;
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  gap: 10px;
+  gap: var(--spacing-sm);
 }
 .menu-button:hover {
-    transform: scale(1.1);
+  transform: scale(1.1);
 }
+
 .menu-button .arrow {
-  transition: transform 0.3s ease;
+  transition: transform var(--transition-normal);
 }
 .submenu {
   display: none;
-  padding-left: 20px;
-  background: #f9f9f9;
+  padding-left: var(--spacing-lg);
+  background: var(--color-bg-lighter);
 }
+
 .submenu a {
   display: block;
   text-decoration: none;
   color: #333;
-  padding: 5px 0;
+  padding: var(--spacing-xs) 0;
 }
 .menu-item.active .submenu {
   display: block;
 }
-.home i, .home p{
-  color: #6610f2;
+
+.home i, .home p {
+  color: var(--color-purple);
 }
-.personel{
+.personel {
   display: flex;
 }
-.personel i{
-  color: #fd7e14;
+.personel i {
+  color: var(--color-orange);
 }
-.evaluate p, .evaluate i{
-  color: #9c27b0;
+
+.evaluate p, .evaluate i {
+  color: var(--color-purple-dark);
 }
-.generate i, .generate p{
-  color: #198754;
+.generate i, .generate p {
+  color: var(--color-green);
 }
-.account i, .account p{
-  color: #0d6efd;
+
+.account i, .account p {
+  color: var(--color-blue);
 }
-.image{
+.image {
   margin-bottom: 130px;
-  margin-top: 20px;
+  margin-top: var(--spacing-lg);
   margin-left: 50px;
 }
-.aside img{
+.aside img {
   width: 50%;
   height: auto;
   margin-bottom: 40px;
 }
-.main-container{
-  display: grid;
-  grid-template-columns: (auto-fit, minmax(200px, 1fr));
-  gap: 10px;
-  padding: 10px;
-  border: 1px solid black;
-  height: 100%;
-}
-.main{
-  border: 1px solid black;
-}
 @media (max-width: 480px) {
   .container {
     display: flex;
-    flex-direction: column; /* Ensure vertical stacking */
+    flex-direction: column;
     padding: 0;
   }
-  .nav-toggle-label span,
-  .nav-toggle-label span::before,
-  .nav-toggle-label span::after {
-      display: block;
-      background-color: red;
-      height: 2px;
-      width: 2em;
-      border-radius: 2px;
-      position: relative;
-  }
-
   .nav-checkbox:checked ~ .main-content {
-    margin-top: 10px; /* Push article down */
-  }
-  .nav-checkbox:checked ~ nav {
-    margin-bottom: 0px; /* Push article down */
+    margin-top: var(--spacing-sm);
   }
   .aside {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 10px;
+    padding: var(--spacing-sm);
   }
   .aside .image {
     width: 30%;
@@ -394,7 +374,7 @@ nav ul li a:hover{
     text-align: center;
   }
   .image p {
-    margin-bottom: 20px;
+    margin-bottom: var(--spacing-lg);
     font-family: "Roboto", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     font-weight: 900;
     font-size: 20px;
@@ -407,41 +387,28 @@ nav ul li a:hover{
   nav {
     display: none;
     flex-direction: column;
-    gap: 10px;
-    background-color: #fff;
+    gap: var(--spacing-sm);
+    background-color: var(--color-bg);
     position: relative;
     width: 100%;
-    padding: 10px;
+    padding: var(--spacing-sm);
   }
-  .nav-checkbox:checked ~ nav {
-    display: flex;
-  }
+
   nav ul {
     width: 100%;
     margin: 0;
   }
-  header {
-    display: flex;
-    flex-direction: column;
-  }
-  .section1 {
-    display: flex;
-    width: 100%;
-  }
-  .section2 {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 100%;
-  }
-  .totalNSS, .submitted, .review, .pending {
+
+  header, .section1, .section2 {
     display: flex;
     flex-direction: column;
     width: 100%;
   }
-  .main-container {
+
+  .totalNSS, .submitted, .review, .pending, .stat-card {
     display: flex;
     flex-direction: column;
+    width: 100%;
   }
 }
 
@@ -451,21 +418,8 @@ nav ul li a:hover{
     flex-direction: column;
     padding: 0;
   }
-  .nav-toggle-label span,
-  .nav-toggle-label span::before,
-  .nav-toggle-label span::after {
-      display: block;
-      background-color: red;
-      height: 2px;
-      width: 2em;
-      border-radius: 2px;
-      position: relative;
-  }
-  .nav-checkbox:checked ~ .aside {
-    height: auto;
-  }
   .nav-checkbox:checked ~ .main-content {
-    margin-top: 10px;
+    margin-top: var(--spacing-sm);
   }
   .aside {
     width: 100%;
@@ -479,7 +433,7 @@ nav ul li a:hover{
     text-align: center;
   }
   .image p {
-    margin-bottom: 20px;
+    margin-bottom: var(--spacing-lg);
     font-family: "Roboto", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     font-weight: 900;
     font-size: 20px;
@@ -492,12 +446,6 @@ nav ul li a:hover{
     display: none;
     flex-direction: column;
     width: 100%;
-  }
-  .nav-checkbox:checked ~ nav {
-    display: flex;
-  }
-  nav a:hover::before {
-    transform: scale(1,1);
   }
   header {
     display: flex;
@@ -513,36 +461,26 @@ nav ul li a:hover{
     justify-content: space-between;
     width: 100%;
   }
-  .totalNSS, .submitted, .review, .pending {
+  .totalNSS, .submitted, .review, .pending, .stat-card {
     display: flex;
     margin: 0;
     width: 90%;
     padding: 0;
   }
-  .main-container {
-    display: flex;
-    flex-direction: column;
-  }
   .text {
     text-align: left;
-    padding: 5px;
-    transition: border-color 0.3s ease;
+    padding: var(--spacing-xs);
     width: 50%;
-    border: 1px solid red;
-  }
-  small {
-    font-size: 16px;
   }
   .icons {
     margin-right: 50px;
     margin-top: 25px;
   }
   .icons:hover {
-    border-color: #4e00bb;
-    color: #4e00bb;
-    cursor: pointer;
-    transition: color 0.3s ease;
+    border-color: var(--color-primary-dark);
+    color: var(--color-primary-dark);
   }
+
   .main-content {
     display: flex;
     flex-direction: column;
