@@ -1,6 +1,65 @@
-<!-- footer.component.html -->
-<div class="pdf-list">
-  <h3>PDF Documents</h3>
+<div class="upload-container">
+  <h2>Upload PDF Document</h2>
+
+  <div class="upload-card">
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+
+    <div *ngIf="successMessage" class="success-message">
+      {{ successMessage }}
+    </div>
+
+    <div class="file-upload-section">
+      <div class="file-input-wrapper">
+        <div class="file-drop-area" [class.has-file]="selectedFile">
+          <span class="file-message" *ngIf="!selectedFile">
+            <i class="fas fa-cloud-upload-alt"></i>
+            Drag & drop your PDF here or click to browse
+          </span>
+          <span class="file-name" *ngIf="selectedFile">
+            <i class="fas fa-file-pdf"></i>
+            {{ selectedFile.name }}
+          </span>
+          <input
+            type="file"
+            class="file-input"
+            accept=".pdf"
+            (change)="onFileSelect($event)">
+        </div>
+      </div>
+
+      <div class="file-name-input" *ngIf="selectedFile">
+        <label for="fileName">Document Name</label>
+        <input
+          type="text"
+          id="fileName"
+          [(ngModel)]="fileName"
+
+          placeholder="Enter document name">
+      </div>
+    </div>
+
+    <div class="action-buttons">
+      <button
+        class="btn btn-secondary"
+        (click)="clearSelection()"
+        [disabled]="isUploading || !selectedFile">
+        Clear
+      </button>
+
+      <button
+        class="btn btn-primary"
+        (click)="saveFile()"
+        [disabled]="isUploading || !selectedFile">
+        <span *ngIf="!isUploading">Save File</span>
+        <span *ngIf="isUploading">
+          <i class="fas fa-spinner fa-spin"></i> Saving...
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
 
   <!-- Loading state -->
   <div *ngIf="loading" class="loading">
@@ -20,12 +79,16 @@
     </div>
 
     <!-- PDF list -->
-    <div *ngFor="let pdf of pdfs" class="pdf-item">
-      <div class="pdf-info">
-        <span class="pdf-name">{{ pdf.file_name }}</span>
-        <span class="pdf-id">ID: {{ pdf.id }}</span>
-      </div>
-      <!-- Add more fields as needed -->
-    </div>
+  <!-- PDF list -->
+<div *ngFor="let pdf of pdfs" class="pdf-item">
+  <div class="pdf-info">
+    <span class="pdf-name">{{ pdf.file_name }}</span>
+    <span class="pdf-status" [ngClass]="{'signed': pdf.is_signed, 'unsigned': !pdf.is_signed}">
+      {{ pdf.is_signed ? 'Signed' : 'Unsigned' }}
+    </span>
+    <span class="pdf-date">{{ pdf.uploaded_at | date:'short' }}</span>
   </div>
 </div>
+      <!-- Add more fields as needed -->
+    </div>
+ 

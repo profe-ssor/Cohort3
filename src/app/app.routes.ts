@@ -11,6 +11,7 @@ import { AdminComponent } from './Components/admin/admin/admin.component';
 import { adminGuard, permGuard, supervisorGuard, userGuard } from './services/perm.guard';
 import { VerifyOtComponent } from './Components/verify-ot/verify-ot.component';
 import { ResenOtpComponent } from './Components/resen-otp/resen-otp.component';
+import { SignatureAdComponent } from './Components/signature-ad/signature-ad.component';
 
 export const routes: Routes = [
   {
@@ -34,6 +35,10 @@ export const routes: Routes = [
   {
     path: 'resend-otp',
     component: ResenOtpComponent
+  },
+  {
+    path: 'sign-signature',
+    component: SignatureAdComponent
   },
   {
     path: '',
@@ -76,6 +81,6 @@ export const routes: Routes = [
 
 {
   path: '**',
-  redirectTo: 'login' 
+  redirectTo: 'login'
 }
 ];

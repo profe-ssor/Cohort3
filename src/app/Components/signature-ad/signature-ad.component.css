@@ -1,0 +1,78 @@
+.container {
+  width: 50%;
+  margin: 40px auto;
+  text-align: center;
+  padding: 20px;
+  background: #fff;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.upload-box {
+  margin-bottom: 20px;
+}
+
+.upload-btn {
+  background: #007bff;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0px 3px 10px rgba(0, 123, 255, 0.3);
+  transition: 0.3s;
+}
+
+.upload-btn:hover {
+  background: #0056b3;
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.action-btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.sign-draw {
+  background: #28a745;
+  color: white;
+  box-shadow: 0px 3px 10px rgba(40, 167, 69, 0.3);
+}
+
+.sign-draw:hover {
+  background: #1e7e34;
+}
+
+.sign-image {
+  background: #ff7f50;
+  color: white;
+  box-shadow: 0px 3px 10px rgba(255, 127, 80, 0.3);
+}
+
+.sign-image:hover {
+  background: #d55e34;
+}
+
+.preview-box {
+  margin-top: 20px;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+}
