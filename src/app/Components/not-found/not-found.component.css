@@ -1,0 +1,26 @@
+.not-found-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full viewport height */
+  text-align: center;
+  background-color: #f8f8f8; /* Light background */
+}
+
+.image {
+  width: 400px;
+  height: 400px;
+  object-fit: contain; /* Ensure the image scales properly */
+}
+
+h1 {
+  font-size: 5rem;
+  margin: 10px 0;
+  color: #333;
+}
+
+h4 {
+  font-size: 1.5rem;
+  color: #666;
+}
