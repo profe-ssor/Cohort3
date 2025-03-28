@@ -1,17 +1,19 @@
-export interface User {
+export interface registerUser {
   username: string;
-  date_of_birth: string;
   gender: string;
-  ghana_card: string;
-  nss_id: string;
   email: string;
-  phone: string;
-  resident_address: string;
-  assigned_institution : string;
-  start_date: string;
-  end_date: string;
-  region_of_posting: string;
+  user_type: string;
   password: string;
+}
+export interface registerResponse{
+  message: string;
+  id: number;
+  user: {
+    email: string;
+    username: string;
+    gender: string;
+    user_type: string;
+  }
 }
 
 export interface logUser
@@ -66,4 +68,35 @@ export interface ResendOtpResponse {
 
 export interface LogoutResponse {
   message: string;
+}
+
+export interface supervisor_database {
+    user_id: number
+    full_name: string
+    ghana_card_record: string
+    contact: string
+    assigned_institution: string
+    region_of_posting: string
+    assigned_workplace: string
+}
+
+export interface supervisors_databaseResponse {
+  message: string;
+}
+
+export interface nss_database {
+  user_id: number
+  full_name: string
+  ghana_card_record: string
+  phone: string
+  nss_id: string
+  start_date: string
+  end_date: string
+  assigned_institution: string
+  region_of_posting: string
+}
+
+export interface nss_databaseResponse {
+
+message: string;
 }

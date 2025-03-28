@@ -1,0 +1,191 @@
+<!--
+  assigned_workplace: number -->
+<div class="container">
+<form  #f="ngForm">
+    <div class="row">
+      <div class="col">
+        <label for="userid" class="form-label">User ID:</label>
+        <input
+        type="text"
+        class="form-control form-control-lg"
+        id="userid"
+        [(ngModel)]="nssdb.user_id"
+        name="user_id"
+        #user_id="ngModel"
+        [minlength]="constant.minLength" [maxlength]="constant.maxLength"
+          [class.ng-invalid]="nss_id.invalid && nss_id.touched"
+          required
+          readonly
+          />
+        <div *ngIf="user_id.invalid && user_id.touched">
+          <p *ngIf="user_id.errors?.['required']">{{ constant.REQUIRED }}</p>
+          <p *ngIf="user_id.errors?.['minlength']">{{ constant.MIN_LENGTH(constant.minLength) }}</p>
+          <p *ngIf="user_id.errors?.['maxlength']">{{ constant.MAX_LENGTH(constant.maxLength) }}</p>
+        </div>
+
+      </div>
+
+      <div class="col">
+        <label for="username" class="form-label">User Name:</label>
+        <input type="text" class="form-control form-control-lg"  id="username" [(ngModel)]="nssdb.full_name"  name="full_name" ngModel
+          #full_name="ngModel" [minlength]="constant.minLength" [maxlength]="constant.maxLength"
+          [class.ng-invalid]="full_name.invalid && full_name.touched" required />
+        <div *ngIf="full_name.invalid && full_name.touched">
+          <p *ngIf="full_name.errors?.['required']">{{ constant.REQUIRED }}</p>
+          <p *ngIf="full_name.errors?.['minlength']">{{ constant.MIN_LENGTH(constant.minLength) }}</p>
+          <p *ngIf="full_name.errors?.['maxlength']">{{ constant.MAX_LENGTH(constant.maxLength) }}</p>
+        </div>
+
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col">
+        <label for="ghana_card" class="form-label">NATIONAL ID NUMBER:</label>
+        <input type="text" class="form-control form-control-lg" id="ghana_card" [(ngModel)]="nssdb.ghana_card_record" name="ghana_card" ngModel
+          #ghana_card_record="ngModel" required [minlength]="constant.minLength"
+          [class.ng-invalid]="ghana_card_record.invalid && ghana_card_record.touched" />
+        <div class="alert">
+          @if(ghana_card_record.invalid && ghana_card_record.touched){
+          @if(ghana_card_record.hasError('required')){
+          <p>{{ constant.REQUIRED }}</p>
+          }
+          @if(ghana_card_record.hasError('minlength')){
+          <p>{{ constant.MIN_LENGTH(constant.minLength) }}</p>
+          }
+          }
+
+        </div>
+      </div>
+
+      <div class="col">
+        <label for="nss_id" class="form-label">NSS NUMBER:</label>
+        <input type="text" class="form-control form-control-lg" id="nss_id" [(ngModel)]="nssdb.nss_id" name="nss_id" ngModel #nss_id="ngModel"
+          [class.ng-invalid]="nss_id.invalid && nss_id.touched" required />
+          <div class="alert">
+            @if(nss_id.invalid && nss_id.touched){
+            @if(nss_id.hasError('required')){
+            <p>{{ constant.REQUIRED }}</p>
+            }
+            @if(nss_id.hasError('minlength')){
+            <p>{{ constant.MAX_LENGTH(constant.maxLength) }}</p>
+            }
+            }
+
+          </div>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col">
+        <label for="start_date" class="form-label">START DATE:</label>
+        <input type="text" class="form-control form-control-lg" id="start_date" [(ngModel)]="nssdb.start_date" name="start_date" placeholder="YYYY-MM-DD"
+          ngModel #start_date="ngModel" [class.ng-invalid]="start_date.invalid && start_date.touched" required />
+        <div class="alert">
+          @if(start_date.invalid && start_date.touched){
+          @if(start_date.hasError('required')){
+          <p>{{ constant.REQUIRED }}</p>
+          }
+          }
+        </div>
+      </div>
+      <div class="col">
+        <label for="end_date" class="form-label">END DATE:</label>
+        <input type="text" class="form-control form-control-lg" placeholder="YYYY-MM-DD" id="end_date" [(ngModel)]="nssdb.end_date" name="end_date" ngModel
+          #end_date="ngModel" [class.ng-invalid]="end_date.invalid && end_date.touched" required />
+        <div class="alert">
+          @if(end_date.invalid && end_date.touched){
+          @if(end_date.hasError('required')){
+          <p>{{ constant.REQUIRED }}</p>
+          }
+          }
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <label for="phone" class="form-label">PHONE NUMBER:</label>
+        <input type="text" class="form-control form-control-lg" id="phone" [(ngModel)]="nssdb.phone" autocomplete="phone" name="phone" #phone="ngModel"
+          [class.ng-invalid]="phone.invalid && phone.touched" required [pattern]="constant.phoneRegex" />
+        <div *ngIf="phone.invalid && phone.touched" class="alert">
+          <p *ngIf="phone.errors?.['required']">{{ constant.REQUIRED }}</p>
+          <p *ngIf="phone.errors?.['pattern']">{{ constant.HONE_REGEX_INVALID }}</p>
+
+        </div>
+      </div>
+
+      <div class="col">
+        <label for="assigned_institution" class="form-label">ASSIGNED INSTITUTION:</label>
+        <input type="text" class="form-control form-control-lg" id="assigned_institution" [(ngModel)]="nssdb.assigned_institution"
+          name="assigned_institution" ngModel #assigned_institution="ngModel"
+          [class.ng-invalid]="assigned_institution.invalid && assigned_institution.touched" required />
+        <div class="alert">
+          @if(assigned_institution.invalid && assigned_institution.touched){
+          @if(assigned_institution.hasError('required')){
+          <p>{{ constant.REQUIRED }}</p>
+          }
+          }
+        </div>
+      </div>
+
+    </div>
+    <div class="row">
+
+        <div>
+          <label for="region_of_posting"  class="form-label">REGION OF POSTING:</label>
+          <select id="region_of_posting" class=" form-select form-select-lg" [(ngModel)]="nssdb.region_of_posting" name="region_of_posting" ngModel
+            #region_of_posting="ngModel" [class.ng-invalid]="region_of_posting.invalid && region_of_posting.touched"
+            required>
+            <option value="">Select Gender</option>
+            <option value=" 1">Greater Accra</option>
+            <option value="2">Western</option>
+            <option value="3">Ashanti</option>
+            <option value="4">Eastern</option>
+            <option value="5">Central</option>
+            <option value="6">Volta</option>
+            <option value="7">Northern</option>
+            <option value="8">Western North</option>
+            <option value="9">Oti</option>
+            <option value="10">Ahafo</option>
+            <option value="11">Bono</option>
+            <option value="12">Bono East</option>
+            <option value="13">Upper East</option>
+            <option value="14">Upper West</option>
+            <option value="15">North East</option>
+            <option value="16">Western Region</option>
+
+
+          </select>
+          <div class="alert">
+            @if(region_of_posting.invalid && region_of_posting.touched){
+            @if(region_of_posting.hasError('required')){
+            <p>{{ constant.REQUIRED }}</p>
+            }
+            }
+          </div>
+        </div>
+
+
+    </div>
+    <div class="row">
+      <div class="col">
+        <button
+          type="button"
+          [disabled]="isLoginLoading"
+          (click)="onLogin()"
+          class="btn btn-lg btn-primary">
+
+          <span *ngIf="isLoginLoading" class="spinner-border spinner-border-sm text-info"></span>
+          Login
+        </button>
+
+      </div>
+      <div class="col">
+        <button type="submit" [disabled]="f.invalid" (click)="onSubmit()" class=" btn btn-lg btn-success">
+          <span *ngIf="isLoading" class="spinner-border spinner-border-sm text-success"></span>
+          Submit
+        </button>
+      </div>
+    </div>
+</form>
+</div>

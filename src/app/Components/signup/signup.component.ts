@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
-import { User } from '../../model/interface/auth';
+import { registerResponse, registerUser } from '../../model/interface/auth';
 import { Constant } from '../../constant/constant';
 import { NgIf } from '@angular/common';
 @Component({
@@ -16,19 +16,11 @@ import { NgIf } from '@angular/common';
 export class SignupComponent {
   isLoading = false;
   isLoginLoading = false;
-  user: User = {
+  user: registerUser = {
     username: '',
-    date_of_birth: '',
     gender: '',
-    ghana_card: '',
-    nss_id: '',
     email: '',
-    phone: '',
-    resident_address: '',
-    assigned_institution: '',
-    start_date: '',
-    end_date: '',
-    region_of_posting: '',
+    user_type: '',
     password: '',
   };
 
@@ -51,11 +43,11 @@ export class SignupComponent {
   {value: '16', name: 'Western Region'},
   ];
 
-  formatDates(): void {
-    this.user.start_date = new Date(this.user.start_date).toISOString().split('T')[0];
-    this.user.end_date = new Date(this.user.end_date).toISOString().split('T')[0];
-    this.user.date_of_birth = new Date(this.user.date_of_birth).toISOString().split('T')[0];
-  }
+  // formatDates(): void {
+  //   this.user.start_date = new Date(this.user.start_date).toISOString().split('T')[0];
+  //   this.user.end_date = new Date(this.user.end_date).toISOString().split('T')[0];
+  //   this.user.date_of_birth = new Date(this.user.date_of_birth).toISOString().split('T')[0];
+  // }
 
 
   constant = Constant;
@@ -72,17 +64,21 @@ onSubmit(): void {
   if (this.isLoading) return;
 
   this.isLoading = true;
-  this.formatDates();
+  // this.formatDates();
   console.log('User data being sent:', this.user);
 
   // Send user data to the server for registration
   this.authService.register(this.user).subscribe({
-    next: (response: any) => {
+    next: (response: registerResponse) => {
+    
+      if (response.id) {
+        localStorage.setItem('user_id', response.id.toString()); // Save user ID
+      }
 
        if (response.message) {
         this.successMessage = response.message;
-
         window.alert(this.successMessage);
+        console.log(this.successMessage);
 
        }
 
@@ -113,18 +109,10 @@ onSubmit(): void {
       // Clear form fields
       this.user = {
         username: '',
-        date_of_birth: '',
         gender: '',
-        ghana_card: '',
-        nss_id: '',
         email: '',
-        phone: '',
-        resident_address: '',
-        assigned_institution: '',
-        start_date: '',
-        end_date: '',
-        region_of_posting: '',
         password: '',
+        user_type: '',
       };
     },
     complete: () => {

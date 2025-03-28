@@ -13,6 +13,7 @@ import { VerifyOtComponent } from './Components/verify-ot/verify-ot.component';
 import { ResenOtpComponent } from './Components/resen-otp/resen-otp.component';
 import { SignatureAdComponent } from './Components/signature-ad/signature-ad.component';
 import { NotFoundComponent } from './Components/not-found/not-found.component';
+import { NssDatabaseComponent } from './Components/nss-database/nss-database.component';
 
 export const routes: Routes = [
   {
@@ -38,13 +39,17 @@ export const routes: Routes = [
     component: ResenOtpComponent
   },
   {
+    path: 'nssdb',
+    component: NssDatabaseComponent
+  },
+  {
     path: 'sign-signature',
     component: SignatureAdComponent
   },
   {
     path: '',
     component: LayoutComponent,
-    canActivate: [userGuard],
+    // canActivate: [userGuard],
     children:[
       {
         path: 'persneldashboard',

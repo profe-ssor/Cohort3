@@ -3,14 +3,14 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { environment } from '../../environments/environment.development';
 import { tap, catchError, timeout } from 'rxjs/operators';
-import { Credentials, LoginResponse,  LogoutResponse,  OtpResponse, OtpVerification, ResendOTP, ResendOtpResponse, User, UserCounts } from '../model/interface/auth';
+import { Credentials, LoginResponse,  LogoutResponse,  nss_database,  nss_databaseResponse,  OtpResponse, OtpVerification, registerResponse, registerUser, ResendOTP, ResendOtpResponse,  supervisor_database,  supervisors_databaseResponse,  UserCounts } from '../model/interface/auth';
 import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private currentUserSubject: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
+  private currentUserSubject: BehaviorSubject<registerUser | null> = new BehaviorSubject<registerUser | null>(null);
 
   constructor(
     private http: HttpClient,
@@ -18,13 +18,28 @@ export class AuthService {
   ) { }
 
   // Register a new user
-  register(userData: User): Observable<any> {
-    return this.http.post(`${environment.API_URL}register/`, userData);
+  register(userData: registerUser): Observable<registerResponse> {
+    return this.http.post<registerResponse>(`${environment.API_URL}register/`, userData).pipe(
+      tap(response => {
+        if (response.id){
+          localStorage.setItem('user_id', response.id.toString());
+        }
+      })
+    );
   }
 
   // otp verification
   verifyOtp(userData: OtpVerification): Observable<OtpResponse> {
     return this.http.post<OtpResponse>(`${environment.API_URL}verify-otp/`, userData);
+  }
+
+  // supervisor_dashboard
+  supervisorDatabase(userData: supervisor_database): Observable<supervisors_databaseResponse > {
+    return this.http.post<supervisors_databaseResponse>(`${environment.API_URL}supervisor-dashboard/`, userData);
+  }
+  // nss_database
+  nssDatabase(userData: nss_database): Observable<nss_databaseResponse > {
+    return this.http.post<nss_databaseResponse>(`${environment.API_URL}nssdb/`, userData);
   }
   // Store the JWT token in localStorage
   storeJwtToken(token: string): void {
@@ -40,7 +55,6 @@ export class AuthService {
     localStorage.setItem('userRole', role);
   }
   // Login a user
-  // In AuthService
 login(userData: Credentials): Observable<LoginResponse> {
   return this.http.post<LoginResponse>(`${environment.API_URL}login/`, userData)
     .pipe(

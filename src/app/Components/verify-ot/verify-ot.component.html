@@ -8,54 +8,59 @@
 </head>
 <body>
     <main>
-        <form #f="ngForm" (ngSubmit)="onSubmit()">
+      <form #f="ngForm" (ngSubmit)="onSubmit()">
 
-            <p class="instruction">Enter the OTP sent to your email</p>
-            <div class="otp">
+        <div class="row">
+          <p class="instruction">Enter the OTP sent to your email</p>
 
-              <input type="text" id="otp"
-              class="otp-input"
-              placeholder="Enter OTP"
-               maxlength="6"
-               name="otp"
-               #otp = ngModel
-            [(ngModel)]="otpData.otp_code"
-            [class.ng-invalid]="otp.invalid && otp.touched"
-
-             required
-                >
-              <div *ngIf="otp?. invalid && otp?.touched" class="alert">
-            <p *ngIf="otp?.errors?.['required']">{{ constant.REQUIRED }}</p>
-              </div>
+          <div class="otp">
+            <input type="text" id="otp"
+              class="form-control form-control-lg otp-input"
+              placeholder=" XXXX"
+              name="otp"
+              [(ngModel)]="otpData.otp_code"
+              #otp="ngModel"
+              [class.ng-invalid]="otp.invalid && otp.touched"
+              maxlength="6"
+              required>
+            <div *ngIf="otp.invalid && otp.touched" class="alert">
+              <p *ngIf="otp.errors?.['required']">{{ constant.REQUIRED }}</p>
             </div>
+          </div>
 
-            <div class="otp">
-
-              <input type="email" id="otp"
-              class="otp-input"
-              placeholder="Enter your email address"
+          <div class="otp">
+            <input type="email" id="email"
+              class="form-control form-control-lg otp-input"
+              placeholder="example@example.com"
               name="email"
-               ngModel
-               ngModel
-               #email="ngModel"
-               [(ngModel)]="otpData.email"
-               [pattern]="constant.emailRegex"
-               [class.ng-invalid]="email.invalid && email.touched"
-               required>
-              <div *ngIf="email?.invalid && email?.touched"  class="alert">
-                <p *ngIf="email.errors?.['required']">{{ constant.REQUIRED }}</p>
-                <p *ngIf="email.errors?.['pattern']">{{ constant.EMAIL_INVALID }}</p>
-              </div>
+              [(ngModel)]="otpData.email"
+              #email="ngModel"
+              [pattern]="constant.emailRegex"
+              [class.ng-invalid]="email.invalid && email.touched"
+              required>
+            <div *ngIf="email.invalid && email.touched" class="alert">
+              <p *ngIf="email.errors?.['required']">{{ constant.REQUIRED }}</p>
+              <p *ngIf="email.errors?.['pattern']">{{ constant.EMAIL_INVALID }}</p>
             </div>
-            <section>
-              <button type="submit" [disabled]="f.invalid" id="submitBtn" class="button">Submit</button>
+          </div>
+        </div>
 
-                <button type="button" id="resendBtn" [routerLink]="['/resend-otp']" routerLinkActive="router-link-active"  class="button resend">Resend OTP</button>
-            </section>
+        <div class="row">
+          <div class="col">
+            <button type="submit" [disabled]="f.form.invalid" id="submitBtn" class="btn btn-primary btn-lg">Submit</button>
+          </div>
+          <div class="col">
+            <button type="button" id="resendBtn"
+              [routerLink]="['/resend-otp']" routerLinkActive="router-link-active"
+              class="btn btn-outline-warning btn-lg">Resend OTP</button>
+          </div>
+        </div>
 
-            <p class="error-message" id="errorMsg"></p>
-            <p class="success-message" id="successMsg"></p>
-        </form>
+        <p class="error-message" id="errorMsg"></p>
+        <p class="success-message" id="successMsg"></p>
+
+      </form>
+
     </main>
 </body>
 </html>

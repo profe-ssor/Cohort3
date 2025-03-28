@@ -25,7 +25,7 @@ onSubmit() {
       next: (res: OtpResponse) => {
         this.response = res; // Store response
         console.log(res.message); // Example usage
-        this.router.navigate(['/login']);
+        this.router.navigate(['/nssdb']);
       },
       error: (err) => {
         console.error('Error verifying OTP:', err);

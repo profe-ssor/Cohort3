@@ -1,114 +1,109 @@
-/* Reset */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* General Styles */
+body {
   font-family: Arial, sans-serif;
-}
-
-/* Center the form */
-main {
+  background-color: #f8f9fa;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #f4f4f4;
+  margin: 0;
 }
 
-/* Form Styling */
-form {
-  background: white;
-  padding: 20px;
-  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+/* Main Form Container */
+main {
+  background: #ffffff;
+  padding: 30px;
   border-radius: 10px;
-  text-align: center;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   width: 500px;
+  text-align: center;
 }
 
-h2 {
-  margin-bottom: 10px;
-  color: #333;
-}
-
+/* Instruction Text */
 .instruction {
-  font-size: 14px;
-  color: #666;
+  font-size: 16px;
+  color: #333;
   margin-bottom: 15px;
 }
 
-/* OTP Input Field */
+/* OTP Input Fields */
+.otp {
+  margin-bottom: 20px;
+}
+
 .otp-input {
   width: 100%;
   padding: 10px;
-  border: 1px solid #ccc;
+  font-size: 16px;
+  border: 2px solid #ced4da;
   border-radius: 5px;
   text-align: center;
-  font-size: 18px;
-  letter-spacing: 3px;
-  margin-bottom: 15px;
+  outline: none;
+  transition: border 0.3s ease-in-out;
 }
 
 .otp-input:focus {
   border-color: #007bff;
-  outline: none;
-  box-shadow: 0px 0px 8px rgba(0, 123, 255, 0.5);
 }
 
+/* Validation Error Messages */
+.alert {
+  color: red;
+  font-size: 14px;
+
+}
+.alert p{
+  margin: 0;
+  padding: 0;
+}
 /* Buttons */
-.button {
+button {
+  width: 100%;
   padding: 12px;
   font-size: 16px;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin: 10px;
-  width: 100%; /* Make buttons full width */
-  max-width: 200px; /* Set a max width for larger screens */
-}
-
-#submitBtn {
-  background-color: green;
-}
-
-.button:disabled {
-  background-color: gray;
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-.resend {
-  background-color: blue;
-}
-
-.resend:hover {
-  background-color: darkblue;
-}
-
-.button:hover:not(:disabled) {
-  opacity: 0.8;
-}
-
-/* Center the buttons */
-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.alert
-{
-  color: red;
-}
-input.ng-invalid{
-  border:1px solid red;
-}
-
-.success-message {
-  color: green;
   font-weight: bold;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-primary {
+  background: #007bff;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #0056b3;
+}
+
+.btn-outline-warning {
+  background: none;
+  color: #ff9800;
+  border: 2px solid #ff9800;
+}
+
+.btn-outline-warning:hover {
+  background: #ff9800;
+  color: white;
+}
+
+/* Disabled Button */
+button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* Error & Success Messages */
+.error-message, .success-message {
+  font-size: 2px;
+
 }
 
 .error-message {
   color: red;
-  font-weight: bold;
+}
+
+.success-message {
+  color: green;
 }

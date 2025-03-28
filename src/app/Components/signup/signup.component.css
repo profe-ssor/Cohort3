@@ -1,166 +1,44 @@
 body {
-  padding: 0;
-  margin: 0;
-  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 100vh;
-}
-
-/* Styling for the horizontal rule */
-main {
-  max-width: 900px;
-  margin: auto;
-  background: #fff;
-  padding: 20px;
-  border-radius: 10px;
-
-
-}
-form {
-
-  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.7); /* Darker shadow */
-  background-color: #fff;
-
-}
-
-h1, h3 {
-  text-align: center;
-  font-size: 1em;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  width: 100%;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  width: 100%;
-}
-
-label {
-  font-size: 1em;
-  font-family: 'Times New Roman', Times, serif;
-  font-weight: bold;
-  margin-bottom: 5px;
-  display: block;
-}
-
-main {
-  width: 60%;
-  margin: 20px auto;
-  padding: 30px;
-  background-color: #fff;
-  min-width: 400px;
-  max-width: 1024px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05); /* Lighter shadow */
-  box-sizing: border-box;
-}
-
-.personel_info, .contact_info, .service_details {
-  border: 1px solid #eee; /* Lighter border */
-  padding: 20px;
-  margin-bottom: 20px;
-  border-radius: 5px;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-input, select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  box-sizing: border-box;
-  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1); /* Much lighter shadow */
-  transition: all 0.2s ease;
-}
-
-input:focus, select:focus {
-  border-radius: 5px;
-  border: 2px solid #4CAF50; /* More visible green */
-  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2); /* Slightly more intense but still light */
-  outline: none;
-}
-
-.p1, .p2, .s1 {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 20px;
-  width: 100%;
-  margin-bottom: 15px;
-}
-
-.p1 div, .p2 div, .s1 div {
-  flex: 1 1 250px;
-  min-width: 250px;
   margin: 0;
+  background-color: #f8f9fa;
+  padding: 1rem; /* Prevents horizontal scrolling */
 }
 
-/* Button Styles */
-.process {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  margin-top: 20px;
-}
-
-.button {
-  padding: 12px 24px;
-  border-radius: 5px;
-  font-weight: bold;
-  font-size: 16px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-align: center;
-  border: none;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  text-decoration: none;
-  flex: 1;
-  max-width: 200px;
-}
-
-.login {
-  background-color: #f5f5f5;
-  color: #333;
-  border: 1px solid #ddd;
-}
-
-.login:hover {
-  background-color: #e9e9e9;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
-}
-
-.signup {
-  background-color: #4CAF50;
-  color: white;
-}
-
-.signup:hover {
-  background-color: #45a049;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
-}
-
-.signup:disabled {
-  background-color: #cccccc;
-  color: #666666;
-  cursor: not-allowed;
-  box-shadow: none;
-}
-
-/* Fix form shadow conflict - remove duplicate declaration */
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+main {
   width: 100%;
-  padding: 25px;
+  max-width: 600px; /* Limits max size */
+  padding: 2rem;
+  background: white;
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.col {
+  flex: 1;
+  min-width: 100%; /* Makes inputs stack */
+}
+
+@media (min-width: 576px) {
+  .col {
+    min-width: 48%; /* Side-by-side on larger screens */
+  }
+}
+
+.btn {
+  width: 100%;
+  margin-top: 10px;
 }
 
 /* Error styling */
@@ -182,3 +60,10 @@ form {
   margin-bottom: 15px;
   border-left: 4px solid #d32f2f;
 }
+.signup:disabled {
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
