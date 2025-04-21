@@ -1,4 +1,4 @@
-<div class="upload-container">
+<div  *ngIf="showUpload" class="upload-container">
   <h2>Upload PDF Document</h2>
 
   <div class="upload-card">
@@ -82,13 +82,15 @@
   <!-- PDF list -->
 <div *ngFor="let pdf of pdfs" class="pdf-item">
   <div class="pdf-info">
-    <span class="pdf-name">{{ pdf.file_name }}</span>
+   <a [href]="environment['API_URL'] + (pdf.signed_file || pdf.file)" target="_blank" class="btn btn-link pdf-name">
+{{ pdf.file_name }}
+</a>
+
     <span class="pdf-status" [ngClass]="{'signed': pdf.is_signed, 'unsigned': !pdf.is_signed}">
       {{ pdf.is_signed ? 'Signed' : 'Unsigned' }}
     </span>
     <span class="pdf-date">{{ pdf.uploaded_at | date:'short' }}</span>
   </div>
 </div>
-      <!-- Add more fields as needed -->
-    </div>
- 
+
+

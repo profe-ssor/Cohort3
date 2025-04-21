@@ -1,8 +1,8 @@
-import { HttpClient, HttpEvent, HttpHeaders, HttpRequest } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { PDF, PdfSignResponse, PdfUploadResponse, SignaturePosition } from '../model/interface/pdf';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment.development';
 
 @Injectable({
@@ -23,27 +23,26 @@ export class PdfService {
         return new Observable<PDF[]>(observer => observer.error({ error: "Unauthorised"}));
       }
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-      return this.http.get<PDF[]>(`${environment.API_URL}/pdf/list/`,  {headers});
+      return this.http.get<PDF[]>(`${environment.API_URL}pdf/list/`,  {headers});
     }
     // get pdf file by id
-    getPdf(id: number): Observable<PDF>{
+    getPdf(id: string): Observable<PDF>{
       const token = this.getJwtToken();
       if (!token){
         console.error("user must logged before access to pdf.")
         return new Observable<PDF>(observer => observer.error({ error: "Unauthorised"}));
       }
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-      return this.http.get<PDF>(`${environment.API_URL}/pdf/${id}/`, {headers});
+      return this.http.get<PDF>(`${environment.API_URL}pdf/${id}/`, {headers});
     }
 
     // upload new pdf file
-
     uploadPdf(fileName: string, file: File): Observable<HttpEvent<PdfUploadResponse>> {
       const token = this.getJwtToken();
       if (!token) {
-        console.error("User must be logged in before accessing PDF features.");
+        console.error('User must be logged in before accessing PDF features.');
         return new Observable<HttpEvent<PdfUploadResponse>>(observer =>
-          observer.error({ error: "Unauthorized" })
+          observer.error({ error: 'Unauthorized' })
         );
       }
 
@@ -51,27 +50,39 @@ export class PdfService {
       formData.append('file_name', fileName);
       formData.append('pdf', file);
 
-      // Include the token in the request headers
-      const req = new HttpRequest('POST', `${environment.API_URL}/pdf/upload/`, formData, {
+      const req = new HttpRequest('POST', `${environment.API_URL}pdf/upload/`, formData, {
         reportProgress: true,
         headers: new HttpHeaders().set('Authorization', `Bearer ${token}`)
       });
 
-      return this.http.request(req);
+
+      return this.http.request(req).pipe(
+        tap({
+          next: (response: HttpEvent<any>) => {
+            if (response instanceof HttpResponse) {
+              const pdfResponse = response.body as PdfUploadResponse;
+              console.log('PDF uploaded successfully:', pdfResponse.message);
+              console.log('Uploaded PDF Data:', pdfResponse.data);
+
+
+            }
+          },
+          error: (err) => {
+            console.error('Error uploading PDF:', err);
+          },
+        })
+      );
     }
 
-   // Sign PDF with drawing
-   signPdfWithDrawing(pdfId: number, signatureData: string, position?: SignaturePosition): Observable<PdfSignResponse> {
-    const data: any = {
-      signature: signatureData
-    };
+    signPdfWithImage(pdfId: number, signature: File, position: SignaturePosition): Observable<PdfSignResponse> {
+      const formData = new FormData();
+      formData.append('signature', signature);
+      formData.append('position', JSON.stringify(position));
 
-    if (position) {
-      data.position = position;
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${this.getJwtToken()!}`);
+      return this.http.post<PdfSignResponse>(`${environment.API_URL}pdf/sign/image/${pdfId}/`, formData, { headers });
     }
 
-    return this.http.post<PdfSignResponse>(`${environment.API_URL}/pdf/sign/draw/${pdfId}/`, data);
-  }
 
 
   storeJwtToken(token: string): void {

@@ -22,8 +22,10 @@ export interface PdfUploadResponse {
   data: PDF;
 }
 
-
 export interface PdfSignResponse {
   message: string;
   data: PDF;
 }
+
+
+

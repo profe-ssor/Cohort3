@@ -1,0 +1,81 @@
+.pdf-container {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #ccc;
+  margin-top: 20px;
+  min-height: 400px;
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.loading-spinner {
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #3498db;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-message {
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 15px;
+  border-radius: 4px;
+  text-align: center;
+  margin: 20px;
+}
+
+.pdf-debug-info {
+  background-color: #e3f2fd;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.top-controls {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+button.finish-btn {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button.finish-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+canvas {
+  width: 100%;
+  max-width: 800px;
+  border: 1px solid #ccc;
+  display: block;
+  margin: 0 auto;
+}

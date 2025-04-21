@@ -7,17 +7,46 @@
     <label for="fileInput" class="upload-btn">Upload PDF</label>
     <p *ngIf="selectedFile">{{ selectedFile.name }}</p>
   </div>
+  <div class="upload-box">
+    <input type="file" id="signatureInput" (change)="onSignatureImageSelected($event)" accept="image/*" hidden>
+    <label for="signatureInput" class="upload-btn">Upload Signature Image</label>
+    <p *ngIf="signatureImageFile">{{ signatureImageFile.name }}</p>
+  </div>
+
+  <!-- PDF Canvas Preview + Signature Positioning -->
+  <div class="pdf-container" #pdfContainer style="position: relative; border: 1px solid #ccc; margin-top: 20px;">
+    <canvas #pdfCanvas></canvas>
+
+    <!-- Draggable Signature Image -->
+    <img
+    *ngIf="signatureUrl"
+    [src]="signatureUrl"
+    [ngStyle]="{
+      position: 'absolute',
+      left: signatureX + 'px',
+      top: signatureY + 'px',
+      width: '100px',
+      height: '50px',
+      cursor: 'move'
+    }"
+    (mousedown)="startDragging($event)"
+  />
+  </div>
 
   <!-- Action Buttons -->
-  <div class="button-group">
-    <button class="action-btn sign-draw" (click)="pdffile.id && pdffile.signature_drawing && signWithDrawing(pdffile.id, pdffile.signature_drawing)">
+  <div class="button-group" style="margin-top: 20px;">
+    <button
+      class="action-btn sign-draw"
+      [disabled]="!pdfId || !signatureUrl"
+      (click)="signWithImage()"
+    >
       Sign with Drawing
     </button>
-    <button class="action-btn sign-image" (click)="signWithImage()">
+
+    <button class="action-btn sign-image" >
       Sign with Image
     </button>
   </div>
-
 
   <!-- Signature Preview -->
   <div class="preview-box" *ngIf="signedPdf">

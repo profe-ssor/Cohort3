@@ -1,0 +1,27 @@
+.upload-box {
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  padding: 30px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: #f8f9fa;
+  margin-bottom: 20px;
+}
+
+.upload-box.dragging {
+  border-color: #007bff;
+  background-color: rgba(0, 123, 255, 0.1);
+}
+
+.upload-box.uploading {
+  border-color: #ffc107;
+  background-color: rgba(255, 193, 7, 0.1);
+  cursor: wait;
+}
+
+.upload-label {
+  cursor: pointer;
+  display: block;
+  font-size: 16px;
+}

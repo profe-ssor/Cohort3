@@ -14,6 +14,8 @@ import { ResenOtpComponent } from './Components/resen-otp/resen-otp.component';
 import { SignatureAdComponent } from './Components/signature-ad/signature-ad.component';
 import { NotFoundComponent } from './Components/not-found/not-found.component';
 import { NssDatabaseComponent } from './Components/nss-database/nss-database.component';
+import { ProcessFormComponent } from './Components/process-form/process-form.component';
+import { PdfSignerComponent } from './Components/pdf-signer/pdf-signer.component';
 
 export const routes: Routes = [
   {
@@ -49,15 +51,23 @@ export const routes: Routes = [
   {
     path: '',
     component: LayoutComponent,
-    // canActivate: [userGuard],
+    canActivate: [userGuard],
     children:[
       {
         path: 'persneldashboard',
         component: PeronelDashBoardComponent,
       },
       {
+        path: 'sign/:id',
+        component: PdfSignerComponent
+      },
+      {
         path: 'footer',
         component: FooterComponent
+      },
+      {
+        path: 'process',
+        component: ProcessFormComponent
       }
     ]
   },

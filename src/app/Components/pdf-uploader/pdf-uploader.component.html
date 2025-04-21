@@ -1,0 +1,17 @@
+<div class="upload-box"
+     [class.dragging]="isDragging"
+     [class.uploading]="isUploading"
+     (dragover)="onDragOver($event)"
+     (dragleave)="onDragLeave($event)"
+     (drop)="onDrop($event)">
+  <label for="pdfUploadInput" class="upload-label">
+    <ng-container *ngIf="!isUploading; else uploading">
+      📄 Click or drag a PDF file to upload
+    </ng-container>
+    
+    <ng-template #uploading>
+      ⏳ Uploading...
+    </ng-template>
+  </label>
+  <input type="file" id="pdfUploadInput" (change)="onFileSelected($event)" accept="application/pdf" hidden />
+</div>

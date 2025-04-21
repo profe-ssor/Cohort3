@@ -1,0 +1,8 @@
+<select [(ngModel)]="selectedType">
+  <option value="signature">Signature</option>
+  <option value="initials">Initials</option>
+</select>
+
+<input type="file" (change)="onFileSelected($event)" />
+<button (click)="onCreate()">Create</button>
+<button>Cancel</button>

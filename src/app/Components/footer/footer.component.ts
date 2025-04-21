@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { PDF, PdfUploadResponse } from '../../model/interface/pdf';
 import { PdfService } from '../../services/pdf.service';
 import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
+import { environment } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-footer',
@@ -14,6 +15,9 @@ import { HttpEvent, HttpEventType } from '@angular/common/http';
   styleUrl: './footer.component.css'
 })
 export class FooterComponent implements OnInit {
+  environment = environment
+  @Input() showUpload: boolean = true;
+
      fileName: string = '';
      selectedFile: File | null = null;
      isUploading = false;

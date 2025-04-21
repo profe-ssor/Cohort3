@@ -1,0 +1,43 @@
+<app-pdf-uploader (pdfUploaded)="handlePdfUploaded($event)"></app-pdf-uploader>
+
+<div class="top-controls" *ngIf="uploadedPdf">
+  <div class="left">
+    <app-signature-chooser (signatureReady)="handleSignatureReady($event)"></app-signature-chooser>
+  </div>
+  <div class="right">
+    <button (click)="finishSigning()" [disabled]="!pdfLoaded || !signatureUrl" class="finish-btn">
+      Finish
+    </button>
+  </div>
+</div>
+
+<div class="pdf-container" #pdfContainer *ngIf="uploadedPdf">
+  <div class="loading-overlay" *ngIf="uploadedPdf && !pdfLoaded && !pdfLoadError">
+    <div class="loading-spinner"></div>
+    <p>Loading PDF...</p>
+  </div>
+
+  <div class="error-message" *ngIf="pdfLoadError">
+    <p>Failed to load PDF: {{ pdfLoadError }}</p>
+    <button (click)="loadAndRenderPDF(uploadedPdf!.file)">Retry</button>
+  </div>
+
+  <canvas #pdfCanvas></canvas>
+
+  <img *ngIf="signatureUrl && pdfLoaded"
+       [src]="signatureUrl"
+       [ngStyle]="{
+         position: 'absolute',
+         left: signatureX + 'px',
+         top: signatureY + 'px',
+         width: '100px',
+         height: '50px',
+         cursor: 'move'
+       }"
+       (mousedown)="startDragging($event)" />
+</div>
+
+<div class="pdf-debug-info" *ngIf="uploadedPdf">
+  <p><strong>PDF Info:</strong> {{ uploadedPdf.file_name }}</p>
+  <p><strong>URL:</strong> {{ environment.API_URL + (uploadedPdf.file.startsWith('/') ? uploadedPdf.file.substring(1) : uploadedPdf.file) }}</p>
+</div>
