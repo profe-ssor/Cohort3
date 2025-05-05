@@ -1,17 +1,68 @@
-<div class="upload-box"
-     [class.dragging]="isDragging"
-     [class.uploading]="isUploading"
-     (dragover)="onDragOver($event)"
-     (dragleave)="onDragLeave($event)"
-     (drop)="onDrop($event)">
-  <label for="pdfUploadInput" class="upload-label">
-    <ng-container *ngIf="!isUploading; else uploading">
-      📄 Click or drag a PDF file to upload
-    </ng-container>
-    
-    <ng-template #uploading>
-      ⏳ Uploading...
-    </ng-template>
-  </label>
-  <input type="file" id="pdfUploadInput" (change)="onFileSelected($event)" accept="application/pdf" hidden />
+<div *ngIf="!showFileNameInput" class="upload-container">
+  <h2>Upload PDF Document</h2>
+
+  <div class="card">
+
+    <div
+      class="dropzone"
+      (click)="fileInput.click()"
+      (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave($event)"
+      (drop)="onDrop($event)"
+      [class.dragging]="isDragging"
+    >
+      <i class="fas fa-cloud-upload-alt upload-icon"></i>
+      <p *ngIf="!isDragging">Drag & drop your PDF here or click to select</p>
+      <p *ngIf="isDragging">Release to upload</p>
+    </div>
+
+    <input
+      type="file"
+      #fileInput
+      accept="application/pdf"
+      (change)="onFileSelected($event)"
+      style="display: none;"
+    />
+  </div>
+</div>
+
+<!-- After file is selected -->
+<div *ngIf="showFileNameInput" class="upload-container">
+  <h2>Upload PDF Document</h2>
+  <div class="card">
+
+
+    <div
+      class="dropzone uploaded"
+    >
+      {{ selectedFile?.name }}
+    </div>
+
+    <div class="file-name-input">
+      <label for="fileNameInput">Document Name</label>
+      <input
+        id="fileNameInput"
+        type="text"
+        [(ngModel)]="fileName"
+        placeholder="Enter document name"
+      />
+    </div>
+
+    <div class="actions">
+      <button
+        class="btn btn-secondary"
+        (click)="cancelUpload()"
+        [disabled]="isUploading"
+      >
+        Clear
+      </button>
+      <button
+        class="btn btn-primary"
+        (click)="confirmUpload()"
+        [disabled]="isUploading"
+      >
+        Save File
+      </button>
+    </div>
+  </div>
 </div>

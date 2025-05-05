@@ -14,7 +14,10 @@ export interface SignaturePosition {
   y: number;
   width: number;
   height: number;
+  page: number;
 }
+
+
 
 
 export interface PdfUploadResponse {

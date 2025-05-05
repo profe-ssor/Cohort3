@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { Constant } from '../../constant/constant';
 import { NgIf } from '@angular/common';
 import { Credentials } from '../../model/interface/auth';
+import { ToastrService } from 'ngx-toastr';
 
 interface LoginResponse {
   message: string; // Success message from the backend
@@ -33,7 +34,7 @@ export class LoginComponent {
   errorMessage: string = '';
   successMessage: string | null = null;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router, private _toastr:ToastrService) {}
 
   onLogin() {
     if (this.isLoading) return;
@@ -42,6 +43,7 @@ export class LoginComponent {
     this.authService.login(this.credentials).subscribe({
       next: (response: LoginResponse) => {
         this.successMessage = response.message;
+        this._toastr.success(this.successMessage, 'Login Successful')
         console.log('Logged in successfully:', response);
 
         },
@@ -90,7 +92,8 @@ export class LoginComponent {
                          'An unknown error occurred. Please try again.';
     }
 
-    alert(this.errorMessage);
+    
+    this._toastr.error(this.errorMessage, 'Login Failed');
     console.error('Error details:', error);
   };
 

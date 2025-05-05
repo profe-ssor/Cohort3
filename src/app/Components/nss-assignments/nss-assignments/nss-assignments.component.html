@@ -1,0 +1,32 @@
+<div class="dashboard-container">
+  <h1 class="dashboard-title" >Welcome, {{ userName }} 👋</h1>
+
+  <div class="card-grid">
+
+    <!-- Supervisor Info -->
+    <div class="card" *ngIf="supervisor">
+      <h3>Supervisor</h3>
+      <p><strong>Name:</strong> {{ supervisor.full_name }}</p>
+      <p><strong>Contact:</strong> {{ supervisor.contact }}</p>
+      <p><strong>Ghana Card:</strong> {{ supervisor.ghana_card_record }}</p>
+      <button (click)="goToSupervisorChat()">Message Supervisor</button>
+    </div>
+
+    <!-- Admin Info -->
+    <div class="card" *ngIf="admin">
+      <h3>Administrator</h3>
+      <p><strong>Name:</strong> {{ admin.full_name }}</p>
+      <p><strong>Phone:</strong> {{ admin.contact }}</p>
+      <p><strong>Phone:</strong> {{ admin.assigned_supervisors }}</p>
+      <button (click)="goToAdminChat()">Message Admin</button>
+    </div>
+
+    <!-- Reports -->
+    <div class="card">
+      <h3>My Reports</h3>
+      <p>You can submit or view your reports here.</p>
+      <button (click)="navigateToReports()">View Reports</button>
+    </div>
+
+  </div>
+</div>

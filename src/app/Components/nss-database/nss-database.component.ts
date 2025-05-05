@@ -33,15 +33,16 @@ export class NssDatabaseComponent implements OnInit {
   };
   respones: nss_databaseResponse = {
     message: '',
+    full_name: '',
   };
   constructor(private nssauth: AuthService, private router: Router) {}
 
   ngOnInit(): void {
-    const userId = localStorage.getItem('user_id'); // Get stored user ID
+    const userId = localStorage.getItem('user_id');
     if (userId) {
-      this.nssdb.user_id = parseInt(userId); // Assign it to the form
+      this.nssdb.user_id = parseInt(userId);
     } else {
-      this.router.navigate(['/signup']); // Redirect if not logged in
+      this.router.navigate(['/signup']);
     }
   }
 
@@ -74,7 +75,7 @@ export class NssDatabaseComponent implements OnInit {
     setTimeout(() => {
       this.isLoginLoading = false;
       this.router.navigate(['/login']);
-    }, 1000); // Simulates a short delay before navigating
+    }, 1000); 
   }
 
 }

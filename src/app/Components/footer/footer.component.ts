@@ -20,7 +20,7 @@ export class FooterComponent implements OnInit {
 
      fileName: string = '';
      selectedFile: File | null = null;
-     isUploading = false;
+   isUploading = false;
      errorMessage = '';
      loading = false;
      error: string | null = null;

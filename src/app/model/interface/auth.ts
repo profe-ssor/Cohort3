@@ -30,6 +30,7 @@ export interface LoginResponse {
   user: {              // User data
     email: string;
     role: string;
+    full_name: string;
     permissions: {
       is_superuser: boolean;
       is_staff: boolean;
@@ -44,9 +45,9 @@ export interface LoginResponse {
 
 export interface UserCounts {
   total_users: number;
-  nssmembers_count: number;
-  supervisors_count: number;
-  admins_count: number;
+  total_normal_users: number;
+  total_admins: number;
+ total_supervisors: number;
 }
 
 export interface OtpVerification {
@@ -99,4 +100,5 @@ export interface nss_database {
 export interface nss_databaseResponse {
 
 message: string;
+full_name: string;
 }

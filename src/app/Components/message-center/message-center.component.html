@@ -1,0 +1,49 @@
+<div class="chat-container">
+  <h2>📨 Message Center</h2>
+
+  <!-- Debug info - remove in production -->
+  <div class="debug-info" style="background: #f7f7f7; padding: 10px; margin-bottom: 15px; border-radius: 4px; font-size: 12px;">
+    Receiver ID: {{ receiverId || 'Not set' }}<br>
+    Receiver Name: {{ receiverName || 'Not set' }}
+  </div>
+
+  <div class="recipient-box" *ngIf="receiverName">
+    <div class="recipient-info">
+      To: <strong>{{ receiverName }}</strong>
+
+    </div><br>
+    <div class="recipient-info">
+      From: <strong>{{ fromName }}</strong>
+
+    </div>
+
+
+
+  <div class="chat-window">
+    <div *ngFor="let msg of messages" class="chat-bubble"
+      [ngClass]="{'outgoing': msg.sender === currentUser?.id, 'incoming': msg.receiver === currentUser?.id}">
+      <div class="sender-name">{{ msg.sender_name }}</div>
+      <div class="message-content">{{ msg.content }}</div>
+      <div *ngIf="msg.attachment" class="attachment">
+        📎 <a [href]="msg.attachment_details?.signed_file" target="_blank">
+          {{ msg.attachment_details?.file_name || 'View Attachment' }}
+        </a>
+      </div>
+      <div class="timestamp">{{ msg.timestamp | date:'short' }}</div>
+    </div>
+    <div *ngIf="messages.length === 0" class="no-messages">
+      No messages to display
+    </div>
+  </div>
+
+  <form (ngSubmit)="sendMessage()" class="message-form">
+    <textarea [(ngModel)]="messageText" name="content" placeholder="Type your message..."></textarea>
+    <select [(ngModel)]="selectedPdfId" name="attachment">
+      <option [value]="null">Attach signed PDF (optional)</option>
+
+      <option *ngFor="let doc of signedPdfs" [value]="doc.id">{{ doc.file_name }}</option>
+
+    </select>
+    <button type="submit">Send Message</button>
+  </form>
+</div>

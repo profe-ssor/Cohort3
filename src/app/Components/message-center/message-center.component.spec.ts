@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SignatureAdComponent } from './signature-ad.component';
+import { MessageCenterComponent } from './message-center.component';
 
-describe('SignatureAdComponent', () => {
-  let component: SignatureAdComponent;
-  let fixture: ComponentFixture<SignatureAdComponent>;
+describe('MessageCenterComponent', () => {
+  let component: MessageCenterComponent;
+  let fixture: ComponentFixture<MessageCenterComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SignatureAdComponent]
+      imports: [MessageCenterComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(SignatureAdComponent);
+    fixture = TestBed.createComponent(MessageCenterComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

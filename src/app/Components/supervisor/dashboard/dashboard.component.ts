@@ -2,22 +2,24 @@ import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
-import { UserCounts } from '../../../model/interface/auth';
+import { LogoutResponse, UserCounts } from '../../../model/interface/auth';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [RouterLink, RouterOutlet, NgFor, NgIf],
+  imports: [RouterLink, RouterOutlet],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
   encapsulation: ViewEncapsulation.None
 })
 export class DashboardComponent implements OnInit {
+  userName: string = ''
+  logoutMessage: LogoutResponse = {message: " "}
   userCounts: UserCounts = {
     total_users: 0,
-    nssmembers_count: 0,
-    supervisors_count: 0,
-    admins_count: 0
+    total_normal_users: 0,
+    total_supervisors: 0,
+    total_admins: 0
   };
   isLoadingCounts = false;
   countError: string | null = null;
@@ -27,53 +29,15 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     console.log('Dashboard component initialized');
     this.getCounts();
+    this.getUserName();
   }
 
-  menuItems = [
-    {
-      title: 'Personel List',
-      submenu: [
-        {
-          title: 'Ashanti',
-          link: '/dashboard/pesonel-table'
-        }
-      ],
-    },
-  ];
-
-  reportItems = [
-    {
-      title: 'Generate Report',
-      submenu: [
-        {
-          title: 'Daily Report',
-        },
-        {
-          title: 'Weekly Report',
-        },
-        {
-          title: 'Monthly Report',
-        },
-        {
-          title: 'Yearly Report',
-        }
-      ],
-    },
-  ];
-
-  activeIndex: number | null = null;
-  reportIndex: number | null = null;
-  successMessage: string | null = null;
-
-  toggleMenu(index: number): void {
-    this.activeIndex = this.activeIndex === index ? null : index;
+  getUserName(): void {
+    const fullName = localStorage.getItem('user_full_name');
+    this.userName = fullName ? fullName : 'User';
   }
 
-  reportToggleMenu(index: number): void {
-    this.reportIndex = this.reportIndex === index ? null : index;
-  }
 
-  
 
   getCounts(): void {
     this.isLoadingCounts = true;
@@ -102,5 +66,24 @@ export class DashboardComponent implements OnInit {
         this.isLoadingCounts = false;
       },
     });
+  }
+
+  logout(){
+    console.log('Starting logout process');
+        this.authService.logout().subscribe({
+          next: (res: LogoutResponse) => {
+            this.logoutMessage = res;
+            console.log('Logout response received:', res);
+            this.router.navigate(['/resend-otp']);
+          },
+          error: (err) => {
+            console.error('Error in logout subscription:', err);
+            // This shouldn't happen with our improved error handling
+          },
+          complete: () => {
+            console.log('Logout process completed');
+            // No need to navigate here as it's handled in the service
+          }
+        });
   }
 }

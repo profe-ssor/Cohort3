@@ -1,19 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import 'jasmine';
 
-import { PdfSignerComponent } from './pdf-signer.component';
+import { NssAssignmentsComponent } from './nss-assignments.component';
 
-describe('PdfSignerComponent', () => {
-  let component: PdfSignerComponent;
-  let fixture: ComponentFixture<PdfSignerComponent>;
+describe('NssAssignmentsComponent', () => {
+  let component: NssAssignmentsComponent;
+  let fixture: ComponentFixture<NssAssignmentsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PdfSignerComponent]
+      imports: [NssAssignmentsComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(PdfSignerComponent);
+    fixture = TestBed.createComponent(NssAssignmentsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

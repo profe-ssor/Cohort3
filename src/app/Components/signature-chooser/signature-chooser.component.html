@@ -1,8 +1,19 @@
-<select [(ngModel)]="selectedType">
-  <option value="signature">Signature</option>
-  <option value="initials">Initials</option>
-</select>
+<div class="signature-container">
+  <div class="input-group">
+    <label for="type-select">Type:</label>
+    <select id="type-select" [(ngModel)]="selectedType">
+      <option value="signature">Signature</option>
+      <option value="initials">Initials</option>
+    </select>
+  </div>
 
-<input type="file" (change)="onFileSelected($event)" />
-<button (click)="onCreate()">Create</button>
-<button>Cancel</button>
+  <div class="input-group">
+    <label for="file-upload">Upload File:</label>
+    <input id="file-upload" type="file" (change)="onFileSelected($event)" />
+  </div>
+
+  <div class="button-group">
+    <button class="btn primary" (click)="onCreate()">Create</button>
+    <button class="btn secondary">Cancel</button>
+  </div>
+</div>

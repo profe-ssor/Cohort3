@@ -82,15 +82,22 @@
         "tsConfig": "tsconfig.spec.json",
 
         "assets": [
-            "src/assets",
+          "src/favicon.ico",
+          "src/assets",
+          {
+            "glob": "pdf.worker.js",
+            "input": "src/assets",
+            "output": "/assets/"
+          },
+
           {
             "glob": "**/*",
-            "input": "public",
-            "output": "/assets/"
+            "input": "public"
           }
         ],
         "styles": [
-          "./node_modules/bootstrap/dist/bootstrap.min.css",
+          "./node_modules/bootstrap/dist/css/bootstrap.min.css",
+          "node_modules/ngx-toastr/toastr.css",
           "src/styles.css"
         ],
         "scripts": []

@@ -7,74 +7,58 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-<div class="wrapper">
-  <div class="container">
-     <!-- Aside Navbar  -->
-  <div class="aside">
-    <div class="image">
-      <img src="images/nss-image.jpeg" alt="no image found">
-      <p>Welcome Supervisor</p>
-    </div>
-    <input type="checkbox" id="nav-checkbox" class="nav-checkbox">
-    <label for="nav-checkbox" class="nav-toggle-label">
-      <span></span>
-    </label>
-       <nav>
-        <ul>
-          <li class="home items">
-            <a routerLink="/dashboard/home">
-              <i class="fa fa-home"  aria-hidden="true"></i>
-              <p>Home</p>
-            </a>
-          </li>
-        <li class="personel items menu-item">
-          <div class="ui-toolkit">
-            <div class="menu-item" *ngFor="let menuItem of menuItems; let i = index" [class.active]="i === activeIndex">
-              <button class="menu-button" (click)="toggleMenu(i)"> <i class="fa fa-list" aria-hidden="true"></i>
-                {{ menuItem.title }}
-                <span class="arrow" [style.transform]="i === activeIndex ? 'rotate(90deg)' : 'rotate(0)'">></span>
-              </button>
-              <div class="submenu" *ngIf="i === activeIndex">
-                <a *ngFor="let subItem of menuItem.submenu" [routerLink]="subItem.link">
-                <p>{{ subItem.title }}</p>
-                </a>
-              </div>
-            </div>
-          </div>
-        </li>
-          <li class="generate items menu-item">
-            <div class="ui-toolkit">
-              <div class="menu-item" *ngFor="let reportItem of reportItems ; let i = index" [class.active]="i === reportIndex">
-                <button class="menu-button" (click)="reportToggleMenu(i)"> <i class="fa fa-bug" aria-hidden="true"></i>
-                 <p> {{ reportItem.title }}</p>
-                  <span class="arrow" [style.transform]="i === reportIndex  ? 'rotate(90deg)' : 'rotate(0)'">></span>
-                </button>
-                <div class="submenu" *ngIf="i === reportIndex ">
-                  <a *ngFor="let subItem of reportItem.submenu">
-                   {{ subItem.title }}
-                  </a>
-                </div>
-              </div>
-            </div>
-          </li>
-          <li class="evaluate items">
-            <a href="">
-              <i class="fa fa-envira" aria-hidden="true"></i>
-              <p> Evaluate</p>
-            </a>
-          </li>
-          <li class="account items">
-            <a href="">
-              <i class="fa fa-wrench" aria-hidden="true"></i>
-              <p>Account</p>
-            </a>
-          </li>
-        </ul>
-       </nav>
+
+  <div class="container-content">
+ <!-- Aside Navbar  -->
+ <div class="aside">
+  <div class="image">
+    <img src="images/nss-image.jpeg" alt="no image found">
+    <p>{{ userName }}</p>
   </div>
-      <!-- Aside Navbar Ends -->
-     <div class="main-content">
-      <!-- Header Contentent -->
+  <input type="checkbox" id="nav-checkbox" class="nav-checkbox">
+  <label for="nav-checkbox" class="nav-toggle-label">
+    <span></span>
+  </label>
+     <nav>
+      <ul>
+        <li class="home items">
+          <a routerLink="/dashboard/home">
+            <i class="fa fa-home"  aria-hidden="true"></i>
+            <p>Home</p>
+          </a>
+        </li>
+      <li class="personel items menu-item">
+          <a routerLink="/dashboard/home">
+            <i class="fa fa-list"  aria-hidden="true"></i>
+            <p>Personel List</p>
+          </a>
+      </li>
+        <li class="generate items menu-item">
+          <a routerLink="/dashboard/home">
+            <i class="fa fa-home"  aria-hidden="true"></i>
+            <p>Generate Report</p>
+          </a>
+        </li>
+        <li class="evaluate items">
+          <a href="">
+            <i class="fa fa-envira" aria-hidden="true"></i>
+            <p> Evaluate</p>
+          </a>
+        </li>
+        <li class="account items">
+          <a href="">
+            <i class="fa fa-wrench" aria-hidden="true"></i>
+            <p>Account</p>
+          </a>
+        </li>
+      </ul>
+     </nav>
+</div>
+    <!-- Aside Navbar Ends -->
+
+    <!-- Main  Content Starts -->
+    <div class="main-content">
+       <!-- Header Contentent -->
        <header>
         <!-- Section1 Contentent -->
         <div class="section1">
@@ -83,7 +67,7 @@
             </div>
             <div class="profile">
               <i class="fa fa-user" aria-hidden="true"></i>
-              <a >Logout</a>
+              <a (click)="logout()" >Logout</a>
             </div>
           </div>
           <hr class="custom-hr">
@@ -94,6 +78,7 @@
            <!-- TotalNSS Contentent -->
             <div class="totalNSS">
                 <div class="text">
+
                     <h6>{{ userCounts.total_users}}</h6>
                     <p>Students</p>
                     <small>2025/2026</small>
@@ -107,7 +92,7 @@
                    <!-- Submitted Contentent -->
                    <div class="submitted">
                     <div class="text">
-                        <h6>{{userCounts.nssmembers_count}}</h6>
+                        <h6>{{ userCounts.total_normal_users}}</h6>
                         <p>Submitted</p>
                         <small>April</small>
                     </div>
@@ -119,7 +104,7 @@
                 <!-- Review Contentent -->
             <div class="review">
               <div class="text">
-                  <h6>90</h6>
+                  <h6>{{ userCounts.total_admins}}</h6>
                   <p>Review</p>
                   <small> 2025/2026 </small>
               </div>
@@ -131,7 +116,7 @@
                <!-- Pending Contentent -->
                <div class="pending">
                 <div class="text">
-                    <h6>{{userCounts.supervisors_count}}</h6>
+                    <h6>{{ userCounts.total_admins}}</h6>
                     <p>Pending</p>
                     <small>2025/2026 </small>
                 </div>
@@ -145,15 +130,16 @@
 
       <!-- Header Contentent Ends-->
 
-         <!-- Main Content -->
-         <div class="main">
-          <main>
-            Welcome To Main Page
-            <router-outlet></router-outlet>
-          </main>
-        </div>
-     </div>
+       <!-- Main Content -->
+       <div class="main">
+
+          Welcome To Main Page
+          <router-outlet></router-outlet>
+
+       </div>
+
+    </div>
+
   </div>
-</div>
 </body>
 </html>

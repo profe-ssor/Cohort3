@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { registerResponse, registerUser } from '../../model/interface/auth';
 import { Constant } from '../../constant/constant';
 import { NgIf } from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-signup',
   standalone: true,
@@ -54,7 +55,7 @@ export class SignupComponent {
   errorMessage: string = '';
   successMessage: string | null = null;
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(private authService: AuthService, private router: Router, private _toastr:ToastrService) { }
 
 
 
@@ -70,14 +71,15 @@ onSubmit(): void {
   // Send user data to the server for registration
   this.authService.register(this.user).subscribe({
     next: (response: registerResponse) => {
-    
+
       if (response.id) {
         localStorage.setItem('user_id', response.id.toString()); // Save user ID
       }
 
        if (response.message) {
         this.successMessage = response.message;
-        window.alert(this.successMessage);
+        this._toastr.success(this.successMessage);
+
         console.log(this.successMessage);
 
        }
@@ -103,7 +105,8 @@ onSubmit(): void {
       }
 
       // Display error to the user
-      alert(this.errorMessage);
+      this._toastr.error(this.errorMessage);
+  
       console.error('Registration error:', error);
       this.isLoading = false;
       // Clear form fields

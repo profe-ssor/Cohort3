@@ -1,27 +1,106 @@
-.upload-box {
-  border: 2px dashed #ccc;
-  border-radius: 8px;
-  padding: 30px;
+.upload-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+  flex-direction: column;
+}
+
+.card {
+  background: #fff;
+  padding: 30px 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  width: 500px;
   text-align: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  background-color: #f8f9fa;
+}
+
+h2 {
   margin-bottom: 20px;
 }
 
-.upload-box.dragging {
-  border-color: #007bff;
-  background-color: rgba(0, 123, 255, 0.1);
-}
-
-.upload-box.uploading {
-  border-color: #ffc107;
-  background-color: rgba(255, 193, 7, 0.1);
-  cursor: wait;
-}
-
-.upload-label {
+.dropzone {
+  width: 100%;
+  min-height: 150px;
+  border: 2px dashed #007bff;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
-  display: block;
+  padding: 20px;
+  margin-bottom: 20px;
+  background-color: #f9f9f9;
+  transition: background-color 0.3s, border 0.3s;
+}
+
+.dropzone.dragging {
+  background-color: #e0f0ff;
+  border-color: #0056b3;
+}
+
+.dropzone.uploaded {
+  background-color: #e9f6ff;
+  font-weight: 500;
   font-size: 16px;
+}
+
+.upload-icon {
+  font-size: 50px;
+  color: #007bff;
+  margin-bottom: 10px;
+}
+
+.file-name-input {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.file-name-input label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.file-name-input input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.actions .btn {
+  width: 45%;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.btn-secondary {
+  background-color: #f8f9fa;
+  color: #333;
+  border: 1px solid #ccc;
+}
+
+.btn-secondary:hover {
+  background-color: #e2e6ea;
 }

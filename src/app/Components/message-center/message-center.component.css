@@ -1,0 +1,163 @@
+.chat-container {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.recipient-box {
+  margin-bottom: 15px;
+}
+
+.recipient-info {
+  background-color: #f0f7ff;
+  padding: 12px 15px;
+  border-radius: 6px;
+  font-weight: 500;
+  color: #333;
+  border-left: 4px solid #007bff;
+  display: flex;
+  align-items: center;
+}
+
+.recipient-info strong {
+  margin-left: 5px;
+}
+
+.chat-window {
+  max-height: 400px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #eaeaea;
+  border-radius: 8px;
+  background-color: #fafafa;
+}
+
+.chat-bubble {
+  padding: 12px 15px;
+  margin: 10px 0;
+  border-radius: 10px;
+  max-width: 80%;
+  position: relative;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.outgoing {
+  background-color: #daf1ff;
+  margin-left: auto;
+  text-align: right;
+  border-bottom-right-radius: 0;
+}
+
+.incoming {
+  background-color: #f0f0f0;
+  margin-right: auto;
+  text-align: left;
+  border-bottom-left-radius: 0;
+}
+
+.sender-name {
+  font-weight: bold;
+  font-size: 0.9rem;
+  margin-bottom: 3px;
+}
+
+.message-content {
+  margin-top: 5px;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.attachment {
+  font-size: 0.85rem;
+  color: #007bff;
+  margin-top: 8px;
+}
+
+.attachment a {
+  text-decoration: none;
+  color: #007bff;
+  display: inline-flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+
+.attachment a:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+.timestamp {
+  font-size: 0.75rem;
+  color: #888;
+  margin-top: 5px;
+}
+
+.message-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+  padding: 12px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+select {
+  padding: 10px;
+  font-size: 0.95rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+button {
+  padding: 12px;
+  font-size: 1rem;
+  background-color: #007bff;
+  border: none;
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+button:hover {
+  background-color: #0069d9;
+}
+
+button:active {
+  background-color: #0056b3;
+}
+
+.no-messages {
+  text-align: center;
+  color: #888;
+  padding: 20px;
+  font-style: italic;
+}
+
+.debug-info {
+  font-family: monospace;
+}

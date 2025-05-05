@@ -1,33 +1,32 @@
+/* Overall PDF container */
 .pdf-container {
   position: relative;
-  overflow: hidden;
-  border: 1px solid #ccc;
-  margin-top: 20px;
-  min-height: 400px;
+  max-width: 100%;
+  overflow: auto;
+  border: 1px solid #e0e0e0; /* subtle border */
+  padding: 20px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
+/* Loading overlay */
 .loading-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(255, 255, 255, 0.8);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  font-size: 16px;
+  color: #888;
 }
 
 .loading-spinner {
-  border: 5px solid #f3f3f3;
-  border-top: 5px solid #3498db;
+  border: 4px solid #f3f3f3; /* Light grey */
+  border-top: 4px solid #3498db; /* Blue */
   border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  animation: spin 1s linear infinite;
-  margin-bottom: 15px;
+  width: 40px;
+  height: 40px;
+  animation: spin 2s linear infinite;
 }
 
 @keyframes spin {
@@ -35,47 +34,77 @@
   100% { transform: rotate(360deg); }
 }
 
+/* Error message */
 .error-message {
-  background-color: #ffebee;
-  color: #c62828;
-  padding: 15px;
-  border-radius: 4px;
-  text-align: center;
-  margin: 20px;
+  color: red;
+  font-size: 16px;
+  padding: 20px;
+  background-color: #ffcccc;
+  border: 1px solid #ff6666;
+  border-radius: 5px;
+  margin: 10px 0;
 }
 
-.pdf-debug-info {
-  background-color: #e3f2fd;
-  padding: 10px;
-  margin-top: 10px;
-  border-radius: 4px;
-  font-size: 12px;
-}
-
+/* Top controls */
 .top-controls {
   display: flex;
   justify-content: space-between;
+  padding: 10px;
+  background-color: #fff;
+  border-bottom: 2px solid #ddd;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Signature chooser button and finish button */
+.left,
+.right {
+  display: flex;
+  align-items: center;
+}
+
+.finish-btn {
+  padding: 10px 16px;
+  background-color: #3498db;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  border: none;
+  font-size: 16px;
+}
+
+.finish-btn:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+
+/* PDF page wrapper (to separate pages clearly) */
+.pdf-page-wrapper {
+  position: relative;
   margin-bottom: 20px;
 }
 
-button.finish-btn {
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
+/* Signature overlay on PDF */
+.signature-overlay {
+  position: absolute;
+  z-index: 10;
+  width: 100px;
+  height: 50px;
+  cursor: move;
+  transition: all 0.1s ease;
 }
 
-button.finish-btn:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
+/* Add some padding and spacing around the page container */
+.pdf-debug-info {
+  font-size: 14px;
+  color: #555;
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #f4f4f4;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
 }
-canvas {
-  width: 100%;
-  max-width: 800px;
-  border: 1px solid #ccc;
-  display: block;
-  margin: 0 auto;
+
+.pdf-debug-info p {
+  margin: 5px 0;
 }
