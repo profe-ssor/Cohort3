@@ -1,1 +1,59 @@
-<p>received-messages works!</p>
+<div class="messages-container">
+  <div class="header-section">
+    <h2 class="heading">📨 Received Messages</h2>
+
+    <!-- NEW: Actions section -->
+    <div class="actions" *ngIf="receivedMessages.length > 0">
+      <span class="unread-count" *ngIf="getUnreadCount() > 0">
+        {{ getUnreadCount() }} unread
+      </span>
+      <button class="mark-all-btn" (click)="markAllAsRead()" *ngIf="getUnreadCount() > 0">
+        Mark All as Read
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading">Loading messages...</div>
+
+  <div *ngIf="!loading && receivedMessages.length === 0" class="empty">
+    No messages received yet.
+  </div>
+
+  <!-- NEW: Added click handler and better styling -->
+  <div *ngFor="let msg of receivedMessages"
+       class="message-card"
+       [class.unread]="isUnread(msg)"
+       (click)="onMessageClick(msg)">
+
+    <div class="message-header">
+      <div>
+        <div class="sender">From: <strong>{{ getSenderLabel(msg) }}</strong></div>
+        <div class="timestamp">Received: {{ msg.timestamp | date: 'medium' }}</div>
+      </div>
+      <div class="status" [ngClass]="{ 'unread-badge': isUnread(msg), 'read-badge': !isUnread(msg) }">
+        {{ isUnread(msg) ? 'Unread' : 'Read' }}
+      </div>
+    </div>
+
+    <div class="message-content">
+      {{ msg.content }}
+    </div>
+
+    <!-- NEW: Show reply indicator -->
+    <div *ngIf="msg.reply_to" class="reply-indicator">
+      <span class="reply-badge">↩️ Reply to: "{{ msg.reply_to_content }}"</span>
+    </div>
+
+    <div *ngIf="msg.attachment_details" class="attachment">
+      <a [href]="msg.attachment_details.file" target="_blank" (click)="$event.stopPropagation()">
+        📎 View Attachment ({{ msg.attachment_details.file_name }})
+      </a>
+      <span *ngIf="msg.attachment_details.is_signed" class="signed-label">✔ Signed</span>
+    </div>
+
+    <!-- NEW: Click indicator -->
+    <div class="click-indicator">
+      <span>Click to view and reply</span>
+    </div>
+  </div>
+</div>

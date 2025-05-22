@@ -18,6 +18,8 @@ import { ProcessFormComponent } from './Components/process-form/process-form.com
 import { PdfSignerComponent } from './Components/pdf-signer/pdf-signer.component';
 import { NssAssignmentsComponent } from './Components/nss-assignments/nss-assignments/nss-assignments.component';
 import { MessageCenterComponent } from './Components/message-center/message-center.component';
+import { ReceivedMessagesComponent } from './Components/received-messages/received-messages.component';
+import { MessageDetailComponent } from './Components/message-detail/message-detail.component';
 
 export const routes: Routes = [
   {
@@ -46,6 +48,15 @@ export const routes: Routes = [
     path: 'nssdb',
     component: NssDatabaseComponent
   },
+   {
+        path: 'received-messages',
+        component: ReceivedMessagesComponent
+      },
+          {
+        path: 'message-detail/:id',
+        component: MessageDetailComponent
+      },
+
   // {
   //   path: 'sign-signature',
   //   component: SignatureAdComponent
@@ -78,7 +89,11 @@ export const routes: Routes = [
       {
         path: 'message',
         component: MessageCenterComponent
-      }
+      },
+            {
+        path: 'inbox',
+        component: ReceivedMessagesComponent
+      },
     ]
   },
   {
@@ -94,6 +109,12 @@ export const routes: Routes = [
         path: 'pesonel-table',
         component: TablesComponent
       }
+      ,
+      {
+        path: 'inbox',
+        component: ReceivedMessagesComponent
+      },
+
     ]
   },
   {

@@ -1,0 +1,93 @@
+.messages-container {
+  padding: 20px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.heading {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.loading,
+.empty {
+  color: #777;
+  font-style: italic;
+  margin-bottom: 16px;
+}
+
+.message-card {
+  background-color: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 16px;
+  transition: box-shadow 0.2s ease;
+}
+
+.message-card.unread {
+  background-color: #fff3f3;
+}
+
+.message-card:hover {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.sender {
+  font-size: 16px;
+}
+
+.timestamp {
+  font-size: 13px;
+  color: #666;
+}
+
+.status {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.unread-badge {
+  background-color: #fddede;
+  color: #b71c1c;
+}
+
+.read-badge {
+  background-color: #d1f0d1;
+  color: #1b5e20;
+}
+
+.message-content {
+  margin-top: 8px;
+  font-size: 15px;
+}
+
+.attachment {
+  margin-top: 10px;
+}
+
+.attachment a {
+  color: #1565c0;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.attachment a:hover {
+  text-decoration: underline;
+}
+
+.signed-label {
+  display: inline-block;
+  margin-left: 8px;
+  color: green;
+  font-weight: bold;
+}

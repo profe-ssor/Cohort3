@@ -1,0 +1,98 @@
+<div class="message-detail-container">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading">
+    Loading message...
+  </div>
+
+  <!-- Message Content -->
+  <div *ngIf="!loading && message" class="message-content">
+    <!-- Header -->
+    <div class="message-header">
+      <button class="back-btn" (click)="goBack()">← Back to Inbox</button>
+      <div class="message-status">
+        <span [class]="message.is_read ? 'read-status' : 'unread-status'">
+          {{ message.is_read ? '✓ Read' : '● Unread' }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Message Info -->
+    <div class="message-info">
+      <h3>Message Details</h3>
+      <div class="info-row">
+        <strong>From:</strong> {{ message.sender_name }}
+      </div>
+      <div class="info-row">
+        <strong>Received:</strong> {{ message.timestamp | date: 'full' }}
+      </div>
+
+      <!-- Show if this is a reply -->
+      <div *ngIf="message.reply_to" class="reply-context">
+        <strong>Reply to:</strong> "{{ message.reply_to_content }}"
+      </div>
+    </div>
+
+    <!-- Message Body -->
+    <div class="message-body">
+      <h4>Message:</h4>
+      <div class="message-text">
+        {{ message.content }}
+      </div>
+    </div>
+
+    <!-- Attachment -->
+    <div *ngIf="message.attachment_details" class="attachment-section">
+      <h4>Attachment:</h4>
+      <div class="attachment-info">
+        <a [href]="message.attachment_details.file" target="_blank" class="attachment-link">
+          📎 {{ message.attachment_details.file_name }}
+        </a>
+        <span *ngIf="message.attachment_details.is_signed" class="signed-badge">
+          ✓ Signed Document
+        </span>
+      </div>
+    </div>
+
+    <!-- Reply Section -->
+    <div class="reply-section">
+      <h4>Reply to this message:</h4>
+      <div class="reply-form">
+        <textarea
+          [(ngModel)]="replyContent"
+          rows="4"
+          placeholder="Write your reply here..."
+          class="reply-textarea"
+          [disabled]="sending">
+        </textarea>
+
+        <div class="reply-actions">
+          <button
+            class="send-reply-btn"
+            (click)="sendReply()"
+            [disabled]="sending || !replyContent.trim()">
+            {{ sending ? 'Sending...' : 'Send Reply' }}
+          </button>
+          <button
+            class="clear-btn"
+            (click)="replyContent = ''"
+            [disabled]="sending">
+            Clear
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="message-actions">
+      <button class="delete-btn" (click)="deleteMessage()">
+        🗑️ Delete Message
+      </button>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="!loading && !message" class="error">
+    Message not found or you don't have permission to view it.
+    <button (click)="goBack()">Go Back</button>
+  </div>
+</div>

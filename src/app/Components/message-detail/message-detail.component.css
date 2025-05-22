@@ -1,0 +1,417 @@
+/* received-messages.component.css */
+.messages-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 15px;
+}
+
+.heading {
+  color: #333;
+  margin: 0;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.unread-count {
+  background: #ff4444;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.mark-all-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.mark-all-btn:hover {
+  background: #0056b3;
+}
+
+.loading, .empty {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+  font-size: 16px;
+}
+
+.message-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.message-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transform: translateY(-2px);
+}
+
+.message-card.unread {
+  border-left: 4px solid #007bff;
+  background: #f8f9ff;
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.sender {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.timestamp {
+  color: #666;
+  font-size: 12px;
+}
+
+.status {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.unread-badge {
+  background: #ff4444;
+  color: white;
+}
+
+.read-badge {
+  background: #28a745;
+  color: white;
+}
+
+.message-content {
+  color: #333;
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+
+.reply-indicator {
+  margin: 10px 0;
+}
+
+.reply-badge {
+  background: #f0f0f0;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #666;
+}
+
+.attachment {
+  margin-top: 10px;
+  padding: 8px;
+  background: #f5f5f5;
+  border-radius: 4px;
+}
+
+.attachment a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.signed-label {
+  background: #28a745;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  margin-left: 10px;
+}
+
+.click-indicator {
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
+  font-size: 11px;
+  color: #999;
+}
+
+/* message-detail.component.css */
+.message-detail-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.loading, .error {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.back-btn {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.back-btn:hover {
+  background: #545b62;
+}
+
+.message-status .read-status {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.message-status .unread-status {
+  color: #ff4444;
+  font-weight: bold;
+}
+
+.message-info {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.message-info h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+.info-row {
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.reply-context {
+  background: #e3f2fd;
+  padding: 8px;
+  border-radius: 4px;
+  margin-top: 10px;
+  font-style: italic;
+}
+
+.message-body {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.message-body h4 {
+  margin-top: 0;
+  color: #333;
+}
+
+.message-text {
+  line-height: 1.6;
+  color: #444;
+  font-size: 16px;
+}
+
+.attachment-section {
+  background: #f5f5f5;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.attachment-section h4 {
+  margin-top: 0;
+  color: #333;
+}
+
+.attachment-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.attachment-link {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.attachment-link:hover {
+  text-decoration: underline;
+}
+
+.signed-badge {
+  background: #28a745;
+  color: white;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.reply-section {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.reply-section h4 {
+  margin-top: 0;
+  color: #333;
+}
+
+.reply-form {
+  margin-top: 15px;
+}
+
+.reply-textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 100px;
+}
+
+.reply-textarea:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+}
+
+.reply-textarea:disabled {
+  background: #f5f5f5;
+  color: #666;
+}
+
+.reply-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.send-reply-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.send-reply-btn:hover:not(:disabled) {
+  background: #0056b3;
+}
+
+.send-reply-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.clear-btn {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.clear-btn:hover:not(:disabled) {
+  background: #545b62;
+}
+
+.clear-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.message-actions {
+  text-align: center;
+  padding: 15px 0;
+  border-top: 1px solid #e0e0e0;
+}
+
+.delete-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.delete-btn:hover {
+  background: #c82333;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .messages-container,
+  .message-detail-container {
+    padding: 10px;
+  }
+
+  .header-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .message-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .reply-actions {
+    flex-direction: column;
+  }
+
+  .reply-actions button {
+    width: 100%;
+  }
+}

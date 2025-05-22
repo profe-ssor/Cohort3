@@ -55,7 +55,7 @@ export class MessageCenterComponent implements OnInit {
     this.fromName = this.currentUser?.full_name || 'Me';
 
 
-    this.loadMessages();
+    // this.loadMessages();
     this.loadSignedPdfs();
   }
 
@@ -66,26 +66,26 @@ export class MessageCenterComponent implements OnInit {
     return userId;
   }
 
-  loadMessages() {
-    this.messageService.getInbox().subscribe({
-      next: (data) => {
-        console.log('Inbox data:', data);
-        // Fix: Ensure we're always working with an array
-        if (Array.isArray(data)) {
-          this.messages = data;
-        } else if (data && typeof data === 'object' && 'inbox' in data) {
-          this.messages = Array.isArray(data.inbox) ? data.inbox : [];
-        } else {
-          console.error('Unexpected data format:', data);
-          this.messages = [];
-        }
-      },
-      error: (err) => {
-        console.error('Error loading messages:', err);
-      this._toastr.error('Failed to load messages');
-      }
-    });
-  }
+  // loadMessages() {
+  //   this.messageService.getInbox().subscribe({
+  //     next: (data) => {
+  //       console.log('Inbox data:', data);
+  //       // Fix: Ensure we're always working with an array
+  //       if (Array.isArray(data)) {
+  //         this.messages = data;
+  //       } else if (data && typeof data === 'object' && 'inbox' in data) {
+  //         this.messages = Array.isArray(data.inbox) ? data.inbox : [];
+  //       } else {
+  //         console.error('Unexpected data format:', data);
+  //         this.messages = [];
+  //       }
+  //     },
+  //     error: (err) => {
+  //       console.error('Error loading messages:', err);
+  //     this._toastr.error('Failed to load messages');
+  //     }
+  //   });
+  // }
 
   loadSignedPdfs() {
     this.pdfService.getSignedPdfs().subscribe({
@@ -138,7 +138,7 @@ export class MessageCenterComponent implements OnInit {
         this.selectedPdfId = null;
 
         this._toastr.success('Message sent successfully');
-        this.loadMessages();
+        // this.loadMessages();
       },
       error: (err) => {
         console.error('Message send error:', err);
@@ -150,7 +150,7 @@ export class MessageCenterComponent implements OnInit {
   deleteMessage(messageId: number) {
     this.messageService.deleteMessage(messageId).subscribe({
       next: () => {
-        this.loadMessages();
+        // this.loadMessages();
         this._toastr.info('Message deleted');
       },
       error: (err) => {
