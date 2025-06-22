@@ -7,6 +7,10 @@ export interface PDF {
   is_signed: boolean;
   signed_file: string | null;
   uploaded_at: string;
+  form_type?: 'Monthly' | 'Quarterly' | 'Annual' | 'Project' | 'General';
+  priority?: 'low' | 'medium' | 'high';
+  receiver?: number;
+  filePath?: string,
 }
 
 export interface SignaturePosition {

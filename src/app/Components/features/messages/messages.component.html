@@ -1,0 +1,355 @@
+    <div class="messages">
+      <div class="messages-header">
+        <div class="header-content">
+          <h1 class="page-title">Message Center</h1>
+          <p class="page-subtitle">Communicate with administration and personnel</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-secondary">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.707A1 1 0 013 7V4z"></path>
+            </svg>
+            Filter
+          </button>
+          <button class="btn btn-primary" (click)="showComposeModal = true">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            Compose Message
+          </button>
+        </div>
+      </div>
+
+      <div class="messages-stats">
+        <div class="stat-card inbox">
+          <div class="stat-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0L12 8 4 13"></path>
+            </svg>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value">{{ totalMessages() }}</div>
+            <div class="stat-label">Total Messages</div>
+          </div>
+        </div>
+
+        <div class="stat-card unread">
+          <div class="stat-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+            </svg>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value">{{ unreadCount() }}</div>
+            <div class="stat-label">Unread Messages</div>
+          </div>
+        </div>
+
+        <div class="stat-card high-priority">
+          <div class="stat-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+            </svg>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value">{{ highPriorityCount() }}</div>
+            <div class="stat-label">High Priority</div>
+          </div>
+        </div>
+
+        <div class="stat-card today">
+          <div class="stat-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value">{{ todayCount() }}</div>
+            <div class="stat-label">Today's Messages</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="messages-content">
+        <div class="messages-sidebar">
+          <div class="sidebar-header">
+            <h3>Message Categories</h3>
+          </div>
+
+          <div class="category-list">
+            <button
+              class="category-item"
+              [class.active]="selectedCategory() === 'all'"
+              (click)="setCategory('all')"
+            >
+              <div class="category-icon">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0L12 8 4 13"></path>
+                </svg>
+              </div>
+              <span class="category-label">All Messages</span>
+              <span class="category-count">{{ totalMessages() }}</span>
+            </button>
+
+            <button
+              class="category-item"
+              [class.active]="selectedCategory() === 'unread'"
+              (click)="setCategory('unread')"
+            >
+              <div class="category-icon">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+              </div>
+              <span class="category-label">Unread</span>
+              <span class="category-count">{{ unreadCount() }}</span>
+            </button>
+
+            <button
+              class="category-item"
+              [class.active]="selectedCategory() === 'inquiry'"
+              (click)="setCategory('inquiry')"
+            >
+              <div class="category-icon">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+              <span class="category-label">Inquiries</span>
+              <span class="category-count">{{ getTypeCount('inquiry') }}</span>
+            </button>
+
+            <button
+              class="category-item"
+              [class.active]="selectedCategory() === 'report'"
+              (click)="setCategory('report')"
+            >
+              <div class="category-icon">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+              </div>
+              <span class="category-label">Reports</span>
+              <span class="category-count">{{ getTypeCount('report') }}</span>
+            </button>
+
+            <button
+              class="category-item"
+              [class.active]="selectedCategory() === 'notification'"
+              (click)="setCategory('notification')"
+            >
+              <div class="category-icon">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5-5V9.09c0-2.5-2-4.5-4.5-4.5S6 6.59 6 9.09V12l-5 5h5m0 0v1a3 3 0 106 0v-1m-6 0h6"></path>
+                </svg>
+              </div>
+              <span class="category-label">Notifications</span>
+              <span class="category-count">{{ getTypeCount('notification') }}</span>
+            </button>
+
+            <button
+              class="category-item"
+              [class.active]="selectedCategory() === 'feedback'"
+              (click)="setCategory('feedback')"
+            >
+              <div class="category-icon">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+                </svg>
+              </div>
+              <span class="category-label">Feedback</span>
+              <span class="category-count">{{ getTypeCount('feedback') }}</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="messages-main">
+          <div class="messages-toolbar">
+            <div class="toolbar-left">
+              <div class="search-input-wrapper">
+                <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                <input
+                  type="text"
+                  placeholder="Search messages..."
+                  class="form-control search-input"
+                  [(ngModel)]="searchQuery"
+                  (input)="applyFilters()"
+                />
+              </div>
+            </div>
+            <div class="toolbar-right">
+              <button class="btn btn-secondary btn-sm" (click)="markAllAsRead()">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                Mark All Read
+              </button>
+              <button class="btn btn-secondary btn-sm" (click)="refreshMessages()">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                </svg>
+                Refresh
+              </button>
+            </div>
+          </div>
+
+          <div class="messages-list">
+            @for (message of filteredMessages(); track message.id) {
+              <div
+                class="message-item"
+                [class.unread]="!message.is_read"
+                [class]="'priority-' + message.priority"
+                (click)="selectMessage(message)"
+              >
+                <div class="message-header">
+                  <div class="sender-info">
+                    <div class="sender-avatar">
+                      <span class="avatar-text">{{ getInitials(message.sender_name) }}</span>
+                    </div>
+                    <div class="sender-details">
+                      <div class="sender-name">{{ message.sender_name}}</div>
+                      <div class="sender-role"> {{ getRoleLabel(message.sender_role ?? 'unknown') }}</div>
+                    </div>
+                  </div>
+                  <div class="message-meta">
+                    <div class="message-time">{{ getRelativeTime(message.timestamp) }}</div>
+                    <div class="message-badges">
+                      @if (!message.is_read) {
+                        <span class="badge badge-primary">New</span>
+                      }
+                      <span class="badge" [class]="'badge-priority-' + message.priority">
+                        {{ message.priority | titlecase }}
+                      </span>
+                      <span class="badge" [class]="'badge-type-' + message.message_type">
+                        {{ getTypeLabel(message.message_type) }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="message-content">
+                  <h4 class="message-subject">{{ message.subject }}</h4>
+                  <p class="message-preview">{{ getMessagePreview(message.content) }}</p>
+                  @if (message.attachment_details){
+                    <div class="message-attachments">
+                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path>
+                      </svg>
+                     <span *ngIf="message.attachment_details">
+  1 attachment
+</span>
+                    </div>
+                  }
+                </div>
+
+                <div class="message-actions">
+                  <button class="action-btn" (click)="replyToMessage(message); $event.stopPropagation()">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
+                    </svg>
+                    Reply
+                  </button>
+                  <button class="action-btn" (click)="forwardMessage(message); $event.stopPropagation()">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path>
+                    </svg>
+                    Forward
+                  </button>
+                  <button class="action-btn" (click)="deleteMessage(message); $event.stopPropagation()">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                    Delete
+                  </button>
+                </div>
+              </div>
+            }
+
+            @if (filteredMessages().length === 0) {
+              <div class="empty-state">
+                <div class="empty-icon">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0L12 8 4 13"></path>
+                  </svg>
+                </div>
+                <h3 class="empty-title">No messages found</h3>
+                <p class="empty-description">
+                  No messages match your current filter criteria. Try adjusting your search or category selection.
+                </p>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Compose Modal -->
+      @if (showComposeModal) {
+        <div class="modal-overlay" (click)="showComposeModal = false">
+          <div class="modal-content" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+              <h3 class="modal-title">Compose Message</h3>
+              <button class="modal-close" (click)="showComposeModal = false">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form class="compose-form">
+                <div class="form-group">
+                  <label class="form-label">To</label>
+              <select class="form-control" [(ngModel)]="composeForm.recipient" name="recipient">
+                <option value="">Select recipient...</option>
+                <option *ngFor="let user of recipients()" [value]="user.id">
+                  {{ user.full_name }} ({{ user.user_type | titlecase }})
+                </option>
+              </select>
+
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Subject</label>
+                  <input type="text" class="form-control" [(ngModel)]="composeForm.subject" name="subject" placeholder="Enter subject...">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Priority</label>
+                  <select class="form-control" [(ngModel)]="composeForm.priority" name="priority">
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Type</label>
+                  <select class="form-control" [(ngModel)]="composeForm.message_type" name="type">
+                    <option value="inquiry">Inquiry</option>
+                    <option value="report">Report</option>
+                    <option value="feedback">Feedback</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Message</label>
+                  <textarea
+                    class="form-control"
+                    rows="6"
+                    [(ngModel)]="composeForm.content"
+                    name="content"
+                    placeholder="Type your message here..."
+                  ></textarea>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-secondary" (click)="showComposeModal = false">Cancel</button>
+              <button class="btn btn-primary" (click)="sendMessage()">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                </svg>
+                Send Message
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>

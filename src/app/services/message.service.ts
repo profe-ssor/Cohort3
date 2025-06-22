@@ -1,7 +1,15 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import { IInbox, IMessage, IMessageSendResponse, InboxResponse } from '../model/interface/message';
+import {
+  IInbox,
+  IMessage,
+  IMessageSendResponse,
+  IReplyPayload,
+  IForwardPayload,
+  IAvailableRecipient,
+  IMessageStats
+} from '../model/interface/message';
 import { environment } from '../../environments/environment.development';
 
 @Injectable({
@@ -10,13 +18,16 @@ import { environment } from '../../environments/environment.development';
 export class MessageService {
   constructor(private http: HttpClient) {}
 
-  sendMessage(messageData: any): Observable<IMessageSendResponse> {
+  private getAuthHeaders(): HttpHeaders {
     const token = this.getJwtToken();
     if (!token) {
-      console.error("User must be authenticated to send messages.");
-      return throwError(() => new Error("Unauthorized"));
+      throw new Error("Unauthorized: No token found");
     }
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  }
+
+  sendMessage(messageData: any): Observable<IMessageSendResponse> {
+    const headers = this.getAuthHeaders();
     return this.http.post<IMessageSendResponse>(
       `${environment.API_URL}messageApp/send-message/`,
       messageData,
@@ -24,13 +35,26 @@ export class MessageService {
     );
   }
 
+  replyToMessage(messageId: number, replyData: IReplyPayload): Observable<IMessageSendResponse> {
+    const headers = this.getAuthHeaders();
+    return this.http.post<IMessageSendResponse>(
+      `${environment.API_URL}messageApp/reply-message/${messageId}/`,
+      replyData,
+      { headers }
+    );
+  }
+
+  forwardMessage(messageId: number, forwardData: IForwardPayload): Observable<IMessageSendResponse> {
+    const headers = this.getAuthHeaders();
+    return this.http.post<IMessageSendResponse>(
+      `${environment.API_URL}messageApp/forward-message/${messageId}/`,
+      forwardData,
+      { headers }
+    );
+  }
+
   getInbox(): Observable<IInbox[]> {
-    const token = this.getJwtToken();
-    if (!token) {
-      console.error("User must authenticated to access inbox.");
-      return throwError(() => new Error("Unauthorized"));
-    }
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const headers = this.getAuthHeaders();
     return this.http.get<IInbox[]>(
       `${environment.API_URL}messageApp/inbox/`,
       { headers }
@@ -38,12 +62,7 @@ export class MessageService {
   }
 
   getSentMessages(): Observable<IMessage[]> {
-    const token = this.getJwtToken();
-    if (!token) {
-      console.error("User must authenticated to access sent messages.");
-      return throwError(() => new Error("Unauthorized"));
-    }
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const headers = this.getAuthHeaders();
     return this.http.get<IMessage[]>(
       `${environment.API_URL}messageApp/sent-messages/`,
       { headers }
@@ -51,53 +70,39 @@ export class MessageService {
   }
 
   getUnreadMessages(): Observable<IMessage[]> {
-    const token = this.getJwtToken();
-    if (!token) {
-      console.error("User must authenticated to access unread messages.");
-      return throwError(() => new Error("Unauthorized"));
-    }
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const headers = this.getAuthHeaders();
     return this.http.get<IMessage[]>(
       `${environment.API_URL}messageApp/unread-messages/`,
       { headers }
     );
   }
 
-  // NEW: View message endpoint that marks it as read
-  viewMessage(id: number): Observable<IInbox> {
-    const token = this.getJwtToken();
-    if (!token) {
-      console.error("User must authenticated to view messages.");
-      return throwError(() => new Error("Unauthorized"));
-    }
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.get<IInbox>(
-      `${environment.API_URL}messageApp/view-message/${id}/`,
-      { headers }
-    );
-  }
-
-  // Keep the old method for backward compatibility
   getMessageById(id: number): Observable<IMessage> {
-    const token = this.getJwtToken();
-    if (!token) {
-      console.error("User must authenticated to access messages.");
-      return throwError(() => new Error("Unauthorized"));
-    }
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const headers = this.getAuthHeaders();
     return this.http.get<IMessage>(
       `${environment.API_URL}messageApp/messages/${id}`,
       { headers }
     );
   }
 
+  viewMessage(id: number): Observable<IInbox> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<IInbox>(
+      `${environment.API_URL}messageApp/view-message/${id}/`,
+      { headers }
+    );
+  }
+
+  getReplies(messageId: number): Observable<IInbox[]> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<IInbox[]>(
+      `${environment.API_URL}messageApp/message/${messageId}/replies/`,
+      { headers }
+    );
+  }
+
   markAsRead(messageId: number): Observable<{ success: string }> {
-    const token = this.getJwtToken();
-    if (!token) {
-      console.error("User must authenticated to mark messages as read.");
-      return throwError(() => new Error("Unauthorized"));
-    }
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const headers = this.getAuthHeaders();
     return this.http.post<{ success: string }>(
       `${environment.API_URL}messageApp/mark-message-read/${messageId}/`,
       {},
@@ -105,14 +110,8 @@ export class MessageService {
     );
   }
 
-  // NEW: Mark all messages as read
   markAllAsRead(): Observable<{ success: string }> {
-    const token = this.getJwtToken();
-    if (!token) {
-      console.error("User must authenticated to mark messages as read.");
-      return throwError(() => new Error("Unauthorized"));
-    }
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const headers = this.getAuthHeaders();
     return this.http.post<{ success: string }>(
       `${environment.API_URL}messageApp/mark-all-read/`,
       {},
@@ -120,32 +119,33 @@ export class MessageService {
     );
   }
 
-  // NEW: Get replies for a message
-  getReplies(messageId: number): Observable<IInbox[]> {
-    const token = this.getJwtToken();
-    if (!token) {
-      console.error("User must authenticated to access replies.");
-      return throwError(() => new Error("Unauthorized"));
-    }
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.get<IInbox[]>(
-      `${environment.API_URL}messageApp/message/${messageId}/replies/`,
-      { headers }
-    );
-  }
-
   deleteMessage(messageId: number): Observable<{ success: string }> {
-    const token = this.getJwtToken();
-    if (!token) {
-      console.error("User must authenticated to delete messages.");
-      return throwError(() => new Error("Unauthorized"));
-    }
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const headers = this.getAuthHeaders();
     return this.http.delete<{ success: string }>(
       `${environment.API_URL}messageApp/delete-message/${messageId}/`,
       { headers }
     );
   }
+
+  filterMessagesByType(type: string): Observable<IMessage[]> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<IMessage[]>(
+      `${environment.API_URL}messageApp/messages/filter/?type=${type}`,
+      { headers }
+    );
+  }
+
+  getAvailableRecipients(): Observable<IAvailableRecipient[]> {
+    const headers = this.getAuthHeaders();
+  return this.http.get<IAvailableRecipient[]>(`${environment.API_URL}messageApp/available-recipients/`,   { headers });
+}
+
+  getMessageStats(): Observable<IMessageStats> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<IMessageStats>(`${environment.API_URL}/messageApp/stats/`, { headers });
+  }
+
+
 
   storeJwtToken(token: string): void {
     localStorage.setItem('access_token', token);

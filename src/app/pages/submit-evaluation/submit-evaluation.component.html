@@ -1,0 +1,78 @@
+<div class="form-container animate-fade-in">
+  <h2 class="form-title">Submit Evaluation Form</h2>
+  <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid">
+    <!-- PDF Selection -->
+    <div>
+      <label for="pdfId">Select Signed PDF *</label>
+      <select id="pdfId" formControlName="pdfId" class="select-input" required>
+        <option value="">Select a signed document</option>
+        <option *ngFor="let pdf of signedPdfs" [value]="pdf.id">{{ pdf.file_name }}</option>
+      </select>
+      <div *ngIf="form.get('pdfId')?.invalid && form.get('pdfId')?.touched" class="error-message">
+        Please select a PDF document.
+      </div>
+    </div>
+
+    <!-- Form Type -->
+    <div>
+      <label for="form_type">Form Type *</label>
+      <select id="form_type" formControlName="form_type" class="select-input" required>
+        <option value="">Select type</option>
+        <option *ngFor="let type of formTypes" [value]="type">{{ type }}</option>
+      </select>
+      <div *ngIf="form.get('form_type')?.invalid && form.get('form_type')?.touched" class="error-message">
+        Please select a form type.
+      </div>
+    </div>
+
+    <!-- Priority -->
+    <div>
+      <label for="priority">Priority *</label>
+      <select id="priority" formControlName="priority" class="select-input" required>
+        <option value="">Select priority</option>
+        <option *ngFor="let level of priorities" [value]="level">{{ level | titlecase }}</option>
+      </select>
+      <div *ngIf="form.get('priority')?.invalid && form.get('priority')?.touched" class="error-message">
+        Please select a priority level.
+      </div>
+    </div>
+
+    <!-- Receiver Dropdown -->
+    <!-- Receiver Dropdown -->
+<div>
+  <label for="receiver_id">Send To *</label>
+  <select id="receiver_id" formControlName="receiver_id" class="select-input" required>
+    <option value="">Select recipient</option>
+    <option *ngIf="supervisor" [value]="supervisor.user">
+      Supervisor - {{ supervisor.full_name }}
+    </option>
+    <option *ngIf="admin" [value]="admin.user">
+      Admin - {{ admin.full_name }}
+    </option>
+  </select>
+  <div *ngIf="form.get('receiver_id')?.invalid && form.get('receiver_id')?.touched" class="error-message">
+    Please select a recipient.
+  </div>
+</div>
+
+    <!-- Submit Button -->
+    <div class="pt-2">
+      <button type="submit" [disabled]="isSubmitting || form.invalid" class="submit-btn">
+        {{ isSubmitting ? 'Submitting...' : 'Submit Evaluation Form' }}
+      </button>
+    </div>
+
+    <!-- Progress Bar -->
+    <div *ngIf="progress > 0 && progress < 100" class="progress-container">
+      <div class="progress-bar">
+        <div class="progress-fill" [style.width.%]="progress"></div>
+      </div>
+      <div class="text-sm text-gray-500">Upload Progress: {{ progress }}%</div>
+    </div>
+
+    <!-- Messages -->
+    <div *ngIf="message" [class]="message.includes('success') || message.includes('Success') ? 'text-green-600' : 'text-red-600'" class="mt-2">
+      {{ message }}
+    </div>
+  </form>
+</div>

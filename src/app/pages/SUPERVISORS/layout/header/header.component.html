@@ -1,0 +1,94 @@
+<header class="header">
+  <div class="header-left">
+    <div class="logo-section">
+      <div class="logo">
+        <div class="ghana-flag">
+          <div class="flag-stripe red"></div>
+          <div class="flag-stripe yellow"></div>
+          <div class="flag-stripe green"></div>
+        </div>
+      </div>
+      <div class="brand-text">
+        <h1 class="brand-title">Ghana National Service</h1>
+        <span class="brand-subtitle">Supervisors Dashboard</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="header-center">
+    <div class="search-container">
+      <div class="search-input-wrapper">
+        <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+        <input
+          type="text"
+          placeholder="Search personnel, evaluations, messages..."
+          class="search-input"
+          [(ngModel)]="searchQuery"
+          (input)="onSearch($event)"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="header-right">
+    <div class="notifications">
+      <button class="notification-btn" (click)="toggleNotifications()">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5-5V9.09c0-2.5-2-4.5-4.5-4.5S6 6.59 6 9.09V12l-5 5h5m0 0v1a3 3 0 106 0v-1m-6 0h6"></path>
+        </svg>
+        @if (unreadCount() > 0) {
+          <span class="notification-badge">{{ unreadCount() }}</span>
+        }
+      </button>
+    </div>
+
+    <div class="profile-section">
+      <div class="profile-dropdown" [class.active]="showProfileMenu()">
+        <button class="profile-trigger" (click)="toggleProfileMenu()">
+          <div class="avatar">
+            <span class="avatar-text">{{ getCurrentUserInitials() }}</span>
+          </div>
+          <div class="profile-info">
+            <span class="profile-name">{{ userName }}</span>
+            <span class="profile-role">{{ getUserRole() }}</span>
+          </div>
+          <svg class="dropdown-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"></path>
+          </svg>
+        </button>
+
+        @if (showProfileMenu()) {
+          <div class="profile-menu">
+            <a href="#" class="menu-item">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+              </svg>
+              Profile Settings
+            </a>
+            <a href="#" class="menu-item">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+              </svg>
+              My Personnel
+            </a>
+            <a href="#" class="menu-item">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"></path>
+              </svg>
+              Preferences
+            </a>
+            <div class="menu-divider"></div>
+            <button class="menu-item logout" (click)="logout()">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+              </svg>
+              Sign Out
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</header>

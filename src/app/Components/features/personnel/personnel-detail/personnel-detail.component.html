@@ -1,0 +1,299 @@
+    <div class="personnel-detail">
+      @if (personnel()) {
+        <div class="detail-header">
+          <button class="back-btn" routerLink="/personnel">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+            Back to Personnel
+          </button>
+
+          <div class="header-content">
+            <div class="personnel-info">
+              <div class="avatar-section">
+                <div class="avatar large">
+                  <span class="avatar-text">{{ getInitials(personnel()!.name) }}</span>
+                </div>
+                <div class="status-indicator" [class]="personnel()!.status"></div>
+              </div>
+
+              <div class="basic-info">
+                <h1 class="personnel-name">{{ personnel()!.name }}</h1>
+                <div class="personnel-meta">
+                  <span class="position">{{ personnel()!.position }}</span>
+                  <span class="separator">•</span>
+                  <span class="department">{{ personnel()!.department }}</span>
+                  <span class="separator">•</span>
+                  <span class="region">{{ personnel()!.region }}</span>
+                </div>
+                <div class="performance-section">
+                  <span class="performance-label">Performance:</span>
+                  <span class="badge" [class]="'badge-performance-' + personnel()!.performance">
+                    {{ getPerformanceLabel(personnel()!.performance) }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="header-actions">
+              <button class="btn btn-secondary">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                </svg>
+                Send Message
+              </button>
+              <button class="btn btn-secondary">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                </svg>
+                Call
+              </button>
+              <button class="btn btn-primary">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                </svg>
+                Edit Profile
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-content">
+          <div class="content-left">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Submission Statistics</h3>
+              </div>
+              <div class="card-body">
+                <div class="stats-grid">
+                  <div class="stat-item total">
+                    <div class="stat-icon">
+                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                      </svg>
+                    </div>
+                    <div class="stat-content">
+                      <div class="stat-value">{{ personnel()!.totalSubmissions }}</div>
+                      <div class="stat-label">Total Submissions</div>
+                    </div>
+                  </div>
+
+                  <div class="stat-item approved">
+                    <div class="stat-icon">
+                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                      </svg>
+                    </div>
+                    <div class="stat-content">
+                      <div class="stat-value">{{ personnel()!.approvedSubmissions }}</div>
+                      <div class="stat-label">Approved</div>
+                    </div>
+                  </div>
+
+                  <div class="stat-item pending">
+                    <div class="stat-icon">
+                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                      </svg>
+                    </div>
+                    <div class="stat-content">
+                      <div class="stat-value">{{ personnel()!.pendingSubmissions }}</div>
+                      <div class="stat-label">Pending</div>
+                    </div>
+                  </div>
+
+                  <div class="stat-item rejected">
+                    <div class="stat-icon">
+                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                      </svg>
+                    </div>
+                    <div class="stat-content">
+                      <div class="stat-value">{{ personnel()!.rejectedSubmissions }}</div>
+                      <div class="stat-label">Rejected</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="approval-rate">
+                  <div class="rate-label">Approval Rate</div>
+                  <div class="rate-value">{{ getApprovalRate() }}%</div>
+                  <div class="rate-bar">
+                    <div class="rate-fill" [style.width.%]="getApprovalRate()"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Recent Submissions</h3>
+                <button class="btn btn-secondary btn-sm" routerLink="/evaluations">View All</button>
+              </div>
+              <div class="card-body">
+                <div class="submissions-list">
+                  @for (submission of recentSubmissions(); track submission.id) {
+                    <div class="submission-item" [class]="'status-' + submission.status">
+                      <div class="submission-header">
+                        <h4 class="submission-title">{{ submission.title }}</h4>
+                        <span class="badge" [class]="'badge-' + getStatusClass(submission.status)">
+                          {{ getStatusLabel(submission.status) }}
+                        </span>
+                      </div>
+                      <div class="submission-meta">
+                        <span class="submission-type">{{ getTypeLabel(submission.type) }}</span>
+                        <span class="separator">•</span>
+                        <span class="submission-date">{{ formatDate(submission.submittedDate) }}</span>
+                        @if (submission.rating) {
+                          <span class="separator">•</span>
+                          <div class="rating">
+                            @for (star of [1,2,3,4,5]; track star) {
+                              <svg
+                                class="star"
+                                [class.filled]="star <= submission.rating!"
+                                fill="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                              </svg>
+                            }
+                          </div>
+                        }
+                      </div>
+                      @if (submission.feedback) {
+                        <div class="submission-feedback">
+                          <strong>Feedback:</strong> {{ submission.feedback }}
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="content-right">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Contact Information</h3>
+              </div>
+              <div class="card-body">
+                <div class="contact-info">
+                  <div class="contact-item">
+                    <div class="contact-icon">
+                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                      </svg>
+                    </div>
+                    <div class="contact-content">
+                      <div class="contact-label">Email</div>
+                      <div class="contact-value">{{ personnel()!.email }}</div>
+                    </div>
+                  </div>
+
+                  <div class="contact-item">
+                    <div class="contact-icon">
+                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                      </svg>
+                    </div>
+                    <div class="contact-content">
+                      <div class="contact-label">Phone</div>
+                      <div class="contact-value">{{ personnel()!.phone }}</div>
+                    </div>
+                  </div>
+
+                  <div class="contact-item">
+                    <div class="contact-icon">
+                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                      </svg>
+                    </div>
+                    <div class="contact-content">
+                      <div class="contact-label">Address</div>
+                      <div class="contact-value">
+                        {{ personnel()!.address.street }}<br>
+                        {{ personnel()!.address.city }}, {{ personnel()!.address.region }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Service Details</h3>
+              </div>
+              <div class="card-body">
+                <div class="service-details">
+                  <div class="detail-row">
+                    <span class="detail-label">Start Date:</span>
+                    <span class="detail-value">{{ formatDate(personnel()!.startDate) }}</span>
+                  </div>
+                  @if (personnel()!.endDate) {
+                    <div class="detail-row">
+                      <span class="detail-label">End Date:</span>
+                      <span class="detail-value">{{ formatDate(personnel()!.endDate!) }}</span>
+                    </div>
+                  }
+                  <div class="detail-row">
+                    <span class="detail-label">Service Duration:</span>
+                    <span class="detail-value">{{ getServiceDuration() }}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Supervisor:</span>
+                    <span class="detail-value">{{ personnel()!.supervisor }}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Last Activity:</span>
+                    <span class="detail-value">{{ getRelativeTime(personnel()!.lastActivity) }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Emergency Contact</h3>
+              </div>
+              <div class="card-body">
+                <div class="emergency-contact">
+                  <div class="contact-name">{{ personnel()!.emergencyContact.name }}</div>
+                  <div class="contact-relationship">{{ personnel()!.emergencyContact.relationship }}</div>
+                  <div class="contact-phone">{{ personnel()!.emergencyContact.phone }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Recent Activity</h3>
+              </div>
+              <div class="card-body">
+                <div class="activity-list">
+                  @for (activity of recentActivities(); track activity.id) {
+                    <div class="activity-item" [class]="'activity-' + activity.type">
+                      <div class="activity-icon">
+                        <div [innerHTML]="getActivityIcon(activity.type)"></div>
+                      </div>
+                      <div class="activity-content">
+                        <div class="activity-title">{{ activity.title }}</div>
+                        <div class="activity-description">{{ activity.description }}</div>
+                        <div class="activity-time">{{ getRelativeTime(activity.timestamp) }}</div>
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      } @else {
+        <div class="loading-state">
+          <div class="loading-spinner"></div>
+          <p>Loading personnel details...</p>
+        </div>
+      }
+    </div>

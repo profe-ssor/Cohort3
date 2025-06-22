@@ -107,6 +107,44 @@ export class PdfService {
   );
 }
 
+// Upload Evaluation Form with form_type and priority
+SendEvaluationForm(
+  fileName: string,
+  file: File,
+  formType: string,
+  priority: string,
+  receiverId: number
+
+  ): Observable<HttpEvent<PdfUploadResponse>> {
+    const token = this.getJwtToken();
+    if (!token) return new Observable(observer => observer.error({ error: 'Unauthorized' }));
+
+    const formData = new FormData();
+    formData.append('pdf', file);
+    formData.append('file_name', fileName);
+    formData.append('form_type', formType);
+    formData.append('priority', priority);
+    formData.append('receiver_id', receiverId.toString());
+
+    const req = new HttpRequest('POST', `${environment.API_URL}file_uploads/evaluation-form/upload/`, formData, {
+      reportProgress: true,
+      headers: new HttpHeaders().set('Authorization', `Bearer ${token}`)
+    });
+
+    return this.http.request(req);
+  }
+
+  getEvaluationForms(formType?: string): Observable<PDF[]> {
+    const token = this.getJwtToken();
+    if (!token) return new Observable(observer => observer.error({ error: "Unauthorised" }));
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    let url = `${environment.API_URL}file_uploads/evaluation-forms/received/`;
+    if (formType) url += `?form_type=${formType}`;
+
+    return this.http.get<{ data: PDF[] }>(url, { headers }).pipe(map(res => res.data));
+  }
+
   storeJwtToken(token: string): void {
     localStorage.setItem('access_token', token);
   }

@@ -1,17 +1,42 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Cohort3</title>
-  <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <head>
+    <title>Ghana National Service - Admin Dashboard</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Ghana National Service Administration Dashboard - Managing National Service operations efficiently" />
+    <base href="/" />
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='33.33' fill='%23dc143c'/><rect y='33.33' width='100' height='33.33' fill='%23ffd700'/><rect y='66.66' width='100' height='33.33' fill='%23008000'/><circle cx='50' cy='50' r='8' fill='%23000'/></svg>" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</head>
-<body>
-  <app-root></app-root>
-</body>
+  </head>
+  <body class="mat-typography">
+    <app-root>
+      <div style="display: flex; justify-content: center; align-items: center; height: 100vh; background: linear-gradient(135deg, #008000 0%, #000000 100%); color: white;">
+        <div style="text-align: center;">
+          <div style="margin-bottom: 20px;">
+            <div style="display: inline-block; width: 60px; height: 40px; background: linear-gradient(to bottom, #dc143c 0% 33.33%, #ffd700 33.33% 66.66%, #008000 66.66% 100%); border-radius: 4px; position: relative;">
+              <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 12px; height: 12px; background: #000; border-radius: 50%;"></div>
+            </div>
+          </div>
+          <h2 style="margin: 0 0 10px 0; font-weight: 300;">Ghana National Service</h2>
+          <p style="margin: 0; opacity: 0.8;">Loading Admin Dashboard...</p>
+          <div style="margin-top: 20px; width: 200px; height: 2px; background: rgba(255,255,255,0.2); border-radius: 1px; overflow: hidden;">
+            <div style="height: 100%; background: #ffd700; width: 0; animation: loading 2s infinite; border-radius: 1px;"></div>
+          </div>
+        </div>
+      </div>
+      <style>
+        @keyframes loading {
+          0% { width: 0; }
+          50% { width: 70%; }
+          100% { width: 100%; }
+        }
+      </style>
+     <app-root></app-root>
+  </body>
 </html>

@@ -1,0 +1,64 @@
+<aside class="sidebar" [class.collapsed]="isCollapsed()">
+  <div class="sidebar-content">
+    <nav class="navigation">
+      @for (item of navigationItems; track item.route) {
+        <div class="nav-group">
+          <a
+            [routerLink]="item.route"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{exact: item.route === '/dashboard'}"
+            class="nav-item"
+            [title]="item.label"
+          >
+            <div class="nav-icon" [innerHTML]="getIcon(item.icon)"></div>
+            <span class="nav-label">{{ item.label }}</span>
+            @if (item.badge && item.badge > 0) {
+              <span class="nav-badge">{{ item.badge }}</span>
+            }
+          </a>
+        </div>
+      }
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="supervisor-info">
+        <div class="info-card">
+          <div class="info-header">
+            <div class="status-indicator online"></div>
+            <span class="status-text">Active</span>
+          </div>
+          <div class="info-content">
+            <div class="assigned-count">
+              <!-- Loading state -->
+              @if (loading) {
+                <span class="count loading">...</span>
+                <span class="label">Loading...</span>
+              }
+              <!-- Error state -->
+              @else if (countError) {
+                <span class="count error">!</span>
+                <span class="label">{{ countError }}</span>
+              }
+              <!-- Success state -->
+              @else {
+                <span class="count">{{ currentNssCount }}</span>
+                <span class="label">Assigned Personnel</span>
+              }
+            </div>
+            <div class="pending-count">
+              <span class="count">{{ pendingEvaluations() }}</span>
+              <span class="label">Pending Reviews</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="collapse-btn" (click)="toggleSidebar()" [title]="isCollapsed() ? 'Expand' : 'Collapse'">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            [attr.d]="isCollapsed() ? 'M13 5l7 7-7 7M5 5l7 7-7 7' : 'M11 19l-7-7 7-7M19 19l-7-7 7-7'"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+</aside>

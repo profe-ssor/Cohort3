@@ -66,26 +66,6 @@ export class MessageCenterComponent implements OnInit {
     return userId;
   }
 
-  // loadMessages() {
-  //   this.messageService.getInbox().subscribe({
-  //     next: (data) => {
-  //       console.log('Inbox data:', data);
-  //       // Fix: Ensure we're always working with an array
-  //       if (Array.isArray(data)) {
-  //         this.messages = data;
-  //       } else if (data && typeof data === 'object' && 'inbox' in data) {
-  //         this.messages = Array.isArray(data.inbox) ? data.inbox : [];
-  //       } else {
-  //         console.error('Unexpected data format:', data);
-  //         this.messages = [];
-  //       }
-  //     },
-  //     error: (err) => {
-  //       console.error('Error loading messages:', err);
-  //     this._toastr.error('Failed to load messages');
-  //     }
-  //   });
-  // }
 
   loadSignedPdfs() {
     this.pdfService.getSignedPdfs().subscribe({

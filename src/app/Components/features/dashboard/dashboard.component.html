@@ -1,0 +1,226 @@
+    <div class="dashboard">
+      <div class="dashboard-header">
+        <div class="header-content">
+          <h1 class="page-title">Supervisors Dashboard</h1>
+          <p class="page-subtitle">Monitor your assigned personnel and manage evaluations efficiently</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-secondary">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            Export Report
+          </button>
+          <button class="btn btn-primary" routerLink="/supervisor-dashboard/evaluations">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            Review Submissions
+          </button>
+        </div>
+      </div>
+
+      <div class="metrics-grid">
+        @for (metric of metrics(); track metric.title) {
+          <div class="metric-card" [class]="'metric-' + metric.color">
+            <div class="metric-icon">
+              <div [innerHTML]="getIcon(metric.icon)"></div>
+            </div>
+            <div class="metric-content">
+              <div class="metric-value">{{ metric.value }}</div>
+              <div class="metric-title">{{ metric.title }}</div>
+              <div class="metric-trend" [class]="'trend-' + metric.trend">
+                <svg *ngIf="metric.trend === 'up'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+                </svg>
+                <svg *ngIf="metric.trend === 'down'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                </svg>
+                <svg *ngIf="metric.trend === 'stable'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14"></path>
+                </svg>
+                <span>{{ metric.trendValue }}% from last month</span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="dashboard-content">
+        <div class="content-left">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Personnel Submissions Overview</h3>
+              <div class="card-actions">
+                <select class="form-control" [(ngModel)]="selectedPeriod">
+                  <option value="week">This Week</option>
+                  <option value="month">This Month</option>
+                  <option value="quarter">This Quarter</option>
+                </select>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="submissions-chart">
+                <div class="chart-header">
+                  <div class="chart-legend">
+                    <div class="legend-item">
+                      <div class="legend-color approved"></div>
+                      <span>Approved</span>
+                    </div>
+                    <div class="legend-item">
+                      <div class="legend-color pending"></div>
+                      <span>Pending</span>
+                    </div>
+                    <div class="legend-item">
+                      <div class="legend-color rejected"></div>
+                      <span>Rejected</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="chart-container">
+                  @for (submission of personnelSubmissions(); track submission.personnelId) {
+                    <div class="submission-bar">
+                      <div class="bar-label">{{ submission.name }}</div>
+                      <div class="bar-container">
+                        <div class="bar-segment approved"
+                             [style.width.%]="(submission.approved / submission.submissions) * 100"
+                             [title]="'Approved: ' + submission.approved">
+                        </div>
+                        <div class="bar-segment pending"
+                             [style.width.%]="(submission.pending / submission.submissions) * 100"
+                             [title]="'Pending: ' + submission.pending">
+                        </div>
+                        <div class="bar-segment rejected"
+                             [style.width.%]="(submission.rejected / submission.submissions) * 100"
+                             [title]="'Rejected: ' + submission.rejected">
+                        </div>
+                      </div>
+                      <div class="bar-total">{{ submission.submissions }}</div>
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Quick Actions</h3>
+            </div>
+            <div class="card-body">
+              <div class="quick-actions-grid">
+                <button class="quick-action-btn" routerLink="/supervisor-dashboard/evaluations">
+                  <div class="action-icon success">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                  </div>
+                  <div class="action-content">
+                    <div class="action-title">Review Submissions</div>
+                    <div class="action-subtitle">{{ pendingSubmissions() }} pending reviews</div>
+                  </div>
+                </button>
+
+                <button class="quick-action-btn" routerLink="/supervisor-dashboard/personnel">
+                  <div class="action-icon primary">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                  </div>
+                  <div class="action-content">
+                    <div class="action-title">Manage Personnel</div>
+                    <div class="action-subtitle">{{ totalPersonnel() }} assigned personnel</div>
+                  </div>
+                </button>
+
+                <button class="quick-action-btn" routerLink="/supervisor-dashboard/messages">
+                  <div class="action-icon warning">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                    </svg>
+                  </div>
+                  <div class="action-content">
+                    <div class="action-title">Message Admin</div>
+                    <div class="action-subtitle">Send reports or requests</div>
+                  </div>
+                </button>
+
+                <button class="quick-action-btn">
+                  <div class="action-icon secondary">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                  </div>
+                  <div class="action-content">
+                    <div class="action-title">Generate Reports</div>
+                    <div class="action-subtitle">Create performance summaries</div>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-right">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Recent Activity</h3>
+              <button class="btn btn-secondary btn-sm">View All</button>
+            </div>
+            <div class="card-body">
+              <div class="activity-list">
+                @for (activity of recentActivities(); track activity.id) {
+                  <div class="activity-item" [class]="'activity-' + activity.type">
+                    <div class="activity-icon">
+                      <div [innerHTML]="getActivityIcon(activity.type)"></div>
+                    </div>
+                    <div class="activity-content">
+                      <div class="activity-title">{{ activity.title }}</div>
+                      <div class="activity-description">{{ activity.description }}</div>
+                      @if (activity.personnel) {
+                        <div class="activity-personnel">{{ activity.personnel }}</div>
+                      }
+                      <div class="activity-time">{{ getRelativeTime(activity.timestamp) }}</div>
+                    </div>
+                    @if (activity.priority) {
+                      <div class="activity-priority" [class]="'priority-' + activity.priority"></div>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Performance Summary</h3>
+            </div>
+            <div class="card-body">
+              <div class="performance-stats">
+                <div class="stat-item">
+                  <div class="stat-label">Review Efficiency</div>
+                  <div class="stat-value">92%</div>
+                  <div class="stat-bar">
+                    <div class="stat-fill" style="width: 92%"></div>
+                  </div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-label">Response Time</div>
+                  <div class="stat-value">2.3 days</div>
+                  <div class="stat-bar">
+                    <div class="stat-fill" style="width: 77%"></div>
+                  </div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-label">Personnel Satisfaction</div>
+                  <div class="stat-value">4.8/5</div>
+                  <div class="stat-bar">
+                    <div class="stat-fill" style="width: 96%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
