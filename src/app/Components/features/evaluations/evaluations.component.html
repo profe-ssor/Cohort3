@@ -78,7 +78,7 @@
   </div>
 
   <!-- Loading State -->
-  @if (loading()) {
+  <ng-container *ngIf="loading(); else evaluationsContent">
     <div class="loading-state">
       <div class="loading-spinner">
         <svg class="spinner" viewBox="0 0 50 50">
@@ -87,7 +87,8 @@
       </div>
       <p>Loading evaluations...</p>
     </div>
-  } @else {
+  </ng-container>
+  <ng-template #evaluationsContent>
     <div class="evaluations-content">
       <div class="filters-section">
         <div class="filters-row">
@@ -179,9 +180,9 @@
               <div class="evaluation-meta">
                 <h3 class="evaluation-title">{{ evaluation.title }}</h3>
                 <div class="evaluation-info">
-                  <span class="personnel-name">{{ evaluation.nss_personnel_name || 'N/A' }}</span>
+                  <span class="personnel-name">{{ evaluation.nss_personnel_name  }}</span>
                   <span class="separator">•</span>
-                  <span class="personnel-email">{{ evaluation.nss_personnel_email || 'N/A' }}</span>
+               
                   @if (evaluation.supervisor_name) {
                     <span class="separator">•</span>
                     <span class="supervisor">Supervisor: {{ evaluation.supervisor_name }}</span>
@@ -192,9 +193,24 @@
                 }
               </div>
               <div class="evaluation-badges">
-                <span class="badge" [class]="'badge-' + getStatusClass(evaluation.status)">
-                  {{ getStatusLabel(evaluation.status) }}
-                </span>
+               <span
+  class="badge clickable"
+  [class]="'badge-' + getStatusClass(evaluation.status)"
+  (click)="
+    evaluation.status === 'pending'
+      ? startReview(evaluation)
+      : evaluation.status === 'under_review'
+        ? approveEvaluation(evaluation)
+        : null
+  "
+  [title]="
+    evaluation.status === 'pending' ? 'Click to start review' :
+    evaluation.status === 'under_review' ? 'Click to approve' : ''
+  "
+>
+  {{ getStatusLabel(evaluation.status) }}
+</span>
+
                 <span class="badge" [class]="'badge-' + evaluation.evaluation_type">
                   {{ getTypeLabel(evaluation.evaluation_type) }}
                 </span>
@@ -324,114 +340,9 @@
           </div>
         }
       </div>
-
       <!-- Evaluation Forms Section - Added in original structure format -->
-      @if (evaluationForms().length > 0) {
-        <div class="evaluation-forms-section">
-          <div class="section-header">
-            <h2 class="section-title">Available Evaluation Forms</h2>
-            <p class="section-subtitle">Download and use these templates for creating new evaluations</p>
-          </div>
 
-          <div class="forms-list">
-            @for (form of evaluationForms(); track form.id) {
-              <div class="form-card">
-                <div class="form-header">
-                  <div class="form-meta">
-                    <h3 class="form-title">Evaluation Form</h3>
-                  </div>
-                  <div class="form-badges">
-                    <span class="badge badge-info">Form Template</span>
-                    @if (form.form_type) {
-                      <span class="badge badge-secondary">{{ form.form_type }}</span>
-                    }
-                    @if (form.priority) {
-                      <span class="badge badge-secondary">{{ form.priority }}</span>
-                    }
-                  </div>
-                </div>
-
-                <div class="form-details">
-                  <div class="detail-item">
-                    <svg class="detail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
-                    </svg>
-                    <span class="detail-label">Created:</span>
-                    <span class="detail-value">{{ formatDate(form.uploaded_at) }}</span>
-                  </div>
-                  @if (form.uploaded_at) {
-                    <div class="detail-item">
-                      <svg class="detail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                      </svg>
-                      <span class="detail-label">Updated:</span>
-                      <span class="detail-value">{{ formatDate(form.uploaded_at) }}</span>
-                    </div>
-                  }
-                </div>
-
-                <div class="form-actions">
-                  <button class="btn btn-primary btn-sm" (click)="downloadForm(form)">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
-                    Download Form
-                  </button>
-                  <button class="btn btn-secondary btn-sm" (click)="useFormTemplate(form)">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                    </svg>
-                    Use Template
-                  </button>
-                </div>
-              </div>
-            }
-          </div>
-        </div>
-      }
-
-      <!-- Pagination -->
-      @if (totalPages() > 1) {
-        <div class="pagination-section">
-          <div class="pagination-info">
-            <span>Page {{ currentPage() }} of {{ totalPages() }}</span>
-          </div>
-          <div class="pagination-controls">
-            <button
-              class="btn btn-secondary btn-sm"
-              (click)="previousPage()"
-              [disabled]="currentPage() === 1"
-            >
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-              </svg>
-              Previous
-            </button>
-
-            @for (page of [].constructor(totalPages()); track $index) {
-              <button
-                class="btn btn-sm"
-                [class.btn-primary]="currentPage() === $index + 1"
-                [class.btn-secondary]="currentPage() !== $index + 1"
-                (click)="goToPage($index + 1)"
-              >
-                {{ $index + 1 }}
-              </button>
-            }
-
-            <button
-              class="btn btn-secondary btn-sm"
-              (click)="nextPage()"
-              [disabled]="currentPage() === totalPages()"
-            >
-              Next
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-              </svg>
-            </button>
-          </div>
-        </div>
-      }
     </div>
-  }
+  </ng-template>
 </div>
+

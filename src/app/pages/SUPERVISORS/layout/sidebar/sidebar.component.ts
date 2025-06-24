@@ -7,6 +7,9 @@ import { SupervisorService } from '../../../../services/supervisors';
 import { SupervisorCount } from '../../../../model/interface/supervor';
 import { MessageService } from '../../../../services/message.service';
 import { IMessageStats } from '../../../../model/interface/message';
+import { EvaluationService } from '../../../../services/evaluation.service';
+
+
 
 interface NavigationItem {
   label: string;
@@ -28,7 +31,8 @@ export class SidebarComponent implements OnInit {
   currentNssCount = 0;
   unreadMessages = signal<number>(0);
 
-  pendingEvaluations = signal(7);
+  pendingEvaluations = signal(0); 
+
   loading = true;
   countError: string | null = null;
 
@@ -66,12 +70,15 @@ export class SidebarComponent implements OnInit {
     private authService: AuthService,
     private supervisorService: SupervisorService,
     private messageService: MessageService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private evaluationService: EvaluationService,
+
   ) {}
 
 ngOnInit(): void {
   this.getAssignedPersonnel();
    this.getUnreadMessages();
+    this.getPendingEvaluations();
 
 }
 
@@ -102,6 +109,18 @@ getUnreadMessages(): void {
   });
 }
 
+getPendingEvaluations(): void {
+  this.evaluationService.getDashboardStats().subscribe({
+    next: stats => {
+      this.pendingEvaluations.set(stats.pending);
+      const evalNav = this.navigationItems.find(n => n.label === 'Evaluation Submissions');
+      if (evalNav) evalNav.badge = stats.pending;
+    },
+    error: err => {
+      console.error('Failed to load pending evaluations:', err);
+    }
+  });
+}
 
   getAssignedPersonnel(): void {
     this.loading = true;

@@ -126,7 +126,7 @@ SendEvaluationForm(
     formData.append('priority', priority);
     formData.append('receiver_id', receiverId.toString());
 
-    const req = new HttpRequest('POST', `${environment.API_URL}file_uploads/evaluation-form/upload/`, formData, {
+    const req = new HttpRequest('POST', `${environment.API_URL}file_uploads/evaluation-form/send/`, formData, {
       reportProgress: true,
       headers: new HttpHeaders().set('Authorization', `Bearer ${token}`)
     });
@@ -156,5 +156,20 @@ SendEvaluationForm(
   storeUserRole(role: string): void {
     localStorage.setItem('userRole', role);
   }
+
+  updateEvaluationStatus(pdfId: number, status: 'pending' | 'approved' | 'rejected' | 'under_review'): Observable<PDF> {
+  const token = this.getJwtToken();
+  if (!token) return new Observable(observer => observer.error({ error: 'Unauthorized' }));
+
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  const body = { status };
+
+  return this.http.patch<{ data: PDF }>(
+    `${environment.API_URL}file_uploads/evaluation-forms/${pdfId}/update-status/`,
+    body,
+    { headers }
+  ).pipe(map(response => response.data));
+}
+
 }
 

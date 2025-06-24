@@ -1,3 +1,8 @@
+export type EvaluationStatus = 'pending' | 'under_review' | 'approved' | 'rejected';
+export type EvaluationType = 'monthly' | 'quarterly' | 'annual' | 'project';
+export type EvaluationPriority = 'low' | 'medium' | 'high';
+
+
 export interface PDF {
   id: number;
   file_name: string;
@@ -7,11 +12,21 @@ export interface PDF {
   is_signed: boolean;
   signed_file: string | null;
   uploaded_at: string;
-  form_type?: 'Monthly' | 'Quarterly' | 'Annual' | 'Project' | 'General';
+  form_type?: 'Monthly' | 'Quarterly' | 'Annual' | 'Project';
   priority?: 'low' | 'medium' | 'high';
   receiver?: number;
-  filePath?: string,
+  filePath?: string;
+  mark_as_signed?: boolean;
+  sender_name?: string;
+  receiver_name?: string
+
+
+  // ✅ New fields added:
+  submitted_date?: string;
+  due_date?: string;
+status?: EvaluationStatus;
 }
+
 
 export interface SignaturePosition {
   x: number;

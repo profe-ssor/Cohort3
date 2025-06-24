@@ -1,16 +1,29 @@
 <div class="form-container animate-fade-in">
   <h2 class="form-title">Submit Evaluation Form</h2>
+
   <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid">
     <!-- PDF Selection -->
     <div>
       <label for="pdfId">Select Signed PDF *</label>
-      <select id="pdfId" formControlName="pdfId" class="select-input" required>
+      <select id="pdfId" formControlName="pdfId" class="select-input" required (change)="onPdfChange($event)">
         <option value="">Select a signed document</option>
         <option *ngFor="let pdf of signedPdfs" [value]="pdf.id">{{ pdf.file_name }}</option>
       </select>
       <div *ngIf="form.get('pdfId')?.invalid && form.get('pdfId')?.touched" class="error-message">
         Please select a PDF document.
       </div>
+    </div>
+
+    <!-- Mark as Signed (if PDF selected) -->
+    <div *ngIf="selectedPdf" class="mt-2">
+      <label class="flex items-center gap-2">
+        <input
+          type="checkbox"
+          [(ngModel)]="selectedPdf.mark_as_signed"
+          name="mark_as_signed"
+        />
+        Mark this file as signed (no signature image)
+      </label>
     </div>
 
     <!-- Form Type -->
@@ -38,22 +51,21 @@
     </div>
 
     <!-- Receiver Dropdown -->
-    <!-- Receiver Dropdown -->
-<div>
-  <label for="receiver_id">Send To *</label>
-  <select id="receiver_id" formControlName="receiver_id" class="select-input" required>
-    <option value="">Select recipient</option>
-    <option *ngIf="supervisor" [value]="supervisor.user">
-      Supervisor - {{ supervisor.full_name }}
-    </option>
-    <option *ngIf="admin" [value]="admin.user">
-      Admin - {{ admin.full_name }}
-    </option>
-  </select>
-  <div *ngIf="form.get('receiver_id')?.invalid && form.get('receiver_id')?.touched" class="error-message">
-    Please select a recipient.
-  </div>
-</div>
+    <div>
+      <label for="receiver_id">Send To *</label>
+      <select id="receiver_id" formControlName="receiver_id" class="select-input" required>
+        <option value="">Select recipient</option>
+        <option *ngIf="supervisor" [value]="supervisor.user_id">
+          Supervisor - {{ supervisor.full_name }}
+        </option>
+        <option *ngIf="admin" [value]="admin.user_id">
+          Admin - {{ admin.full_name }}
+        </option>
+      </select>
+      <div *ngIf="form.get('receiver_id')?.invalid && form.get('receiver_id')?.touched" class="error-message">
+        Please select a recipient.
+      </div>
+    </div>
 
     <!-- Submit Button -->
     <div class="pt-2">
@@ -62,15 +74,15 @@
       </button>
     </div>
 
-    <!-- Progress Bar -->
-    <div *ngIf="progress > 0 && progress < 100" class="progress-container">
+    <!-- Upload Progress Bar -->
+    <div *ngIf="progress > 0 && progress < 100" class="progress-container mt-2">
       <div class="progress-bar">
         <div class="progress-fill" [style.width.%]="progress"></div>
       </div>
-      <div class="text-sm text-gray-500">Upload Progress: {{ progress }}%</div>
+      <div class="text-sm text-gray-500 mt-1">Upload Progress: {{ progress }}%</div>
     </div>
 
-    <!-- Messages -->
+    <!-- Final Message -->
     <div *ngIf="message" [class]="message.includes('success') || message.includes('Success') ? 'text-green-600' : 'text-red-600'" class="mt-2">
       {{ message }}
     </div>
