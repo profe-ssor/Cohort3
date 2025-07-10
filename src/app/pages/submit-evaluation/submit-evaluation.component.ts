@@ -28,6 +28,19 @@ export class SubmitEvaluationComponent implements OnInit {
   supervisor: ISupervisorDatabase | null = null;
   admin: IAdminDatabase | null = null;
 
+  // Ghost detection properties
+  isGhostChecking = false;
+  ghostCheckProgress = 0;
+  ghostCheckMessage = '';
+  ghostCheckSteps = [
+    'Checking Ghana Card Records...',
+    'Verifying University Records...',
+    'Cross-referencing NSS Personnel...',
+    'Validating Workplace Information...',
+    'Finalizing Security Check...'
+  ];
+  currentGhostStep = 0;
+
   readonly formTypes = ['Monthly', 'Quarterly', 'Annual', 'Project'];
   readonly priorities = ['low', 'medium', 'high'];
 
@@ -36,7 +49,7 @@ export class SubmitEvaluationComponent implements OnInit {
     private pdfService: PdfService,
     private nssService: NssPersonelService,
     private toastr: ToastrService,
-    private http: HttpClient // ✅ Inject HttpClient
+    private http: HttpClient
   ) {
     this.form = this.fb.group({
       pdfId: ['', Validators.required],
@@ -131,6 +144,31 @@ export class SubmitEvaluationComponent implements OnInit {
       return;
     }
 
+    // Check if receiver is an admin
+    const isReceiverAdmin = this.admin && this.admin.user === receiverIdNumber;
+
+    console.log('🔍 Ghost Detection Debug:', {
+      admin: this.admin,
+      receiverIdNumber,
+      isReceiverAdmin,
+      adminUser: this.admin?.user,
+      adminId: this.admin?.id
+    });
+
+    if (isReceiverAdmin) {
+      console.log('🚀 Starting ghost detection...');
+      // Run ghost detection first
+      const ghostDetectionPassed = await this.runGhostDetection();
+
+      if (!ghostDetectionPassed) {
+        console.log('❌ Ghost detection failed - blocking submission');
+        this.toastr.error('Submission blocked due to security verification failure. Please contact administrators.');
+        return; // Stop submission
+      }
+    } else {
+      console.log('⏭️ Skipping ghost detection - receiver is not an admin');
+    }
+
     this.isSubmitting = true;
     this.progress = 0;
     this.message = '';
@@ -168,6 +206,72 @@ export class SubmitEvaluationComponent implements OnInit {
       this.message = err.message || 'Could not prepare PDF file.';
       this.isSubmitting = false;
     }
+  }
+
+  async runGhostDetection(): Promise<boolean> {
+    this.isGhostChecking = true;
+    this.ghostCheckProgress = 0;
+    this.currentGhostStep = 0;
+    this.ghostCheckMessage = 'Starting security verification...';
+
+    const token = this.getJwtToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    try {
+      // Simulate ghost detection steps with progress updates
+      for (let i = 0; i < this.ghostCheckSteps.length; i++) {
+        this.currentGhostStep = i;
+        this.ghostCheckMessage = this.ghostCheckSteps[i];
+        this.ghostCheckProgress = ((i + 1) / this.ghostCheckSteps.length) * 100;
+
+        // Simulate processing time for each step
+        await new Promise(resolve => setTimeout(resolve, 800));
+      }
+
+      // Call the actual ghost detection API
+      const response = await this.http.post(
+        `${environment.API_URL}admin/test-ghost-detection/`,
+        { personnel_id: this.getCurrentPersonnelId() },
+        { headers }
+      ).toPromise();
+
+      console.log('Ghost detection result:', response);
+
+      // Check if ghost was detected
+      if (response && (response as any).status === 'ghost_detected') {
+        this.ghostCheckMessage = '⚠️ Security verification flagged - Administrators notified';
+        this.toastr.warning('Your submission has been flagged for review. Administrators have been notified and will investigate. Please contact your administrator for further assistance.');
+        return false; // Ghost detected - block submission
+      } else {
+        this.ghostCheckMessage = '✅ Security verification completed successfully';
+        this.toastr.success('Security verification passed! Administrators have been notified of the successful verification.');
+        return true; // No ghost detected - allow submission
+      }
+
+    } catch (error) {
+      console.error('Ghost detection error:', error);
+      this.ghostCheckMessage = '❌ Security verification failed - Administrators notified';
+      this.toastr.error('Security verification failed. Administrators have been notified. Please contact your administrator for assistance.');
+      return false; // Error occurred - block submission
+    } finally {
+      // Keep the message visible for a moment before hiding
+      setTimeout(() => {
+        this.isGhostChecking = false;
+        this.ghostCheckProgress = 0;
+        this.currentGhostStep = 0;
+        this.ghostCheckMessage = '';
+      }, 2000);
+    }
+  }
+
+  private getCurrentPersonnelId(): number {
+    // Get current personnel ID from localStorage or user service
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      const user = JSON.parse(userData);
+      return user.id || 1; // Default to 1 if not found
+    }
+    return 1; // Default fallback
   }
 
   private getJwtToken(): string | null {

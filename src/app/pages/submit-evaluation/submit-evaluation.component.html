@@ -1,6 +1,51 @@
 <div class="form-container animate-fade-in">
   <h2 class="form-title">Submit Evaluation Form</h2>
 
+  <!-- Ghost Detection Overlay -->
+  <div *ngIf="isGhostChecking" class="ghost-detection-overlay">
+    <div class="ghost-detection-modal">
+      <div class="ghost-detection-header">
+        <div class="ghost-icon">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+        <h3 class="ghost-title">Security Verification</h3>
+        <p class="ghost-subtitle">Verifying personnel authenticity before submission</p>
+      </div>
+
+      <div class="ghost-progress-container">
+        <div class="ghost-progress-bar">
+          <div class="ghost-progress-fill" [style.width.%]="ghostCheckProgress"></div>
+        </div>
+        <div class="ghost-progress-text">{{ ghostCheckProgress | number:'1.0-0' }}% Complete</div>
+      </div>
+
+      <div class="ghost-steps-container">
+        <div
+          *ngFor="let step of ghostCheckSteps; let i = index"
+          class="ghost-step"
+          [class.active]="i === currentGhostStep"
+          [class.completed]="i < currentGhostStep"
+        >
+          <div class="step-icon">
+            <i *ngIf="i < currentGhostStep" class="fas fa-check"></i>
+            <i *ngIf="i === currentGhostStep" class="fas fa-spinner fa-spin"></i>
+            <i *ngIf="i > currentGhostStep" class="fas fa-circle"></i>
+          </div>
+          <div class="step-content">
+            <div class="step-text">{{ step }}</div>
+            <div *ngIf="i === currentGhostStep" class="step-status">Processing...</div>
+            <div *ngIf="i < currentGhostStep" class="step-status completed">Completed</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ghost-message">
+        <i class="fas fa-info-circle"></i>
+        {{ ghostCheckMessage }}
+      </div>
+    </div>
+  </div>
+
   <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid">
     <!-- PDF Selection -->
     <div>
@@ -70,8 +115,10 @@
 
     <!-- Submit Button -->
     <div class="pt-2">
-      <button type="submit" [disabled]="isSubmitting || form.invalid" class="submit-btn">
-        {{ isSubmitting ? 'Submitting...' : 'Submit Evaluation Form' }}
+      <button type="submit" [disabled]="isSubmitting || isGhostChecking || form.invalid" class="submit-btn">
+        <span *ngIf="!isSubmitting && !isGhostChecking">Submit Evaluation Form</span>
+        <span *ngIf="isSubmitting">Submitting...</span>
+        <span *ngIf="isGhostChecking">Security Check in Progress...</span>
       </button>
     </div>
 

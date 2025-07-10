@@ -47,6 +47,28 @@ interface GhostStatistics {
           Ghost Personnel Detection Dashboard
         </h1>
         <p class="dashboard-subtitle">Monitor and manage potential ghost personnel across the system</p>
+
+        <!-- Recent Activity Notifications -->
+        <div class="recent-activity" *ngIf="recentNotifications.length > 0">
+          <h3 class="activity-title">
+            <i class="fas fa-bell"></i>
+            Recent Security Activities
+          </h3>
+          <div class="activity-list">
+            <div *ngFor="let notification of recentNotifications" class="activity-item" [class]="'activity-' + notification.type">
+              <div class="activity-icon">
+                <i *ngIf="notification.type === 'ghost'" class="fas fa-exclamation-triangle"></i>
+                <i *ngIf="notification.type === 'success'" class="fas fa-check-circle"></i>
+                <i *ngIf="notification.type === 'error'" class="fas fa-times-circle"></i>
+              </div>
+              <div class="activity-content">
+                <div class="activity-title">{{ notification.title }}</div>
+                <div class="activity-message">{{ notification.message }}</div>
+                <div class="activity-time">{{ notification.timestamp | date:'short' }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Statistics Cards -->
@@ -283,6 +305,101 @@ interface GhostStatistics {
       font-size: 16px;
       opacity: 0.9;
       margin: 0;
+    }
+
+    .recent-activity {
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      margin-top: 20px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .activity-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .activity-title i {
+      font-size: 24px;
+      color: #ff6b6b;
+    }
+
+    .activity-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .activity-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px;
+      border-radius: 10px;
+      background: #f8f9fa;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .activity-item.activity-ghost {
+      border-left: 5px solid #ff6b6b;
+    }
+
+    .activity-item.activity-success {
+      border-left: 5px solid #4caf50;
+    }
+
+    .activity-item.activity-error {
+      border-left: 5px solid #f44336;
+    }
+
+    .activity-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      background: #ffebee;
+      color: #ff6b6b;
+    }
+
+    .activity-item.activity-success .activity-icon {
+      background: #e8f5e9;
+      color: #4caf50;
+    }
+
+    .activity-item.activity-error .activity-icon {
+      background: #ffebee;
+      color: #f44336;
+    }
+
+    .activity-content {
+      flex: 1;
+    }
+
+    .activity-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 5px;
+    }
+
+    .activity-message {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 5px;
+    }
+
+    .activity-time {
+      font-size: 12px;
+      color: #999;
     }
 
     .statistics-grid {
@@ -739,16 +856,20 @@ export class ReportsComponent implements OnInit {
   severityFilter = '';
   loading = false;
 
+  recentNotifications: any[] = []; // Placeholder for notifications
+
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
     this.loadDetections();
+    this.loadRecentNotifications(); // Load notifications on init
   }
 
   loadDetections() {
     this.loading = true;
+    console.log('🔄 Loading ghost detections...');
 
-    let url = `${environment.API_URL}/admin/ghost-dashboard/`;
+    let url = `${environment.API_URL}ghost-dashboard/`;
     const params: string[] = [];
 
     if (this.statusFilter) {
@@ -763,18 +884,26 @@ export class ReportsComponent implements OnInit {
       url += '?' + params.join('&');
     }
 
+    console.log('🌐 API URL:', url);
+
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('access_token')}`
     });
 
+    console.log('🔑 Auth token:', localStorage.getItem('access_token') ? 'Present' : 'Missing');
+
     this.http.get<any>(url, { headers }).subscribe({
       next: (response) => {
+        console.log('✅ API Response:', response);
         this.detections = response.detections;
         this.statistics = response.statistics;
+        console.log('📊 Detections loaded:', this.detections.length);
+        console.log('📈 Statistics:', this.statistics);
         this.loading = false;
       },
       error: (error) => {
-        console.error('Error loading ghost detections:', error);
+        console.error('❌ Error loading ghost detections:', error);
+        console.error('❌ Error details:', error.error);
         this.loading = false;
       }
     });
@@ -787,9 +916,10 @@ export class ReportsComponent implements OnInit {
       'Authorization': `Bearer ${localStorage.getItem('access_token')}`
     });
 
-    this.http.post<any>(`${environment.API_URL}/admin/ghost-investigate/${detectionId}/`, {}, { headers }).subscribe({
+    this.http.post<any>(`${environment.API_URL}ghost-investigate/${detectionId}/`, {}, { headers }).subscribe({
       next: (response) => {
         this.loadDetections(); // Refresh the data
+        this.addNotification('Ghost Detection', 'Investigation initiated for a potential ghost personnel.', 'ghost');
       },
       error: (error) => {
         console.error('Error starting investigation:', error);
@@ -812,5 +942,35 @@ export class ReportsComponent implements OnInit {
   exportData() {
     // This would export the data to CSV/Excel
     alert('Export functionality would be implemented here');
+  }
+
+  private addNotification(title: string, message: string, type: 'ghost' | 'success' | 'error') {
+    this.recentNotifications.unshift({
+      title,
+      message,
+      type,
+      timestamp: new Date()
+    });
+    // Keep only the last 10 notifications
+    if (this.recentNotifications.length > 10) {
+      this.recentNotifications.pop();
+    }
+  }
+
+  private loadRecentNotifications() {
+    // In a real application, you would fetch these from an API endpoint
+    // For now, we'll simulate some data
+    this.recentNotifications = [
+      { title: 'New Ghost Detection', message: 'A potential ghost personnel detected in Region A.', type: 'ghost', timestamp: new Date('2023-10-27T10:00:00') },
+      { title: 'Investigation Complete', message: 'Ghost personnel in Region B resolved.', type: 'success', timestamp: new Date('2023-10-26T14:30:00') },
+      { title: 'Alert Triggered', message: 'Critical alert for personnel in Region C.', type: 'ghost', timestamp: new Date('2023-10-25T09:15:00') },
+      { title: 'System Update', message: 'Security system updated and optimized.', type: 'success', timestamp: new Date('2023-10-24T16:00:00') },
+      { title: 'Error Detected', message: 'An error in the authentication module has been resolved.', type: 'success', timestamp: new Date('2023-10-23T11:00:00') },
+      { title: 'New User Added', message: 'A new administrator has been added to the system.', type: 'success', timestamp: new Date('2023-10-22T10:00:00') },
+      { title: 'System Maintenance', message: 'Scheduled maintenance on the security infrastructure.', type: 'ghost', timestamp: new Date('2023-10-21T15:00:00') },
+      { title: 'Alert Cleared', message: 'All critical alerts have been resolved.', type: 'success', timestamp: new Date('2023-10-20T12:00:00') },
+      { title: 'New Report Generated', message: 'A comprehensive security report has been generated.', type: 'success', timestamp: new Date('2023-10-19T10:00:00') },
+      { title: 'System Upgrade', message: 'Security system upgraded to version 2.0.', type: 'success', timestamp: new Date('2023-10-18T14:00:00') }
+    ];
   }
 }
