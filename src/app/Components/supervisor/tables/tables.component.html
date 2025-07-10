@@ -9,7 +9,10 @@
 
   <h1>NSS Personnel Details</h1>
 
-  <table>
+  <div *ngIf="isLoading">Loading...</div>
+  <div *ngIf="error">{{ error }}</div>
+
+  <table *ngIf="!isLoading && !error">
     <caption>National Service Personnel List</caption>
     <thead>
       <tr>
@@ -22,29 +25,13 @@
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td>1</td>
-        <td>John Doe</td>
-        <td>Greater Accra</td>
-        <td>NSS123456</td>
-        <td>Ministry of Education</td>
-        <td>+233 24 123 4567</td>
-      </tr>
-      <tr>
-        <td>2</td>
-        <td>Jane Smith</td>
-        <td>Ashanti</td>
-        <td>NSS654321</td>
-        <td>Ghana Health Service</td>
-        <td>+233 20 987 6543</td>
-      </tr>
-      <tr>
-        <td>3</td>
-        <td>Michael Johnson</td>
-        <td>Western</td>
-        <td>NSS789012</td>
-        <td>District Assembly</td>
-        <td>+233 50 678 9012</td>
+      <tr *ngFor="let person of assignedPersonnel; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td>{{ person.full_name }}</td>
+        <td>{{ person.region_of_posting }}</td>
+        <td>{{ person.nss_id }}</td>
+        <td>{{ person.assigned_institution }}</td>
+        <td>{{ person.phone }}</td>
       </tr>
     </tbody>
   </table>

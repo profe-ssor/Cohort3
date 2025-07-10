@@ -69,10 +69,7 @@ export class SubmitEvaluationComponent implements OnInit {
   getMySupervisor() {
     this.nssService.getMySupervisor().subscribe({
       next: (supervisorData) => {
-        this.supervisor = {
-          ...supervisorData,
-          user_id: supervisorData.user
-        };
+        this.supervisor = supervisorData;
       },
       error: (error) => {
         console.error('Error fetching supervisor data:', error);
@@ -83,10 +80,7 @@ export class SubmitEvaluationComponent implements OnInit {
   getMyAdnib() {
     this.nssService.getMyAdmin().subscribe({
       next: (adminData) => {
-        this.admin = {
-          ...adminData,
-          user_id: adminData.user
-        };
+        this.admin = adminData;
       },
       error: (error) => {
         console.error('Error fetching admin data:', error);
@@ -118,7 +112,7 @@ export class SubmitEvaluationComponent implements OnInit {
 
       try {
         await this.http.patch(
-          `${environment.API_URL}file_uploads/pdf/${selectedPdf.id}/`,
+          `${environment.API_URL}file_uploads/pdf/${selectedPdf.id}/update/`,
           { mark_as_signed: true },
           { headers }
         ).toPromise();

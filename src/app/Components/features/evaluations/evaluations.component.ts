@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal, computed, OnInit, inject } from '@angular/core';
+import { Component, signal, computed, OnInit, inject, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { EvaluationService } from '../../../services/evaluation.service';
@@ -15,6 +15,17 @@ import {
 import { PDF } from '../../../model/interface/pdf';
 import { PdfService } from '../../../services/pdf.service';
 import { ToastrService } from 'ngx-toastr';
+import { DashboardService } from '../../../services/admin-services/dashboard.service';
+import { EvaluationsComponent as SupervisorEvaluationsComponent } from '../../../Components/features/evaluations/evaluations.component';
+import { DashboardStats } from '../../../model/interface/dashboard.models';
+
+@Component({
+  selector: 'app-admin-evaluations-page',
+  standalone: true,
+  imports: [CommonModule, SupervisorEvaluationsComponent],
+  template: `<app-evaluations mode="admin"></app-evaluations>`
+})
+export class AdminEvaluationsPageComponent {}
 
 @Component({
   selector: 'app-evaluations',
@@ -24,9 +35,11 @@ import { ToastrService } from 'ngx-toastr';
   styleUrl: './evaluations.component.css'
 })
 export class EvaluationsComponent implements OnInit {
+  @Input() mode: 'admin'  | 'supervisor' = 'supervisor';
   private evaluationService = inject(EvaluationService);
   private pdfService = inject(PdfService);
   private toast = inject(ToastrService);
+  private dashboardService = inject(DashboardService);
 
   selectedStatus = signal<string>('');
   selectedType = signal<string>('');
@@ -38,12 +51,13 @@ export class EvaluationsComponent implements OnInit {
   evaluationForms = signal<PDF[]>([]);
   selectedEvaluationIds = signal<number[]>([]);
 
-  dashboardStats = signal<EvaluationDashboardStats>({
-    pending: 0,
-    approved: 0,
-    overdue: 0,
-    under_review: 0,
-    completed_today: 0
+  dashboardStats = signal<DashboardStats>({
+    totalSubmissions: 0,
+    pendingReviews: 0,
+    approvedSubmissions: 0,
+    rejectedSubmissions: 0,
+    totalPersonnel: 0,
+    activeSupervisors: 0
   });
 
   loading = signal<boolean>(false);
@@ -51,25 +65,44 @@ export class EvaluationsComponent implements OnInit {
   totalPages = signal<number>(1);
   pageSize = signal<number>(10);
 
+  // Static status and priority types for filters
+  statusTypes = [
+    { value: '', label: 'All Status' },
+    { value: 'pending', label: 'Pending' },
+    { value: 'under_review', label: 'Under Review' },
+    { value: 'approved', label: 'Approved' },
+    { value: 'rejected', label: 'Rejected' }
+  ];
+  priorityTypes = [
+    { value: '', label: 'All Priorities' },
+    { value: 'high', label: 'High' },
+    { value: 'medium', label: 'Medium' },
+    { value: 'low', label: 'Low' }
+  ];
+
   ngOnInit() {
-    this.loadEvaluations();
-    this.loadDashboardStats();
-    this.loadEvaluationForms();
+    if (this.mode === 'admin') {
+      this.loadAdminDashboardStats();
+      this.loadEvaluations();
+    } else {
+      this.loadDashboardStats();
+      this.loadEvaluations();
+    }
   }
 
   private convertPdfToEvaluation(pdf: PDF): Evaluation {
     return {
       id: pdf.id,
-      title: pdf.file_name,
+      title: pdf.file_name || 'Untitled PDF',
       description: `${pdf.form_type} evaluation form`,
       evaluation_type: pdf.form_type?.toLowerCase() as EvaluationType || 'monthly',
       priority: pdf.priority as EvaluationPriority || 'medium',
       status: pdf.status as EvaluationStatus || 'pending',
       file: pdf.file,
       signed_pdf: pdf.signed_file,
-      created_at: pdf.uploaded_at,
-      updated_at: pdf.uploaded_at,
-      due_date: pdf.due_date || new Date(new Date().setMonth(new Date().getMonth() + 1)).toISOString(),
+      created_at: pdf.uploaded_at || pdf.submitted_date || '',
+      updated_at: pdf.uploaded_at || pdf.submitted_date || '',
+      due_date: pdf.due_date || '',
       supervisor_comments: '',
       is_overdue: pdf.due_date ? new Date(pdf.due_date) < new Date() : false,
       completed_today: false,
@@ -110,26 +143,38 @@ export class EvaluationsComponent implements OnInit {
   pendingCount() { return this.allEvaluations().filter(e => e.status === 'pending').length; }
   overdueCount() { return this.allEvaluations().filter(e => e.is_overdue).length; }
   underReviewCount() { return this.allEvaluations().filter(e => e.status === 'under_review').length; }
-  completedCount() { return this.allEvaluations().filter(e => e.status === 'approved').length; }
+  completedCount() { return this.dashboardStats().completedToday || 0; }
 
   // Loaders
   loadEvaluations() {
     this.loading.set(true);
-    this.evaluationService.getSupervisorEvaluations({
+    const params = {
       status: this.selectedStatus() || undefined,
       evaluation_type: this.selectedType() || undefined,
       priority: this.selectedPriority() || undefined,
       page: this.currentPage(),
       page_size: this.pageSize()
-    }).subscribe({
+    };
+    const obs = this.mode === 'admin'
+      ? this.evaluationService.getAdminEvaluations(params)
+      : this.evaluationService.getSupervisorEvaluations(params);
+
+    obs.subscribe({
       next: res => {
-        this.evaluations.set(res.results || []);
+        // Both admin and supervisor APIs now return both standard evaluations and PDF forms
+        const standardEvaluations = (res.results || []).filter((item: any) => item.source === 'evaluation') as Evaluation[];
+        const pdfForms = (res.results || []).filter((item: any) => item.source === 'pdf') as any[];
+
+        this.evaluations.set(standardEvaluations);
+        this.evaluationForms.set(pdfForms);
+
         this.totalPages.set(res.total_pages || 1);
         this.loading.set(false);
       },
       error: err => {
         console.error('Error loading evaluations:', err);
         this.evaluations.set([]);
+        this.evaluationForms.set([]);
         this.loading.set(false);
       }
     });
@@ -137,8 +182,22 @@ export class EvaluationsComponent implements OnInit {
 
   loadDashboardStats() {
     this.evaluationService.getDashboardStats().subscribe({
-      next: stats => this.dashboardStats.set(stats),
+      next: stats => this.dashboardStats.set({
+        totalSubmissions: stats.total_submissions || 0,
+        pendingReviews: stats.total_pending || 0,
+        approvedSubmissions: stats.approved || 0,
+        rejectedSubmissions: 0,
+        totalPersonnel: 0,
+        activeSupervisors: 0
+      }),
       error: err => console.error('Dashboard stats error:', err)
+    });
+  }
+
+  loadAdminDashboardStats() {
+    this.evaluationService.getAdminDashboardStats().subscribe({
+      next: stats => this.dashboardStats.set(stats),
+      error: err => console.error('Admin dashboard stats error:', err)
     });
   }
 
@@ -155,7 +214,6 @@ export class EvaluationsComponent implements OnInit {
   applyFilters() {
     this.currentPage.set(1);
     this.loadEvaluations();
-    this.loadEvaluationForms(this.selectedType() || undefined);
   }
 
   // UI Filters
@@ -165,22 +223,30 @@ export class EvaluationsComponent implements OnInit {
   onSearchChange(e: Event) { this.searchQuery.set((e.target as HTMLInputElement).value); }
   onToggleShowForms(e: Event) { this.showFormsOnly.set((e.target as HTMLInputElement).checked); }
 
-  formatDate(date: string) {
-    return new Date(date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+  formatDate(date: string | Date | null | undefined): string {
+    if (!date) return 'N/A';
+    const d = new Date(date);
+    if (isNaN(d.getTime())) return 'N/A';
+    return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
   }
 
   getDueDateClass(d: string) {
     const days = this.getDaysUntilDue(d);
+    if (isNaN(days)) return '';
     return days < 0 ? 'overdue' : days <= 3 ? 'due-soon' : '';
   }
 
   getDaysUntilDue(date: string) {
+    if (!date) return NaN;
     const now = new Date(), due = new Date(date);
+    if (isNaN(due.getTime())) return NaN;
     return Math.ceil((due.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
   }
 
   getDaysUntilDueText(date: string): string {
+    if (!date) return 'No due date';
     const days = this.getDaysUntilDue(date);
+    if (isNaN(days)) return 'Invalid date';
     if (days < 0) return `${Math.abs(days)} days overdue`;
     if (days === 0) return 'Due today';
     if (days === 1) return 'Due tomorrow';
@@ -207,24 +273,48 @@ export class EvaluationsComponent implements OnInit {
   }
 
   updatePdfFormStatus(id: number, status: EvaluationStatus) {
-    this.pdfService.updateEvaluationStatus(id, status).subscribe({
-      next: updated => {
-        this.evaluationForms.update(forms => forms.map(f => f.id === updated.id ? updated : f));
-        this.loadDashboardStats();
-      },
-      error: err => console.error(`Error updating form to ${status}:`, err)
-    });
+    if (this.mode === 'admin') {
+      this.pdfService.updateAdminPdfFormStatus(id, status).subscribe({
+        next: updated => {
+          this.evaluationForms.update(forms => forms.map(f => f.id === updated.id ? updated : f));
+          this.loadDashboardStats();
+          this.refreshActivityFeed();
+        },
+        error: err => console.error(`Error updating form to ${status}:`, err)
+      });
+    } else {
+      this.pdfService.updateEvaluationStatus(id, status).subscribe({
+        next: updated => {
+          this.evaluationForms.update(forms => forms.map(f => f.id === updated.id ? updated : f));
+          this.loadDashboardStats();
+          this.refreshActivityFeed();
+        },
+        error: err => console.error(`Error updating form to ${status}:`, err)
+      });
+    }
   }
 
   updateStandardEvaluationStatus(e: Evaluation, status: EvaluationStatus, comments: string) {
     const update: EvaluationStatusUpdate = { status, supervisor_comments: comments };
-    this.evaluationService.updateEvaluationStatus(e.id, update).subscribe({
-      next: updated => {
-        this.evaluations.update(all => all.map(ev => ev.id === e.id ? updated : ev));
-        this.loadDashboardStats();
-      },
-      error: err => console.error('Failed to update evaluation:', err)
-    });
+    if (this.mode === 'admin') {
+      this.evaluationService.updateAdminEvaluationStatus(e.id, update).subscribe({
+        next: updated => {
+          this.evaluations.update(all => all.map(ev => ev.id === e.id ? updated : ev));
+          this.loadDashboardStats();
+          this.refreshActivityFeed();
+        },
+        error: err => console.error('Failed to update evaluation:', err)
+      });
+    } else {
+      this.evaluationService.updateEvaluationStatus(e.id, update).subscribe({
+        next: updated => {
+          this.evaluations.update(all => all.map(ev => ev.id === e.id ? updated : ev));
+          this.loadDashboardStats();
+          this.refreshActivityFeed();
+        },
+        error: err => console.error('Failed to update evaluation:', err)
+      });
+    }
   }
 
   startReview(e: Evaluation) {
@@ -312,6 +402,7 @@ export class EvaluationsComponent implements OnInit {
     this.toast.success(`${count} evaluations ${status}`);
     this.clearSelection();
     this.loadDashboardStats();
+    this.refreshActivityFeed();
   }
 
   toggleEvaluationSelection(id: number) {
@@ -340,5 +431,14 @@ export class EvaluationsComponent implements OnInit {
 
   useFormTemplate(form: PDF) {
     console.log('Using form:', form);
+  }
+
+  refreshActivityFeed() {
+    this.dashboardService.refreshActivityFeed();
+  }
+
+  // Optionally, extract performance if present in evaluation model
+  getPerformance(e: Evaluation): string | number | undefined {
+    return (e as any).performance || (e as any).evaluationScore;
   }
 }

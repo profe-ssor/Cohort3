@@ -1,6 +1,5 @@
 export interface ISupervisorDatabase {
-  user_id: number
-
+  id?: number; // Add this line to match backend data
   full_name: string
   ghana_card_record: string
   contact: string

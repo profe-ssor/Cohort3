@@ -1,4 +1,4 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { MatListModule } from '@angular/material/list';
@@ -7,8 +7,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AuthService } from '../../../services/admin-services/auth.service';
-
-
+import { EvaluationService } from '../../../services/evaluation.service';
 
 interface NavigationItem {
   id: string;
@@ -308,11 +307,14 @@ interface NavigationItem {
     }
   `]
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit {
   @Input() isExpanded = true;
 
   private authService = inject(AuthService);
   private router = inject(Router);
+  private evaluationService = inject(EvaluationService);
+
+  pendingCount: number = 0;
 
   navigationItems: NavigationItem[] = [
     {
@@ -327,7 +329,6 @@ export class SidebarComponent {
       label: 'Evaluation Submissions',
       icon: 'assignment_turned_in',
       route: '/admin-dashboard/evaluations',
-      badge: 12,
       permission: 'approve_submissions'
     },
     {
@@ -401,7 +402,23 @@ export class SidebarComponent {
   ];
 
   hasPermission(permission?: string): boolean {
-    if (!permission) return true;
-    return this.authService.hasPermission(permission);
+    return true; // TEMP: Show all links for debugging
+  }
+
+  ngOnInit() {
+    // Fetch real pending count for admin
+    this.evaluationService.getAdminDashboardStats().subscribe({
+      next: stats => {
+        const evalNav = this.navigationItems.find(item => item.id === 'evaluations');
+        if (evalNav) evalNav.badge = stats.pendingReviews || 0;
+        this.pendingCount = stats.pendingReviews || 0;
+      },
+      error: err => {
+        // Hide badge on error
+        const evalNav = this.navigationItems.find(item => item.id === 'evaluations');
+        if (evalNav) evalNav.badge = 0;
+        this.pendingCount = 0;
+      }
+    });
   }
 }

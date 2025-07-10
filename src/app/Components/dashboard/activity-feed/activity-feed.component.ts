@@ -67,7 +67,7 @@ import { DashboardService } from '../../../services/admin-services/dashboard.ser
                     <div class="activity-meta">
                       <span class="activity-time">{{ formatTime(activity.timestamp) }}</span>
                       <mat-chip class="severity-chip" [class]="'chip-' + activity.severity">
-                        {{ activity.severity.toUpperCase() }}
+                        {{ activity.severity?.toUpperCase() }}
                       </mat-chip>
                     </div>
                   </div>
@@ -400,9 +400,10 @@ export class ActivityFeedComponent implements OnInit {
     return iconMap[action] || 'info';
   }
 
-  formatTime(timestamp: Date): string {
+  formatTime(timestamp: string | Date): string {
+    const date = typeof timestamp === 'string' ? new Date(timestamp) : timestamp;
     const now = new Date();
-    const diffMs = now.getTime() - timestamp.getTime();
+    const diffMs = now.getTime() - date.getTime();
     const diffMins = Math.floor(diffMs / 60000);
     const diffHours = Math.floor(diffMs / 3600000);
     const diffDays = Math.floor(diffMs / 86400000);
@@ -412,6 +413,6 @@ export class ActivityFeedComponent implements OnInit {
     if (diffHours < 24) return `${diffHours}h ago`;
     if (diffDays < 7) return `${diffDays}d ago`;
 
-    return timestamp.toLocaleDateString();
+    return date.toLocaleDateString();
   }
 }

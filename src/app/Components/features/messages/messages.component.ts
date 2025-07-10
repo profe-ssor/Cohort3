@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { IAvailableRecipient, IMessage } from '../../../model/interface/message';
 import { MessageService } from '../../../services/message.service';
+import { DashboardService } from '../../../services/admin-services/dashboard.service';
 
 @Component({
   selector: 'app-messages',
@@ -29,7 +30,10 @@ export class MessagesComponent implements OnInit {
     content: ''
   };
 
-  constructor(private messageService: MessageService) {}
+  constructor(
+    private messageService: MessageService,
+    private dashboardService: DashboardService
+  ) {}
 
   ngOnInit(): void {
     this.loadMessages();
@@ -59,7 +63,7 @@ export class MessagesComponent implements OnInit {
       error: (err) => console.error('Failed to load recipients:', err)
     });
   }
-  
+
   filteredMessages = computed(() => {
     let filtered = this.messages();
 
@@ -219,6 +223,7 @@ applyFilters() {
         };
         this.showComposeModal = false;
         this.loadMessages();
+        this.dashboardService.refreshActivityFeed();
       },
       error: (err) => {
         console.error('Failed to send message:', err);

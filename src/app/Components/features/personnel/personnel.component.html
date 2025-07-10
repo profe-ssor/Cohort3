@@ -34,7 +34,7 @@
             </svg>
           </div>
           <div class="stat-content">
-            <div class="stat-value">{{ activeCount() }}</div>
+            <div class="stat-value">{{ activeCount }}</div>
             <div class="stat-label">Active Personnel</div>
           </div>
         </div>
@@ -46,7 +46,7 @@
             </svg>
           </div>
           <div class="stat-content">
-            <div class="stat-value">{{ excellentPerformers() }}</div>
+            <div class="stat-value">{{ excellentPerformers }}</div>
             <div class="stat-label">Excellent Performers</div>
           </div>
         </div>
@@ -58,7 +58,7 @@
             </svg>
           </div>
           <div class="stat-content">
-            <div class="stat-value">{{ totalPendingSubmissions() }}</div>
+            <div class="stat-value">{{ totalPendingSubmissions }}</div>
             <div class="stat-label">Pending Submissions</div>
           </div>
         </div>
@@ -70,7 +70,7 @@
             </svg>
           </div>
           <div class="stat-content">
-            <div class="stat-value">{{ needsAttentionCount() }}</div>
+            <div class="stat-value">{{ needsAttentionCount }}</div>
             <div class="stat-label">Needs Attention</div>
           </div>
         </div>
@@ -81,7 +81,7 @@
           <div class="filters-row">
             <div class="filter-group">
               <label class="filter-label">Status</label>
-              <select class="form-control" [(ngModel)]="selectedStatus" (change)="applyFilters()">
+              <select class="form-control" [ngModel]="selectedStatus()" (ngModelChange)="selectedStatus.set($event); applyFilters()">
                 <option value="">All Status</option>
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
@@ -91,24 +91,16 @@
             </div>
             <div class="filter-group">
               <label class="filter-label">Department</label>
-              <select class="form-control" [(ngModel)]="selectedDepartment" (change)="applyFilters()">
+              <select class="form-control" [ngModel]="selectedDepartment()" (ngModelChange)="selectedDepartment.set($event); applyFilters()">
                 <option value="">All Departments</option>
-                <option value="Education">Education</option>
-                <option value="Health">Health</option>
-                <option value="Agriculture">Agriculture</option>
-                <option value="Community Development">Community Development</option>
-                <option value="Social Services">Social Services</option>
-                <option value="Infrastructure">Infrastructure</option>
+                <option *ngFor="let dept of departments" [value]="dept.value">{{ dept.label }}</option>
               </select>
             </div>
             <div class="filter-group">
               <label class="filter-label">Performance</label>
-              <select class="form-control" [(ngModel)]="selectedPerformance" (change)="applyFilters()">
+              <select class="form-control" [ngModel]="selectedPerformance()" (ngModelChange)="selectedPerformance.set($event); applyFilters()">
                 <option value="">All Performance</option>
-                <option value="excellent">Excellent</option>
-                <option value="good">Good</option>
-                <option value="satisfactory">Satisfactory</option>
-                <option value="needs_improvement">Needs Improvement</option>
+                <option *ngFor="let perf of performances" [value]="perf.value">{{ perf.label }}</option>
               </select>
             </div>
             <div class="filter-group">
@@ -121,8 +113,8 @@
                   type="text"
                   placeholder="Search personnel..."
                   class="form-control search-input"
-                  [(ngModel)]="searchQuery"
-                  (input)="applyFilters()"
+                  [ngModel]="searchQuery()"
+                  (ngModelChange)="searchQuery.set($event); applyFilters()"
                 />
               </div>
             </div>
@@ -209,7 +201,7 @@
 
                   <div class="last-activity">
                     <span class="activity-label">Last activity:</span>
-                    <span class="activity-time">{{ getRelativeTime(person.lastActivity) }}</span>
+                    <span class="activity-time">{{ person.lastActivity ? getRelativeTime(person.lastActivity) : 'N/A' }}</span>
                   </div>
                 </div>
 
@@ -221,7 +213,7 @@
                     </svg>
                     View Details
                   </button>
-                  <button class="btn btn-secondary btn-sm" (click)="contactPersonnel(person)">
+                  <button class="btn btn-secondary btn-sm" [routerLink]="['/supervisor-dashboard/messages']" [queryParams]="{ user: person.user_id }">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
                     </svg>
@@ -281,7 +273,7 @@
                     <button class="btn btn-primary btn-sm" [routerLink]="['/personnel', person.id]">
                       View
                     </button>
-                    <button class="btn btn-secondary btn-sm" (click)="contactPersonnel(person)">
+                    <button class="btn btn-secondary btn-sm" [routerLink]="['/supervisor-dashboard/messages']" [queryParams]="{ user: person.user_id }">
                       Message
                     </button>
                   </div>

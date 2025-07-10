@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, OnInit, signal } from '@angular/core';
+import { Component, effect, OnInit, signal, OnDestroy } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { AuthService } from '../../../../services/auth.service';
@@ -8,8 +8,8 @@ import { SupervisorCount } from '../../../../model/interface/supervor';
 import { MessageService } from '../../../../services/message.service';
 import { IMessageStats } from '../../../../model/interface/message';
 import { EvaluationService } from '../../../../services/evaluation.service';
-
-
+import { NssPersonelService } from '../../../../services/nss_personel.service';
+import { interval, Subscription } from 'rxjs';
 
 interface NavigationItem {
   label: string;
@@ -20,28 +20,29 @@ interface NavigationItem {
 }
 
 @Component({
-  selector: 'app-sidebar',
+  selector: 'app-supervisor-sidebar',
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css'
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent implements OnInit, OnDestroy {
   isCollapsed = signal(false);
   currentNssCount = 0;
   unreadMessages = signal<number>(0);
-
-  pendingEvaluations = signal(0); 
+  pendingEvaluations = signal(0);
+  pendingPersonnelReviews = signal(0);
 
   loading = true;
   countError: string | null = null;
+  private refreshSubscription?: Subscription;
 
- navigationItems: NavigationItem[] = [
-  { label: 'Dashboard', route: '/supervisor-dashboard/dashboard', icon: 'dashboard' },
-  { label: 'Evaluation Submissions', route: '/supervisor-dashboard/evaluations', icon: 'evaluations', badge: 7 },
-  { label: 'NSS Personnel', route: '/supervisor-dashboard/personnel', icon: 'personnel' },
-  { label: 'Message Center', route: '/supervisor-dashboard/messages', icon: 'messages' } // ✅ no badge here
-];
+  navigationItems: NavigationItem[] = [
+    { label: 'Dashboard', route: '/supervisor-dashboard/dashboard', icon: 'dashboard' },
+    { label: 'Evaluation Submissions', route: '/supervisor-dashboard/evaluations', icon: 'evaluations', badge: 0 },
+    { label: 'NSS Personnel', route: '/supervisor-dashboard/personnel', icon: 'personnel', badge: 0 },
+    { label: 'Message Center', route: '/supervisor-dashboard/messages', icon: 'messages', badge: 0 }
+  ];
 
   private readonly icons: Record<string, string> = {
     dashboard: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -72,16 +73,38 @@ export class SidebarComponent implements OnInit {
     private messageService: MessageService,
     private sanitizer: DomSanitizer,
     private evaluationService: EvaluationService,
-
+    private nssPersonnelService: NssPersonelService,
   ) {}
 
-ngOnInit(): void {
-  this.getAssignedPersonnel();
-   this.getUnreadMessages();
+  ngOnInit(): void {
+    this.loadAllCounts();
+    this.startAutoRefresh();
+  }
+
+  ngOnDestroy(): void {
+    if (this.refreshSubscription) {
+      this.refreshSubscription.unsubscribe();
+    }
+  }
+
+  private startAutoRefresh(): void {
+    // Refresh counts every 30 seconds
+    this.refreshSubscription = interval(30000).subscribe(() => {
+      this.loadAllCounts();
+    });
+  }
+
+  private loadAllCounts(): void {
+    this.getAssignedPersonnel();
+    this.getUnreadMessages();
     this.getPendingEvaluations();
+    this.getPendingPersonnelReviews();
+  }
 
-}
-
+  // Public method to manually refresh all counts
+  refreshCounts(): void {
+    this.loadAllCounts();
+  }
 
   toggleSidebar() {
     this.isCollapsed.update(value => !value);
@@ -92,35 +115,64 @@ ngOnInit(): void {
     return this.sanitizer.bypassSecurityTrustHtml(svg);
   }
 
-getUnreadMessages(): void {
-  this.messageService.getMessageStats().subscribe({
-    next: (res: IMessageStats) => {
-      this.unreadMessages.set(res.unread_messages);
-
-      // ✅ Only update the Message Center's badge dynamically
-      const msgNav = this.navigationItems.find(n => n.label === 'Message Center');
-      if (msgNav) {
-        msgNav.badge = res.unread_messages > 0 ? res.unread_messages : undefined;
+  getUnreadMessages(): void {
+    this.messageService.getMessageStats().subscribe({
+      next: (res: IMessageStats) => {
+        this.unreadMessages.set(res.unread_messages);
+        this.updateNavigationBadge('Message Center', res.unread_messages);
+      },
+      error: () => {
+        console.error('Failed to load unread messages.');
       }
-    },
-    error: () => {
-      console.error('Failed to load unread messages.');
-    }
-  });
-}
+    });
+  }
 
-getPendingEvaluations(): void {
-  this.evaluationService.getDashboardStats().subscribe({
-    next: stats => {
-      this.pendingEvaluations.set(stats.pending);
-      const evalNav = this.navigationItems.find(n => n.label === 'Evaluation Submissions');
-      if (evalNav) evalNav.badge = stats.pending;
-    },
-    error: err => {
-      console.error('Failed to load pending evaluations:', err);
+  getPendingEvaluations(): void {
+    this.evaluationService.getDashboardStats().subscribe({
+      next: stats => {
+        console.log('Dashboard stats received:', stats);
+        this.pendingEvaluations.set(stats.total_pending);
+        this.updateNavigationBadge('Evaluation Submissions', stats.total_pending);
+      },
+      error: err => {
+        console.error('Failed to load pending evaluations:', err);
+      }
+    });
+  }
+
+  getPendingPersonnelReviews(): void {
+    // Use the NSS personnel service to get pending submissions count
+    this.nssPersonnelService.getPendingSubmissions().subscribe({
+      next: count => {
+        console.log('Pending personnel submissions count:', count);
+        this.pendingPersonnelReviews.set(count);
+        this.updateNavigationBadge('NSS Personnel', count);
+      },
+      error: err => {
+        console.error('Failed to load pending personnel reviews:', err);
+        // Fallback to dashboard stats if personnel endpoint fails
+        this.evaluationService.getDashboardStats().subscribe({
+          next: stats => {
+            console.log('Fallback dashboard stats for personnel:', stats);
+            this.pendingPersonnelReviews.set(stats.total_pending);
+            this.updateNavigationBadge('NSS Personnel', stats.total_pending);
+          },
+          error: fallbackErr => {
+            console.error('Failed to load pending personnel reviews (fallback):', fallbackErr);
+            this.pendingPersonnelReviews.set(0);
+            this.updateNavigationBadge('NSS Personnel', 0);
+          }
+        });
+      }
+    });
+  }
+
+  private updateNavigationBadge(label: string, count: number): void {
+    const navItem = this.navigationItems.find(n => n.label === label);
+    if (navItem) {
+      navItem.badge = count > 0 ? count : undefined;
     }
-  });
-}
+  }
 
   getAssignedPersonnel(): void {
     this.loading = true;
@@ -128,13 +180,19 @@ getPendingEvaluations(): void {
 
     this.supervisorService.getSupervisorCounts().subscribe({
       next: (data) => {
+        console.log('Supervisor counts data:', data);
         const currentUser = this.authService.getUser();
+        console.log('Current user:', currentUser);
         const userId = currentUser?.id ?? currentUser?.supervisor_id ?? currentUser?.user_id;
+        console.log('Looking for supervisor ID:', userId);
         const match = data.find(item => item.supervisor_id == userId);
+        console.log('Matched supervisor data:', match);
         this.currentNssCount = match?.nss_count ?? data[0]?.nss_count ?? 0;
+        console.log('Final NSS count:', this.currentNssCount);
         this.loading = false;
       },
-      error: () => {
+      error: (err) => {
+        console.error('Error loading personnel count:', err);
         this.countError = 'Failed to load personnel count';
         this.loading = false;
       }

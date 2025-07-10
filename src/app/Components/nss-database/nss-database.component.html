@@ -130,6 +130,22 @@
 
     </div>
     <div class="row">
+      <div class="col">
+        <label for="department" class="form-label">DEPARTMENT:</label>
+        <select id="department" class="form-select form-select-lg" [(ngModel)]="nssdb.department" name="department" ngModel #department="ngModel" required>
+          <option value="">Select Department</option>
+          <option *ngFor="let dept of departments" [value]="dept.value">{{ dept.label }}</option>
+        </select>
+        <div class="alert">
+          @if(department.invalid && department.touched){
+          @if(department.hasError('required')){
+          <p>{{ constant.REQUIRED }}</p>
+          }
+          }
+        </div>
+      </div>
+    </div>
+    <div class="row">
 
         <div>
           <label for="region_of_posting"  class="form-label">REGION OF POSTING:</label>

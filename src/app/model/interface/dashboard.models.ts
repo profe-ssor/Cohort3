@@ -5,6 +5,7 @@ export interface DashboardStats {
   rejectedSubmissions: number;
   totalPersonnel: number;
   activeSupervisors: number;
+  completedToday?: number;
 }
 
 export interface SubmissionData {
@@ -45,13 +46,18 @@ export interface SupervisorData {
 }
 
 export interface ActivityLog {
-  id: string;
-  timestamp: Date;
+  id: number | string;
   action: string;
-  performedBy: string;
+  title: string;
   description: string;
+  personnel?: string;
+  timestamp: string | Date;
+  priority?: string;
+  supervisor?: number;
+  // Optional/mock fields for frontend compatibility
+  performedBy?: string;
   relatedId?: string;
-  severity: ActivitySeverity;
+  severity?: ActivitySeverity;
 }
 
 export interface RegionalData {

@@ -20,6 +20,7 @@
         <input
           type="checkbox"
           [(ngModel)]="selectedPdf.mark_as_signed"
+          [ngModelOptions]="{standalone: true}"
           name="mark_as_signed"
         />
         Mark this file as signed (no signature image)
@@ -55,10 +56,10 @@
       <label for="receiver_id">Send To *</label>
       <select id="receiver_id" formControlName="receiver_id" class="select-input" required>
         <option value="">Select recipient</option>
-        <option *ngIf="supervisor" [value]="supervisor.user_id">
+        <option *ngIf="supervisor" [value]="supervisor.user">
           Supervisor - {{ supervisor.full_name }}
         </option>
-        <option *ngIf="admin" [value]="admin.user_id">
+        <option *ngIf="admin" [value]="admin.user">
           Admin - {{ admin.full_name }}
         </option>
       </select>

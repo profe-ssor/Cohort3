@@ -2,6 +2,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { NssPersonelService } from '../../../../services/nss_personel.service';
 
 interface PersonnelDetail {
   id: string;
@@ -68,6 +69,8 @@ interface Activity {
 export class PersonnelDetailComponent implements OnInit {
   personnelId = signal<string>('');
   personnel = signal<PersonnelDetail | null>(null);
+  performances: { value: string, label: string }[] = [];
+  isAdmin = true; // TODO: Replace with real admin check
 
   // Mock data - in real app, this would come from a service
   mockPersonnelData: PersonnelDetail = {
@@ -158,17 +161,61 @@ export class PersonnelDetailComponent implements OnInit {
     }
   ]);
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute, private nssPersonnelService: NssPersonelService) {}
 
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.personnelId.set(params['id']);
-      // In a real app, you would fetch the personnel data here
-      this.personnel.set(this.mockPersonnelData);
+      this.nssPersonnelService.getPersonnelDetail(params['id']).subscribe({
+        next: (data) => {
+          // Map backend fields to frontend interface with fallbacks
+          this.personnel.set({
+            id: data.id,
+            name: data.full_name || data.name || '', // Use full_name if available
+            email: data.email || '',
+            phone: data.phone || '',
+            region: data.region_name || data.region || '',
+            department: data.department || '',
+            position: data.assigned_institution || data.position || '',
+            startDate: data.start_date ? new Date(data.start_date) : new Date(),
+            endDate: data.end_date ? new Date(data.end_date) : undefined,
+            status: data.status || 'active',
+            avatar: data.avatar || '',
+            totalSubmissions: data.total_submissions || 0,
+            pendingSubmissions: data.pending_submissions || 0,
+            approvedSubmissions: data.approved_submissions || 0,
+            rejectedSubmissions: data.rejected_submissions || 0,
+            lastActivity: data.last_activity ? new Date(data.last_activity) : new Date(0),
+            performance: data.performance || '',
+            supervisor: data.supervisor_name || data.supervisor || '',
+            emergencyContact: data.emergency_contact || { name: '', relationship: '', phone: '' },
+            address: data.address || { street: '', city: '', region: '' },
+            education: data.education || { institution: '', degree: '', year: 0 }
+          });
+        },
+        error: () => this.personnel.set(null)
+      });
     });
+    this.nssPersonnelService.getPerformanceChoices().subscribe((perfs: { value: string, label: string }[]) => this.performances = perfs);
   }
 
-  getInitials(name: string): string {
+  updatePerformance(newPerformance: string) {
+    const person = this.personnel();
+    if (!person) return;
+    this.nssPersonnelService.updatePersonnelPerformance(person.id, newPerformance)
+      .subscribe({
+        next: () => {
+          person.performance = newPerformance as 'excellent' | 'good' | 'satisfactory' | 'needs_improvement';
+          // Optionally show a success message
+        },
+        error: () => {
+          // Optionally show an error message
+        }
+      });
+  }
+
+  getInitials(name: string | undefined | null): string {
+    if (!name || typeof name !== 'string') return '';
     return name.split(' ').map(n => n[0]).join('').toUpperCase();
   }
 

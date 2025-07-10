@@ -20,12 +20,17 @@ export const adminRoutes: Routes = [
       {
         path: 'evaluations',
         loadComponent: () =>
-          import('../../../pages/ADMINISTRATORS/evaluations/evaluations.component').then(m => m.EvaluationsComponent),
+          import('../../../pages/ADMINISTRATORS/evaluations/evaluations.component').then(m => m.AdminEvaluationsPageComponent),
       },
       {
         path: 'personnel',
         loadComponent: () =>
           import('../../../pages/ADMINISTRATORS/personnel/personnel.component').then(m => m.PersonnelComponent),
+      },
+      {
+        path: 'personnel/:id',
+        loadComponent: () =>
+          import('../../../Components/features/personnel/personnel-detail/personnel-detail.component').then(m => m.PersonnelDetailComponent),
       },
       {
         path: 'supervisors',

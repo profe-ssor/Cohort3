@@ -43,7 +43,7 @@
         <li class="evaluate items">
           <a href="">
             <i class="fa fa-envira" aria-hidden="true"></i>
-            <p> Evaluate</p>
+            <p>Evaluate <span class="pending-badge" *ngIf="evaluationStats.total_pending > 0">{{ evaluationStats.total_pending }}</span></p>
           </a>
         </li>
         <li class="account items">
@@ -76,56 +76,58 @@
 
            <!-- Section2 Contentent -->
         <div class="section2">
-           <!-- TotalNSS Contentent -->
+           <!-- Total Submissions Contentent -->
             <div class="totalNSS">
                 <div class="text">
-
-                    <h6>{{ userCounts.total_users}}</h6>
-                    <p>Students</p>
-                    <small>2025/2026</small>
+                    <h6 *ngIf="!isLoadingEvaluationStats">{{ evaluationStats.total_submissions }}</h6>
+                    <h6 *ngIf="isLoadingEvaluationStats">...</h6>
+                    <p>Total Submissions</p>
+                    <small>0% from last month</small>
                 </div>
                 <div class="icons">
-                    <i class="fa fa-graduation-cap" aria-hidden="true"></i>
+                    <i class="fa fa-file-text" aria-hidden="true"></i>
                 </div>
           </div>
 
-           <!-- TotalNSS Contentent -->
-                   <!-- Submitted Contentent -->
+           <!-- Pending Reviews Contentent -->
                    <div class="submitted">
                     <div class="text">
-                        <h6>{{ userCounts.total_normal_users}}</h6>
-                        <p>Submitted</p>
-                        <small>April</small>
+                        <h6 *ngIf="!isLoadingEvaluationStats">{{ evaluationStats.total_pending }}</h6>
+                        <h6 *ngIf="isLoadingEvaluationStats">...</h6>
+                        <p>Pending Reviews</p>
+                        <small>0% from last month</small>
                     </div>
                     <div class="icons">
-                      <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                      <i class="fa fa-clock-o" aria-hidden="true"></i>
                     </div>
               </div>
-               <!-- Submitted Contentent Ends-->
-                <!-- Review Contentent -->
+               <!-- Pending Reviews Contentent Ends-->
+                <!-- Approved This Month Contentent -->
             <div class="review">
               <div class="text">
-                  <h6>{{ userCounts.total_admins}}</h6>
-                  <p>Review</p>
-                  <small> 2025/2026 </small>
+                  <h6 *ngIf="!isLoadingEvaluationStats">{{ evaluationStats.approved }}</h6>
+                  <h6 *ngIf="isLoadingEvaluationStats">...</h6>
+                  <p>Approved This Month</p>
+                  <small>0% from last month</small>
               </div>
               <div class="icons">
-                <i class="fa fa-handshake-o" aria-hidden="true"></i>
+                <i class="fa fa-check-circle" aria-hidden="true"></i>
               </div>
         </div>
-         <!-- Review Contentent Ends-->
-               <!-- Pending Contentent -->
+         <!-- Approved This Month Contentent Ends-->
+               <!-- Under Review Contentent -->
                <div class="pending">
                 <div class="text">
-                    <h6>{{ userCounts.total_admins}}</h6>
-                    <p>Pending</p>
-                    <small>2025/2026 </small>
+                    <h6 *ngIf="!isLoadingEvaluationStats">{{ evaluationStats.under_review }}</h6>
+                    <h6 *ngIf="isLoadingEvaluationStats">...</h6>
+                    <p>Under Review</p>
+                    <small>Currently being reviewed</small>
                 </div>
                 <div class="icons">
-                  <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                  <i class="fa fa-search" aria-hidden="true"></i>
                 </div>
           </div>
-           <!-- Pending Contentent Ends-->
+           <!-- Under Review Contentent Ends-->
         </div>
        </header>
 

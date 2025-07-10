@@ -10,6 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDividerModule } from '@angular/material/divider';
 import { AuthService } from '../../../services/auth.service';
 import { User } from '../../../model/interface/dashboard.models';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -94,6 +95,11 @@ import { User } from '../../../model/interface/dashboard.models';
         <button mat-menu-item>
           <mat-icon>person</mat-icon>
           <span>Profile Settings</span>
+        </button>
+
+        <button mat-menu-item (click)="changePassword()">
+          <mat-icon>lock</mat-icon>
+          <span>Change Password</span>
         </button>
 
         <button mat-menu-item>
@@ -324,6 +330,7 @@ export class HeaderComponent {
   @Output() sidebarToggle = new EventEmitter<void>();
 
   private authService = inject(AuthService);
+  private router = inject(Router);
   currentUser: User | null = null;
   notificationCount = 5;
 
@@ -352,5 +359,9 @@ export class HeaderComponent {
 
   logout(): void {
     this.authService.logout().subscribe();
+  }
+
+  changePassword(): void {
+    this.router.navigate(['/change-password']);
   }
 }

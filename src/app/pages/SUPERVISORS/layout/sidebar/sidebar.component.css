@@ -1,6 +1,4 @@
-
     .sidebar {
-
       left: 0;
       top: 64px;
       width: 280px;
@@ -23,19 +21,16 @@
     }
 
     .navigation {
-
       flex: 1;
       padding: 0 var(--spacing-md);
     }
 
     .nav-group {
       margin-top: 4em;
-
       margin-bottom: var(--spacing-xs);
     }
 
     .nav-item {
-
       display: flex;
       align-items: center;
       gap: var(--spacing-md);
@@ -162,12 +157,14 @@
 
     .info-content {
       display: flex;
+   
       justify-content: space-between;
-      gap: var(--spacing-md);
+      gap: var(--spacing-sm);
+
     }
 
     .assigned-count,
-    .pending-count {
+    .personnel-pending-count {
       display: flex;
       flex-direction: column;
       align-items: center;

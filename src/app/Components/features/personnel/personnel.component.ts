@@ -1,10 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, signal, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { NssPersonelService } from '../../../services/nss_personel.service';
+import { EvaluationService } from '../../../services/evaluation.service';
+import { PDF } from '../../../model/interface/pdf';
 
 interface Personnel {
   id: string;
+  user_id: string;
   name: string;
   email: string;
   phone: string;
@@ -17,7 +21,7 @@ interface Personnel {
   totalSubmissions: number;
   pendingSubmissions: number;
   approvedSubmissions: number;
-  lastActivity: Date;
+  lastActivity: Date | null;
   performance: 'excellent' | 'good' | 'satisfactory' | 'needs_improvement';
 }
 
@@ -29,133 +33,36 @@ interface Personnel {
   templateUrl: './personnel.component.html',
   styleUrl: './personnel.component.css'
 })
-export class PersonnelComponent {
-  selectedStatus = '';
-  selectedDepartment = '';
-  selectedPerformance = '';
-  searchQuery = '';
+export class PersonnelComponent implements OnInit {
+  selectedStatus = signal<string>('');
+  selectedDepartment = signal<string>('');
+  selectedPerformance = signal<string>('');
+  searchQuery = signal<string>('');
   viewMode = signal<'grid' | 'list'>('grid');
 
-  personnel = signal<Personnel[]>([
-    {
-      id: 'P001',
-      name: 'Akua Mensah',
-      email: 'akua.mensah@nss.gov.gh',
-      phone: '+233 24 123 4567',
-      region: 'Greater Accra',
-      department: 'Education',
-      position: 'Teaching Assistant',
-      startDate: new Date('2024-01-15'),
-      status: 'active',
-      totalSubmissions: 15,
-      pendingSubmissions: 2,
-      approvedSubmissions: 12,
-      lastActivity: new Date(Date.now() - 2 * 60 * 60 * 1000),
-      performance: 'excellent'
-    },
-    {
-      id: 'P002',
-      name: 'Kofi Asante',
-      email: 'kofi.asante@nss.gov.gh',
-      phone: '+233 24 234 5678',
-      region: 'Ashanti',
-      department: 'Community Development',
-      position: 'Project Coordinator',
-      startDate: new Date('2024-02-01'),
-      status: 'active',
-      totalSubmissions: 12,
-      pendingSubmissions: 1,
-      approvedSubmissions: 10,
-      lastActivity: new Date(Date.now() - 4 * 60 * 60 * 1000),
-      performance: 'good'
-    },
-    {
-      id: 'P003',
-      name: 'Ama Osei',
-      email: 'ama.osei@nss.gov.gh',
-      phone: '+233 24 345 6789',
-      region: 'Northern',
-      department: 'Health',
-      position: 'Health Assistant',
-      startDate: new Date('2024-01-20'),
-      status: 'active',
-      totalSubmissions: 18,
-      pendingSubmissions: 3,
-      approvedSubmissions: 15,
-      lastActivity: new Date(Date.now() - 1 * 60 * 60 * 1000),
-      performance: 'excellent'
-    },
-    {
-      id: 'P004',
-      name: 'Kwame Owusu',
-      email: 'kwame.owusu@nss.gov.gh',
-      phone: '+233 24 456 7890',
-      region: 'Greater Accra',
-      department: 'Agriculture',
-      position: 'Agricultural Extension Officer',
-      startDate: new Date('2024-03-01'),
-      status: 'on_leave',
-      totalSubmissions: 9,
-      pendingSubmissions: 1,
-      approvedSubmissions: 7,
-      lastActivity: new Date(Date.now() - 24 * 60 * 60 * 1000),
-      performance: 'satisfactory'
-    },
-    {
-      id: 'P005',
-      name: 'Efua Boateng',
-      email: 'efua.boateng@nss.gov.gh',
-      phone: '+233 24 567 8901',
-      region: 'Central',
-      department: 'Social Services',
-      position: 'Social Worker',
-      startDate: new Date('2024-02-15'),
-      status: 'active',
-      totalSubmissions: 14,
-      pendingSubmissions: 2,
-      approvedSubmissions: 11,
-      lastActivity: new Date(Date.now() - 6 * 60 * 60 * 1000),
-      performance: 'good'
-    },
-    {
-      id: 'P006',
-      name: 'Yaw Adjei',
-      email: 'yaw.adjei@nss.gov.gh',
-      phone: '+233 24 678 9012',
-      region: 'Western',
-      department: 'Infrastructure',
-      position: 'Engineering Assistant',
-      startDate: new Date('2024-01-10'),
-      status: 'active',
-      totalSubmissions: 8,
-      pendingSubmissions: 4,
-      approvedSubmissions: 3,
-      lastActivity: new Date(Date.now() - 12 * 60 * 60 * 1000),
-      performance: 'needs_improvement'
-    }
-  ]);
+  personnel = signal<Personnel[]>([]);
 
   filteredPersonnel = computed(() => {
     let filtered = this.personnel();
 
-    if (this.selectedStatus) {
-      filtered = filtered.filter(p => p.status === this.selectedStatus);
+    if (this.selectedStatus()) {
+      filtered = filtered.filter(p => p.status === this.selectedStatus());
     }
 
-    if (this.selectedDepartment) {
-      filtered = filtered.filter(p => p.department === this.selectedDepartment);
+    if (this.selectedDepartment()) {
+      filtered = filtered.filter(p => p.department === this.selectedDepartment());
     }
 
-    if (this.selectedPerformance) {
-      filtered = filtered.filter(p => p.performance === this.selectedPerformance);
+    if (this.selectedPerformance()) {
+      filtered = filtered.filter(p => p.performance === this.selectedPerformance());
     }
 
-    if (this.searchQuery) {
-      const query = this.searchQuery.toLowerCase();
+    if (this.searchQuery()) {
+      const query = this.searchQuery().toLowerCase();
       filtered = filtered.filter(p =>
         p.name.toLowerCase().includes(query) ||
         p.email.toLowerCase().includes(query) ||
-        p.department.toLowerCase().includes(query) ||
+        (p.department || '').toLowerCase().includes(query) ||
         p.region.toLowerCase().includes(query) ||
         p.position.toLowerCase().includes(query)
       );
@@ -172,29 +79,89 @@ export class PersonnelComponent {
     });
   });
 
-  // Computed statistics
-  activeCount = computed(() =>
-    this.personnel().filter(p => p.status === 'active').length
-  );
+  // Backend-driven counts
+  activeCount = 0;
+  excellentPerformers = 0;
+  needsAttentionCount = 0;
+  totalPendingSubmissions = 0;
 
-  excellentPerformers = computed(() =>
-    this.personnel().filter(p => p.performance === 'excellent').length
-  );
+  evaluationForms: PDF[] = [];
 
-  totalPendingSubmissions = computed(() =>
-    this.personnel().reduce((sum, p) => sum + p.pendingSubmissions, 0)
-  );
+  departments: { value: string, label: string }[] = [];
+  performances: { value: string, label: string }[] = [];
 
-  needsAttentionCount = computed(() =>
-    this.personnel().filter(p =>
-      p.performance === 'needs_improvement' ||
-      p.pendingSubmissions > 3 ||
-      (new Date().getTime() - p.lastActivity.getTime()) > (7 * 24 * 60 * 60 * 1000)
-    ).length
-  );
+  constructor(
+    private nssPersonnelService: NssPersonelService,
+    private evaluationService: EvaluationService
+  ) {}
+
+  ngOnInit(): void {
+    this.loadCounts();
+    this.fetchPersonnel();
+    this.nssPersonnelService.getDepartments().subscribe(depts => this.departments = depts);
+    this.nssPersonnelService.getPerformanceChoices().subscribe(perfs => this.performances = perfs);
+  }
+
+  loadCounts() {
+    this.nssPersonnelService.getStatusCountsForSupervisor().subscribe(data => {
+      const active = data.find((d: any) => d.status === 'active');
+      this.activeCount = active ? active.total : 0;
+    });
+
+    this.nssPersonnelService.getPerformanceCountsForSupervisor().subscribe(data => {
+      const excellent = data.find((d: any) => d.performance === 'excellent');
+      const needsAttention = data.find((d: any) => d.performance === 'needs_improvement');
+      this.excellentPerformers = excellent ? excellent.total : 0;
+      this.needsAttentionCount = needsAttention ? needsAttention.total : 0;
+    });
+
+    // Use dashboard_stats endpoint for Pending Submissions
+    this.evaluationService.getDashboardStats().subscribe(stats => {
+      this.totalPendingSubmissions = stats.total_pending || 0;
+    }, () => {
+      this.totalPendingSubmissions = 0;
+    });
+  }
+
+  fetchPersonnel() {
+    this.nssPersonnelService.getAssignedPersonnel().subscribe((data: any[]) => {
+      // Map backend data to Personnel interface as needed
+      const personnelList = data.map(p => ({
+        id: p.id || p.nss_id,
+        user_id: p.user?.id || p.user_id || p.email || '',
+        name: p.full_name,
+        email: p.user?.email || p.email || '',
+        phone: p.phone,
+        region: p.region_name || '',
+        department: p.department, // use raw backend value
+        position: p.assigned_institution || '',
+        startDate: new Date(p.start_date),
+        status: p.status,
+        totalSubmissions: 0,
+        pendingSubmissions: 0,
+        approvedSubmissions: 0,
+        lastActivity: null as Date | null,
+        performance: p.performance // use raw backend value
+      }));
+      // Fetch stats and map to personnel
+      this.evaluationService.getPersonnelSubmissions().subscribe(statsArr => {
+        personnelList.forEach(person => {
+          const stat = statsArr.find(s => String(s.personnelId) === String(person.user_id));
+          if (stat) {
+            person.totalSubmissions = stat.submissions || 0;
+            person.pendingSubmissions = stat.pending || 0;
+            person.approvedSubmissions = stat.approved || 0;
+            person.lastActivity = stat.lastActivity ? new Date(stat.lastActivity) : null;
+          }
+        });
+        this.personnel.set([...personnelList]);
+      });
+      this.applyFilters();
+    });
+  }
 
   applyFilters() {
-    // Filters are applied automatically through computed signal
+    // No-op: signals trigger recompute automatically
   }
 
   setViewMode(mode: 'grid' | 'list') {

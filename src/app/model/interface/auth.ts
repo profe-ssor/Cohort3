@@ -5,15 +5,11 @@ export interface registerUser {
   user_type: string;
   password: string;
 }
-export interface registerResponse{
+
+export interface registerResponse {
   message: string;
   id: number;
-  user: {
-    email: string;
-    username: string;
-    gender: string;
-    user_type: string;
-  }
+  user: registerUser;
 }
 
 export interface logUser
@@ -31,6 +27,7 @@ export interface LoginResponse {
     email: string;
     role: string;
     full_name: string;
+    username?: string;  // Optional for backward compatibility
     permissions: {
       is_superuser: boolean;
       is_staff: boolean;
@@ -38,16 +35,16 @@ export interface LoginResponse {
     };
   };
 }
- export interface Credentials {
+
+export interface Credentials {
   email: string;
   password: string;
 }
 
 export interface UserCounts {
-  total_users: number;
-  total_normal_users: number;
-  total_admins: number;
- total_supervisors: number;
+  nss_count: number;
+  supervisor_count: number;
+  admin_count: number;
 }
 
 export interface OtpVerification {
@@ -57,6 +54,7 @@ export interface OtpVerification {
 
 export interface OtpResponse {
   message: string;
+  email: string;
 }
 
 export interface ResendOTP {
@@ -65,6 +63,7 @@ export interface ResendOTP {
 
 export interface ResendOtpResponse {
   message: string;
+  email: string;
 }
 
 export interface LogoutResponse {
@@ -72,33 +71,65 @@ export interface LogoutResponse {
 }
 
 export interface supervisor_database {
-    user_id: number
-    full_name: string
-    ghana_card_record: string
-    contact: string
-    assigned_institution: string
-    region_of_posting: string
-    assigned_workplace: string
+  user_id: number;
+  full_name: string;
+  ghana_card_record: string;
+  contact: string;
+  assigned_supervisors: string;
+  user: number;
 }
 
 export interface supervisors_databaseResponse {
   message: string;
+  data: supervisor_database[];
 }
 
 export interface nss_database {
-  user_id: number
-  full_name: string
-  ghana_card_record: string
-  phone: string
-  nss_id: string
-  start_date: string
-  end_date: string
-  assigned_institution: string
-  region_of_posting: string
+  id?: number; // Add this line to match backend data
+  user_id: number;
+  full_name: string;
+  ghana_card_record: string;
+  phone: string;
+  nss_id: string;
+  start_date: string;
+  end_date: string;
+  assigned_institution: string;
+  region_of_posting: string;
+  department: string;
 }
 
 export interface nss_databaseResponse {
+  message: string;
+  data: nss_database[];
+}
 
-message: string;
-full_name: string;
+// Password management interfaces
+export interface PasswordChangeRequest {
+  current_password: string;
+  new_password: string;
+  confirm_password: string;
+}
+
+export interface PasswordChangeResponse {
+  message: string;
+}
+
+export interface PasswordResetRequest {
+  email: string;
+}
+
+export interface PasswordResetRequestResponse {
+  message: string;
+  email: string;
+}
+
+export interface PasswordResetConfirm {
+  email: string;
+  otp_code: string;
+  new_password: string;
+  confirm_password: string;
+}
+
+export interface PasswordResetConfirmResponse {
+  message: string;
 }

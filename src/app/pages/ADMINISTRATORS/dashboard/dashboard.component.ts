@@ -1,11 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { OverviewCardsComponent } from "../../../Components/dashboard/overview-cards/overview-cards.component";
 import { ActivityFeedComponent } from "../../../Components/dashboard/activity-feed/activity-feed.component";
-
+import { EvaluationService } from '../../../services/evaluation.service';
+import { DashboardService } from '../../../services/admin-services/dashboard.service';
+import { DashboardStats } from '../../../model/interface/dashboard.models';
+import { RegionalData } from '../../../model/interface/dashboard.models';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -40,6 +44,9 @@ import { ActivityFeedComponent } from "../../../Components/dashboard/activity-fe
         </div>
       </div>
 
+      <!-- Admin Evaluation Stats -->
+      <!-- Removed Evaluation Points (Your NSS Personnel) card -->
+
       <!-- Overview Statistics -->
       <app-overview-cards></app-overview-cards>
 
@@ -54,7 +61,9 @@ import { ActivityFeedComponent } from "../../../Components/dashboard/activity-fe
             </mat-card-title>
           </mat-card-header>
           <mat-card-content>
-            <div class="regional-grid">
+            <div *ngIf="loadingRegions" class="regional-loading">Loading regional data...</div>
+            <div *ngIf="errorRegions" class="regional-error">{{ errorRegions }}</div>
+            <div class="regional-grid" *ngIf="!loadingRegions && !errorRegions">
               @for (region of regionData; track region.name) {
                 <div class="region-item">
                   <div class="region-header">
@@ -74,8 +83,8 @@ import { ActivityFeedComponent } from "../../../Components/dashboard/activity-fe
                 </div>
               }
             </div>
-            <div class="regional-footer">
-              <button mat-button color="primary">
+            <div class="regional-footer" *ngIf="!loadingRegions && !errorRegions && regionData.length">
+              <button mat-button color="primary" (click)="viewRegionalDetail('all')">
                 View Regional Details
                 <mat-icon>arrow_forward</mat-icon>
               </button>
@@ -358,51 +367,97 @@ import { ActivityFeedComponent } from "../../../Components/dashboard/activity-fe
         grid-template-columns: 1fr;
       }
     }
+
+    .admin-eval-stats { margin-bottom: 24px; }
+    .admin-eval-stats.error { color: #c62828; }
+    .stats-grid { display: flex; flex-wrap: wrap; gap: 24px; margin-top: 12px; }
+    .stats-grid > div { min-width: 180px; font-size: 16px; }
   `]
 })
-export class DashboardComponent {
-  regionData = [
-    { name: 'Greater Accra', total: 1250, active: 1180, pending: 70 },
-    { name: 'Ashanti', total: 980, active: 920, pending: 60 },
-    { name: 'Western', total: 650, active: 610, pending: 40 },
-    { name: 'Central', total: 720, active: 680, pending: 40 },
-    { name: 'Eastern', total: 580, active: 550, pending: 30 },
-    { name: 'Northern', total: 420, active: 390, pending: 30 }
-  ];
+export class DashboardComponent implements OnInit {
+  stats: DashboardStats | null = null;
+  loadingStats = false;
+  errorStats: string | null = null;
+  regionData: { name: string; total: number; active: number; pending: number }[] = [];
+  loadingRegions = false;
+  errorRegions: string | null = null;
 
   quickActions = [
     {
-      id: 'new-personnel',
-      title: 'Register Personnel',
-      description: 'Add new national service personnel to the system',
-      icon: 'person_add',
-      color: 'green'
+      id: 'personnel',
+      title: 'Manage Personnel',
+      description: 'View and manage NSS personnel records',
+      icon: 'people',
+      color: 'primary',
+      route: '/admin-dashboard/personnel'
     },
     {
-      id: 'review-submissions',
-      title: 'Review Submissions',
-      description: 'Process pending evaluation submissions',
-      icon: 'rate_review',
-      color: 'blue'
-    },
-    {
-      id: 'generate-reports',
-      title: 'Generate Reports',
-      description: 'Create comprehensive service reports',
-      icon: 'analytics',
-      color: 'orange'
-    },
-    {
-      id: 'manage-supervisors',
+      id: 'supervisors',
       title: 'Manage Supervisors',
-      description: 'Handle supervisor assignments and permissions',
+      description: 'Assign and manage supervisors',
       icon: 'supervisor_account',
-      color: 'blue'
+      color: 'accent',
+      route: '/admin-dashboard/supervisors'
+    },
+    {
+      id: 'evaluations',
+      title: 'View Evaluations',
+      description: 'Monitor evaluation submissions',
+      icon: 'assessment',
+      color: 'warn',
+      route: '/admin-dashboard/evaluations'
+    },
+    {
+      id: 'reports',
+      title: 'Ghost Detection',
+      description: 'Monitor and manage ghost personnel alerts',
+      icon: 'security',
+      color: 'error',
+      route: '/admin-dashboard/reports'
     }
   ];
 
+  constructor(private evaluationService: EvaluationService, private dashboardService: DashboardService, private router: Router) {}
+
+  ngOnInit() {
+    this.loadingStats = true;
+    this.evaluationService.getAdminDashboardStats().subscribe({
+      next: (stats) => {
+        this.stats = stats;
+        this.loadingStats = false;
+      },
+      error: (err) => {
+        this.errorStats = 'Failed to load evaluation stats.';
+        this.loadingStats = false;
+      }
+    });
+    // Fetch regional data dynamically
+    this.loadingRegions = true;
+    this.dashboardService.getRegionalData().subscribe({
+      next: (regions: any[]) => {
+        this.regionData = regions.map(region => ({
+          name: region.region,
+          total: region.total_personnel,
+          active: region.completed_submissions,
+          pending: region.pending_submissions
+        }));
+        this.loadingRegions = false;
+      },
+      error: (err) => {
+        this.errorRegions = 'Failed to load regional data.';
+        this.loadingRegions = false;
+      }
+    });
+  }
+
   performQuickAction(actionId: string): void {
-    console.log(`Performing quick action: ${actionId}`);
-    // Implement navigation or action logic here
+    const action = this.quickActions.find(a => a.id === actionId);
+    if (action && action.route) {
+      this.router.navigate([action.route]);
+    }
+  }
+
+  viewRegionalDetail(regionName: string) {
+    this.router.navigate(['/admin/regional-detail', regionName]);
   }
 }

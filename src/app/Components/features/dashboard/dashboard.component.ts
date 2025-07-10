@@ -1,7 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, signal, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
+import { AuthService } from '../../../services/auth.service';
+import { SupervisorService } from '../../../services/supervisors';
+import { EvaluationService } from '../../../services/evaluation.service';
+import { SupervisorCount } from '../../../model/interface/supervor';
+import { EvaluationDashboardStats } from '../../../model/interface/evaluation';
+import { DashboardService } from '../../../services/admin-services/dashboard.service';
 
 interface MetricCard {
   title: string;
@@ -10,16 +17,17 @@ interface MetricCard {
   trend: 'up' | 'down' | 'stable';
   trendValue: number;
   color: 'primary' | 'success' | 'warning' | 'danger';
+  loading?: boolean;
 }
 
 interface Activity {
   id: string;
-  type: 'submission' | 'approval' | 'message' | 'personnel';
+  action: string;
   title: string;
   description: string;
-  timestamp: Date;
   personnel?: string;
-  priority?: 'high' | 'medium' | 'low';
+  timestamp: string;
+  priority?: string;
 }
 
 interface PersonnelSubmission {
@@ -40,149 +48,187 @@ interface PersonnelSubmission {
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit, OnDestroy {
   selectedPeriod = 'month';
+  private destroy$ = new Subject<void>();
 
+  // Dashboard metrics with loading states
   metrics = signal<MetricCard[]>([
     {
       title: 'Total Submissions',
-      value: 156,
+      value: 0,
       icon: 'submissions',
-      trend: 'up',
-      trendValue: 12,
-      color: 'primary'
+      trend: 'stable',
+      trendValue: 0,
+      color: 'primary',
+      loading: true
     },
     {
       title: 'Pending Reviews',
-      value: 23,
+      value: 0,
       icon: 'pending',
-      trend: 'down',
-      trendValue: 8,
-      color: 'warning'
+      trend: 'stable',
+      trendValue: 0,
+      color: 'warning',
+      loading: true
     },
     {
       title: 'Approved This Month',
-      value: 98,
+      value: 0,
       icon: 'approved',
-      trend: 'up',
-      trendValue: 15,
-      color: 'success'
+      trend: 'stable',
+      trendValue: 0,
+      color: 'success',
+      loading: true
     },
     {
       title: 'Assigned Personnel',
-      value: 24,
+      value: 0,
       icon: 'personnel',
       trend: 'stable',
       trendValue: 0,
-      color: 'primary'
+      color: 'primary',
+      loading: true
     }
   ]);
 
-  personnelSubmissions = signal<PersonnelSubmission[]>([
-    {
-      personnelId: '1',
-      name: 'Akua Mensah',
-      region: 'Accra',
-      submissions: 15,
-      approved: 12,
-      pending: 2,
-      rejected: 1,
-      lastActivity: new Date()
-    },
-    {
-      personnelId: '2',
-      name: 'Kofi Asante',
-      region: 'Kumasi',
-      submissions: 12,
-      approved: 10,
-      pending: 1,
-      rejected: 1,
-      lastActivity: new Date()
-    },
-    {
-      personnelId: '3',
-      name: 'Ama Osei',
-      region: 'Tamale',
-      submissions: 18,
-      approved: 15,
-      pending: 3,
-      rejected: 0,
-      lastActivity: new Date()
-    },
-    {
-      personnelId: '4',
-      name: 'Kwame Owusu',
-      region: 'Accra',
-      submissions: 9,
-      approved: 7,
-      pending: 1,
-      rejected: 1,
-      lastActivity: new Date()
-    },
-    {
-      personnelId: '5',
-      name: 'Efua Boateng',
-      region: 'Cape Coast',
-      submissions: 14,
-      approved: 11,
-      pending: 2,
-      rejected: 1,
-      lastActivity: new Date()
-    }
-  ]);
+  // Real personnel submissions data
+  personnelSubmissions = signal<PersonnelSubmission[]>([]);
 
-  recentActivities = signal<Activity[]>([
-    {
-      id: '1',
-      type: 'submission',
-      title: 'New evaluation submitted',
-      description: 'Monthly performance evaluation received',
-      personnel: 'Akua Mensah',
-      timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
-      priority: 'high'
-    },
-    {
-      id: '2',
-      type: 'approval',
-      title: 'Evaluation approved',
-      description: 'Community development project evaluation',
-      personnel: 'Kofi Asante',
-      timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000),
-      priority: 'medium'
-    },
-    {
-      id: '3',
-      type: 'message',
-      title: 'Message from administration',
-      description: 'New evaluation guidelines available',
-      timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000)
-    },
-    {
-      id: '4',
-      type: 'personnel',
-      title: 'Personnel assignment updated',
-      description: 'New service personnel assigned to your supervision',
-      personnel: 'Ama Osei',
-      timestamp: new Date(Date.now() - 8 * 60 * 60 * 1000),
-      priority: 'low'
-    },
-    {
-      id: '5',
-      type: 'submission',
-      title: 'Evaluation resubmitted',
-      description: 'Updated evaluation with requested changes',
-      personnel: 'Kwame Owusu',
-      timestamp: new Date(Date.now() - 12 * 60 * 60 * 1000),
-      priority: 'medium'
-    }
-  ]);
+  // Recent activities (keeping some mock data for now)
+  recentActivities = signal<Activity[]>([]);
+  loadingActivities = signal<boolean>(true);
+
+  constructor(
+    private authService: AuthService,
+    private supervisorService: SupervisorService,
+    private evaluationService: EvaluationService,
+    private dashboardService: DashboardService
+  ) {}
+
+  ngOnInit(): void {
+    this.loadDashboardData();
+    this.fetchRecentActivities();
+
+    // Listen for activity feed refresh events from other components
+    this.dashboardService.onActivityFeedRefresh()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.fetchRecentActivities();
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  loadDashboardData(): void {
+    this.loadEvaluationStats();
+    this.getAssignedPersonnel();
+    this.loadPersonnelSubmissions();
+  }
+
+  loadEvaluationStats(): void {
+    this.evaluationService.getDashboardStats()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (stats: EvaluationDashboardStats) => {
+          this.updateMetricsWithEvaluationStats(stats);
+        },
+        error: (error) => {
+          console.error('Failed to load evaluation stats:', error);
+          this.setMetricsError();
+        }
+      });
+  }
+
+  getAssignedPersonnel(): void {
+    this.supervisorService.getSupervisorCounts()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data: SupervisorCount[]) => {
+          const currentUser = this.authService.getUser();
+          const userId = currentUser?.id ?? currentUser?.supervisor_id ?? currentUser?.user_id;
+          const match = data.find(item => item.supervisor_id == userId);
+          const assignedPersonnelCount = match?.nss_count ?? data[0]?.nss_count ?? 0;
+
+          this.updateAssignedPersonnelMetric(assignedPersonnelCount);
+        },
+        error: (error) => {
+          console.error('Failed to load assigned personnel count:', error);
+          this.updateAssignedPersonnelMetric(0);
+        }
+      });
+  }
+
+  loadPersonnelSubmissions(): void {
+    this.evaluationService.getPersonnelSubmissions()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data: PersonnelSubmission[]) => {
+          this.personnelSubmissions.set(data);
+        },
+        error: (error: any) => {
+          console.error('Failed to load personnel submissions:', error);
+          this.personnelSubmissions.set([]);
+        }
+      });
+  }
+
+  updateMetricsWithEvaluationStats(stats: EvaluationDashboardStats): void {
+    const currentMetrics = this.metrics();
+
+    // Update metrics with real data from backend
+    const updatedMetrics = currentMetrics.map(metric => {
+      switch (metric.title) {
+        case 'Total Submissions':
+          return { ...metric, value: stats.total_submissions, loading: false };
+        case 'Pending Reviews':
+          return { ...metric, value: stats.total_pending, loading: false };
+        case 'Approved This Month':
+          return { ...metric, value: stats.approved, loading: false };
+        default:
+          return metric;
+      }
+    });
+
+    this.metrics.set(updatedMetrics);
+  }
+
+  updateAssignedPersonnelMetric(count: number): void {
+    const currentMetrics = this.metrics();
+    const updatedMetrics = currentMetrics.map(metric => {
+      if (metric.title === 'Assigned Personnel') {
+        return { ...metric, value: count, loading: false };
+      }
+      return metric;
+    });
+
+    this.metrics.set(updatedMetrics);
+  }
+
+  setMetricsError(): void {
+    const currentMetrics = this.metrics();
+    const updatedMetrics = currentMetrics.map(metric => ({
+      ...metric,
+      value: 0,
+      loading: false
+    }));
+
+    this.metrics.set(updatedMetrics);
+  }
 
   // Computed values
-  pendingSubmissions = computed(() =>
-    this.personnelSubmissions().reduce((sum, p) => sum + p.pending, 0)
-  );
+  pendingSubmissions = computed(() => {
+    const pendingMetric = this.metrics().find(m => m.title === 'Pending Reviews');
+    return pendingMetric?.value || 0;
+  });
 
-  totalPersonnel = computed(() => this.personnelSubmissions().length);
+  totalPersonnel = computed(() => {
+    const personnelMetric = this.metrics().find(m => m.title === 'Assigned Personnel');
+    return personnelMetric?.value || 0;
+  });
 
   getIcon(iconName: string): string {
     const icons: Record<string, string> = {
@@ -222,17 +268,45 @@ export class DashboardComponent {
     return icons[type] || '';
   }
 
-  getRelativeTime(timestamp: Date): string {
+  getRelativeTime(date: string | Date): string {
+    const d = typeof date === 'string' ? new Date(date) : date;
     const now = new Date();
-    const diffInMinutes = Math.floor((now.getTime() - timestamp.getTime()) / (1000 * 60));
+    const diffMs = now.getTime() - d.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
 
-    if (diffInMinutes < 60) {
-      return `${diffInMinutes}m ago`;
-    } else if (diffInMinutes < 1440) {
-      return `${Math.floor(diffInMinutes / 60)}h ago`;
-    } else {
-      return `${Math.floor(diffInMinutes / 1440)}d ago`;
-    }
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    if (diffDays < 7) return `${diffDays}d ago`;
+    return d.toLocaleDateString();
+  }
+
+  fetchRecentActivities(): void {
+    this.loadingActivities.set(true);
+    this.dashboardService.getRecentActivity(10).subscribe({
+      next: (activities) => {
+        this.recentActivities.set(activities.map((a: any) => ({
+          id: a.id,
+          action: a.action,
+          title: a.title,
+          description: a.description,
+          personnel: a.personnel,
+          timestamp: a.timestamp,
+          priority: a.priority,
+        })));
+        this.loadingActivities.set(false);
+      },
+      error: () => {
+        this.recentActivities.set([]);
+        this.loadingActivities.set(false);
+      }
+    });
+  }
+
+  // Method to refresh activities - can be called from other components
+  refreshActivities(): void {
+    this.fetchRecentActivities();
   }
 }
-

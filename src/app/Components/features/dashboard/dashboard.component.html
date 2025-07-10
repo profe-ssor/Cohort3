@@ -27,20 +27,28 @@
               <div [innerHTML]="getIcon(metric.icon)"></div>
             </div>
             <div class="metric-content">
-              <div class="metric-value">{{ metric.value }}</div>
+              @if (metric.loading) {
+                <div class="metric-value loading">
+                  <div class="loading-spinner"></div>
+                </div>
+              } @else {
+                <div class="metric-value">{{ metric.value }}</div>
+              }
               <div class="metric-title">{{ metric.title }}</div>
-              <div class="metric-trend" [class]="'trend-' + metric.trend">
-                <svg *ngIf="metric.trend === 'up'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
-                </svg>
-                <svg *ngIf="metric.trend === 'down'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-                </svg>
-                <svg *ngIf="metric.trend === 'stable'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14"></path>
-                </svg>
-                <span>{{ metric.trendValue }}% from last month</span>
-              </div>
+              @if (!metric.loading) {
+                <div class="metric-trend" [class]="'trend-' + metric.trend">
+                  <svg *ngIf="metric.trend === 'up'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+                  </svg>
+                  <svg *ngIf="metric.trend === 'down'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                  </svg>
+                  <svg *ngIf="metric.trend === 'stable'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14"></path>
+                  </svg>
+                  <span>{{ metric.trendValue }}% from last month</span>
+                </div>
+              }
             </div>
           </div>
         }
@@ -78,24 +86,38 @@
                   </div>
                 </div>
                 <div class="chart-container">
-                  @for (submission of personnelSubmissions(); track submission.personnelId) {
-                    <div class="submission-bar">
-                      <div class="bar-label">{{ submission.name }}</div>
-                      <div class="bar-container">
-                        <div class="bar-segment approved"
-                             [style.width.%]="(submission.approved / submission.submissions) * 100"
-                             [title]="'Approved: ' + submission.approved">
+                  @if (personnelSubmissions().length > 0) {
+                    @for (submission of personnelSubmissions(); track submission.personnelId) {
+                      <div class="submission-bar">
+                        <div class="bar-label">{{ submission.name }}</div>
+                        <div class="bar-container">
+                          <div class="bar-segment approved"
+                               [style.width.%]="(submission.approved / submission.submissions) * 100"
+                               [title]="'Approved: ' + submission.approved">
+                          </div>
+                          <div class="bar-segment pending"
+                               [style.width.%]="(submission.pending / submission.submissions) * 100"
+                               [title]="'Pending: ' + submission.pending">
+                          </div>
+                          <div class="bar-segment rejected"
+                               [style.width.%]="(submission.rejected / submission.submissions) * 100"
+                               [title]="'Rejected: ' + submission.rejected">
+                          </div>
                         </div>
-                        <div class="bar-segment pending"
-                             [style.width.%]="(submission.pending / submission.submissions) * 100"
-                             [title]="'Pending: ' + submission.pending">
-                        </div>
-                        <div class="bar-segment rejected"
-                             [style.width.%]="(submission.rejected / submission.submissions) * 100"
-                             [title]="'Rejected: ' + submission.rejected">
-                        </div>
+                        <div class="bar-total">{{ submission.submissions }}</div>
                       </div>
-                      <div class="bar-total">{{ submission.submissions }}</div>
+                    }
+                  } @else {
+                    <div class="empty-state">
+                      <div class="empty-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                      </div>
+                      <div class="empty-text">
+                        <h4>No submissions data available</h4>
+                        <p>Personnel submission data will appear here once evaluations are submitted.</p>
+                      </div>
                     </div>
                   }
                 </div>
@@ -169,10 +191,12 @@
             </div>
             <div class="card-body">
               <div class="activity-list">
+                <div *ngIf="loadingActivities()">Loading recent activity...</div>
+                <div *ngIf="!loadingActivities() && recentActivities().length === 0">No recent activity found.</div>
                 @for (activity of recentActivities(); track activity.id) {
-                  <div class="activity-item" [class]="'activity-' + activity.type">
+                  <div class="activity-item" [class]="'activity-' + activity.action">
                     <div class="activity-icon">
-                      <div [innerHTML]="getActivityIcon(activity.type)"></div>
+                      <div [innerHTML]="getActivityIcon(activity.action)"></div>
                     </div>
                     <div class="activity-content">
                       <div class="activity-title">{{ activity.title }}</div>
@@ -191,36 +215,7 @@
             </div>
           </div>
 
-          <div class="card">
-            <div class="card-header">
-              <h3 class="card-title">Performance Summary</h3>
-            </div>
-            <div class="card-body">
-              <div class="performance-stats">
-                <div class="stat-item">
-                  <div class="stat-label">Review Efficiency</div>
-                  <div class="stat-value">92%</div>
-                  <div class="stat-bar">
-                    <div class="stat-fill" style="width: 92%"></div>
-                  </div>
-                </div>
-                <div class="stat-item">
-                  <div class="stat-label">Response Time</div>
-                  <div class="stat-value">2.3 days</div>
-                  <div class="stat-bar">
-                    <div class="stat-fill" style="width: 77%"></div>
-                  </div>
-                </div>
-                <div class="stat-item">
-                  <div class="stat-label">Personnel Satisfaction</div>
-                  <div class="stat-value">4.8/5</div>
-                  <div class="stat-bar">
-                    <div class="stat-fill" style="width: 96%"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+
         </div>
       </div>
     </div>

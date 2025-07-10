@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { environment } from '../../environments/environment.development';
 import { tap, catchError, timeout } from 'rxjs/operators';
-import { Credentials, LoginResponse,  LogoutResponse,  nss_database,  nss_databaseResponse,  OtpResponse, OtpVerification, registerResponse, registerUser, ResendOTP, ResendOtpResponse,  supervisor_database,  supervisors_databaseResponse,  UserCounts } from '../model/interface/auth';
+import { Credentials, LoginResponse,  LogoutResponse,  nss_database,  nss_databaseResponse,  OtpResponse, OtpVerification, registerResponse, registerUser, ResendOTP, ResendOtpResponse,  supervisor_database,  supervisors_databaseResponse,  UserCounts, PasswordChangeRequest, PasswordChangeResponse, PasswordResetRequest, PasswordResetRequestResponse, PasswordResetConfirm, PasswordResetConfirmResponse } from '../model/interface/auth';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -67,6 +67,38 @@ export class AuthService {
   getJwtToken(): string | null {
     return localStorage.getItem('access_token');
   }
+
+  // Get the refresh token from localStorage
+  getRefreshToken(): string | null {
+    return localStorage.getItem('refresh_token');
+  }
+
+  // Refresh the access token using refresh token
+  refreshToken(): Observable<any> {
+    const refreshToken = this.getRefreshToken();
+    if (!refreshToken) {
+      return throwError(() => new Error('No refresh token available'));
+    }
+
+    return this.http.post<any>(`${environment.API_URL}token/refresh/`, {
+      refresh: refreshToken
+    }).pipe(
+      tap(response => {
+        if (response.access) {
+          this.storeJwtToken(response.access);
+          console.log('Token refreshed successfully');
+        }
+      }),
+      catchError(error => {
+        console.error('Token refresh failed:', error);
+        // If refresh fails, clear all tokens and redirect to login
+        this.removeJwtToken();
+        this.router.navigate(['/login']);
+        return throwError(() => error);
+      })
+    );
+  }
+
   private storeUserFullName(fullName: string): void {
     localStorage.setItem('user_full_name', fullName);
   }
@@ -87,10 +119,20 @@ login(userData: Credentials): Observable<LoginResponse> {
           localStorage.setItem('refresh_token', response.refresh);
         }
         if (response && response.user) {
+          console.log('Storing user data and navigating...');
+          console.log('Full response:', response);
+          console.log('User object:', response.user);
           localStorage.setItem('userData', JSON.stringify(response.user));
-          this.storeUserRole(response.user.role);
-          this.storeUserFullName(response.user.full_name);
-          this.navigateBasedOnRole(response.user.role);
+
+          // Get role and full_name from the user object (backend returns them inside user object)
+          const role = response.user.role;
+          const fullName = response.user.full_name;
+
+          this.storeUserRole(role);
+          this.storeUserFullName(fullName);
+          console.log('User role:', role);
+          console.log('User full name:', fullName);
+          this.navigateBasedOnRole(role);
         }
       }),
       catchError((error: HttpErrorResponse) => {
@@ -101,17 +143,22 @@ login(userData: Credentials): Observable<LoginResponse> {
 }
 
   private navigateBasedOnRole(role: string): void {
+    console.log('Navigating based on role:', role);
     switch (role) {
       case 'admin':
+        console.log('Navigating to admin dashboard');
         this.router.navigate(['/admin-dashboard']);
         break;
       case 'supervisor':
+        console.log('Navigating to supervisor dashboard');
         this.router.navigate(['/supervisor-dashboard']);
         break;
       case 'user':
-        this.router.navigate(['/persneldashboard']);
+        console.log('Navigating to personnel dashboard');
+        this.router.navigate(['/personnel/persneldashboard']);
         break;
       default:
+        console.log('Unknown role, navigating to root');
         this.router.navigate(['/']);
     }
   }
@@ -125,6 +172,14 @@ getUserRole(): string | null {
     return localStorage.getItem('userRole');
   }
 
+  // Get authentication headers
+  private getAuthHeaders(): HttpHeaders {
+    const token = this.getJwtToken();
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  }
 
   // Remove the JWT token from localStorage
   removeJwtToken(): void {
@@ -160,10 +215,9 @@ logout(): Observable<LogoutResponse> {
   // If no tokens exist, just do a client-side logout
   if (!refreshToken || !accessToken) {
     this.removeJwtToken();
-    // this.router.navigate(['/resend-otp']);
+    this.router.navigate(['/login']); // Always navigate to login
     return of({ message: 'Logout successful' });
   }
-
 
   return this.http.post<LogoutResponse>(
     `${environment.API_URL}logout/`,
@@ -174,13 +228,13 @@ logout(): Observable<LogoutResponse> {
     tap(() => {
       console.log('Logout successful');
       this.removeJwtToken();
-      // this.router.navigate(['/resend-otp']);
+      this.router.navigate(['/login']); // Always navigate to login
     }),
     catchError((error) => {
       console.error("Logout failed", error);
       // Still perform client-side logout
       this.removeJwtToken();
-      this.router.navigate(['/resend-otp']);
+      this.router.navigate(['/login']); // Always navigate to login
       // Return a success message anyway - user doesn't need to know about backend issues
       return of({ message: 'Logged out successfully' });
     })
@@ -231,6 +285,29 @@ logout(): Observable<LogoutResponse> {
   // resend otp token
   resendOtp(userData: ResendOTP): Observable<ResendOtpResponse> {
     return this.http.post<ResendOtpResponse>(`${environment.API_URL}resend-otp/`, userData);
+  }
+
+  // Password management methods
+  changePassword(passwordData: PasswordChangeRequest): Observable<PasswordChangeResponse> {
+    return this.http.post<PasswordChangeResponse>(
+      `${environment.API_URL}change-password/`,
+      passwordData,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  requestPasswordReset(resetData: PasswordResetRequest): Observable<PasswordResetRequestResponse> {
+    return this.http.post<PasswordResetRequestResponse>(
+      `${environment.API_URL}request-password-reset/`,
+      resetData
+    );
+  }
+
+  confirmPasswordReset(confirmData: PasswordResetConfirm): Observable<PasswordResetConfirmResponse> {
+    return this.http.post<PasswordResetConfirmResponse>(
+      `${environment.API_URL}confirm-password-reset/`,
+      confirmData
+    );
   }
 
   getUser(): any {

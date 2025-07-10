@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment.development';
 import {
   BulkStatusUpdate,
@@ -9,6 +10,7 @@ import {
   EvaluationListResponse,
   EvaluationStatusUpdate
 } from '../model/interface/evaluation';
+import { DashboardStats } from '../model/interface/dashboard.models';
 
 @Injectable({
   providedIn: 'root'
@@ -72,6 +74,13 @@ export class EvaluationService {
     );
   }
 
+  getPersonnelSubmissions(): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${environment.API_URL}evaluations/personnel-submissions/`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
   storeJwtToken(token: string): void {
     localStorage.setItem('access_token', token);
   }
@@ -82,5 +91,68 @@ export class EvaluationService {
 
   storeUserRole(role: string): void {
     localStorage.setItem('userRole', role);
+  }
+
+  getAdminDashboardStats(): Observable<DashboardStats> {
+    const url = `${environment.API_URL}evaluations/admin/dashboard/stats/`;
+    console.log('🔍 DEBUG: Calling admin dashboard stats API:', url);
+
+    return this.http.get<DashboardStats>(
+      url,
+      { headers: this.getAuthHeaders() }
+    ).pipe(
+      tap(response => {
+        console.log('🔍 DEBUG: Admin dashboard stats API response:', response);
+      })
+    );
+  }
+
+  getAdminEvaluations(params?: {
+    status?: string;
+    evaluation_type?: string;
+    priority?: string;
+    page?: number;
+    page_size?: number;
+  }): Observable<EvaluationListResponse> {
+    const query = new URLSearchParams();
+    for (const key in params) {
+      if (params[key as keyof typeof params]) {
+        query.set(key, String(params[key as keyof typeof params]));
+      }
+    }
+    const url = `${environment.API_URL}evaluations/admin/evaluations/?${query.toString()}`;
+    console.log('🔍 DEBUG: Calling admin evaluations API:', url);
+
+    return this.http.get<EvaluationListResponse>(
+      url,
+      { headers: this.getAuthHeaders() }
+    ).pipe(
+      tap(response => {
+        console.log('🔍 DEBUG: Admin evaluations API response:', response);
+        if (response.results && response.results.length > 0) {
+          console.log('🔍 DEBUG: First evaluation sample:', response.results[0]);
+          console.log('🔍 DEBUG: Date fields in first evaluation:');
+          console.log('  - created_at:', response.results[0].created_at);
+          console.log('  - due_date:', response.results[0].due_date);
+          console.log('  - reviewed_at:', response.results[0].reviewed_at);
+        }
+      })
+    );
+  }
+
+  updateAdminEvaluationStatus(id: number, update: EvaluationStatusUpdate): Observable<Evaluation> {
+    return this.http.patch<Evaluation>(
+      `${environment.API_URL}evaluations/admin/evaluations/${id}/update-status/`,
+      update,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  updateAdminPdfFormStatus(id: number, status: string): Observable<any> {
+    return this.http.patch<any>(
+      `${environment.API_URL}file_uploads/admin/evaluation-forms/${id}/update-status/`,
+      { status },
+      { headers: this.getAuthHeaders() }
+    );
   }
 }

@@ -6,7 +6,105 @@
           <mat-card-title>Supervisors Management</mat-card-title>
         </mat-card-header>
         <mat-card-content>
-          <p>Supervisors management interface will be implemented here.</p>
+          <div class="actions-row">
+            <button mat-raised-button color="primary" (click)="openAddSupervisorDialog()">Add Supervisor</button>
+            <button mat-raised-button color="accent" (click)="openAssignToPersonnelDialog()">Assign to NSS Personnel</button>
+          </div>
+          <mat-form-field appearance="outline" class="search-field">
+            <mat-label>Search Supervisors</mat-label>
+            <input matInput [formControl]="searchControl" placeholder="Search by name, card, or contact">
+          </mat-form-field>
+          <div *ngIf="loading" class="loading">Loading supervisors...</div>
+          <div *ngIf="error" class="error">{{ error }}</div>
+          <div *ngIf="successMessage" class="success">{{ successMessage }}</div>
+          <mat-table [dataSource]="filteredSupervisors" *ngIf="!loading && !error">
+            <ng-container matColumnDef="full_name">
+              <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+              <mat-cell *matCellDef="let s"> {{ s.full_name }} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="ghana_card_record">
+              <mat-header-cell *matHeaderCellDef> Ghana Card </mat-header-cell>
+              <mat-cell *matCellDef="let s"> {{ s.ghana_card_record }} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="contact">
+              <mat-header-cell *matHeaderCellDef> Contact </mat-header-cell>
+              <mat-cell *matCellDef="let s"> {{ s.contact }} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="assigned_region">
+              <mat-header-cell *matHeaderCellDef> Region </mat-header-cell>
+              <mat-cell *matCellDef="let s"> {{ s.assigned_region }} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="assigned_workplace">
+              <mat-header-cell *matHeaderCellDef> Workplace </mat-header-cell>
+              <mat-cell *matCellDef="let s"> {{ s.assigned_workplace }} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="actions">
+              <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
+              <mat-cell *matCellDef="let s">
+                <div style="display: flex; gap: 8px; align-items: center;">
+                  <button mat-icon-button color="primary" (click)="openEditSupervisorDialog(s)">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button mat-icon-button color="warn" (click)="deleteSupervisor(s)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
+          <div class="dual-list-section">
+            <h3>Assign Supervisors to Admin</h3>
+            <p class="assignment-instructions">
+              Select supervisors from the left list that you want to assign to yourself.
+              Click "Save Assignments" to confirm. Your currently assigned supervisors will appear on the right.
+            </p>
+            <div class="dual-list-boxes">
+              <div class="list-box">
+                <h4>Available Supervisors (Select to Assign)</h4>
+                <ul>
+                  <li *ngFor="let s of supervisors; let i = index">
+                    <input
+                      type="checkbox"
+                      [id]="'supervisor-' + (s.id || i)"
+                      [checked]="s.id && selectedSupervisorIds.includes(s.id)"
+                      (change)="s.id && toggleSupervisorSelection(s.id)"
+                      class="supervisor-checkbox"
+                    >
+                    <label [for]="'supervisor-' + (s.id || i)" class="supervisor-label">
+                      {{ s.full_name }}
+                    </label>
+                  </li>
+                  <li *ngIf="supervisors.length === 0" class="no-assignments">
+                    No supervisors available
+                  </li>
+                </ul>
+              </div>
+              <div class="list-box">
+                <h4>Currently Assigned to You</h4>
+                <ul>
+                  <li *ngFor="let s of assignedSupervisors">
+                    {{ s.full_name }}
+                  </li>
+                  <li *ngIf="assignedSupervisors.length === 0" class="no-assignments">
+                    No supervisors assigned yet
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="assignment-summary">
+              <p *ngIf="selectedSupervisorIds.length > 0">
+                <strong>{{ selectedSupervisorIds.length }}</strong> supervisor(s) selected for assignment
+              </p>
+              <p *ngIf="selectedSupervisorIds.length === 0" class="no-selection">
+                No supervisors selected. Check the boxes above to select supervisors for assignment.
+              </p>
+            </div>
+            <button mat-raised-button color="primary" (click)="saveAssignedSupervisors()" [disabled]="loading || selectedSupervisorIds.length === 0">
+              {{ loading ? 'Saving Assignments...' : 'Save Assignments' }}
+            </button>
+          </div>
         </mat-card-content>
       </mat-card>
     </div>

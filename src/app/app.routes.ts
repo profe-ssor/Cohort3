@@ -7,6 +7,8 @@ import { NotFoundComponent } from './Components/not-found/not-found.component';
 import { NssDatabaseComponent } from './Components/nss-database/nss-database.component';
 import { ReceivedMessagesComponent } from './Components/received-messages/received-messages.component';
 import { MessageDetailComponent } from './Components/message-detail/message-detail.component';
+import { ChangePasswordComponent } from './Components/change-password/change-password.component';
+import { PasswordResetComponent } from './Components/password-reset/password-reset.component';
 import { adminGuard, supervisorGuard, userGuard } from './services/guard/perm.guard';
 
 export const routes: Routes = [
@@ -35,6 +37,14 @@ export const routes: Routes = [
     component: ResenOtpComponent
   },
   {
+    path: 'password-reset',
+    component: PasswordResetComponent
+  },
+  {
+    path: 'change-password',
+    component: ChangePasswordComponent
+  },
+  {
     path: 'nssdb',
     component: NssDatabaseComponent
   },
@@ -49,7 +59,7 @@ export const routes: Routes = [
 
 
   {
-    path: '',
+    path: 'personnel',
     canActivate: [userGuard],
     loadChildren: () => import('./Components/modules/personnel/personnel.routes').then(m => m.personnelRoutes)
   },
@@ -64,6 +74,11 @@ export const routes: Routes = [
   canActivate: [supervisorGuard],
  loadChildren: () => import('./Components/modules/supervisor/supervisor.routes').then(m => m.supervisorRoutes)
 
+},
+{
+  path: 'admin/regional-detail/:region',
+  canActivate: [adminGuard],
+  loadComponent: () => import('./pages/ADMINISTRATORS/regional-detail/regional-detail.component').then(m => m.RegionalDetailComponent)
 },
 
   {

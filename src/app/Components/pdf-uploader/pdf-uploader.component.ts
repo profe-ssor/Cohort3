@@ -4,6 +4,7 @@ import { PdfService } from '../../services/pdf.service';
 import { NgIf } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { HttpEventType, HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-pdf-uploader',
@@ -85,16 +86,33 @@ export class PdfUploaderComponent {
 
     this.pdfService.uploadPdf(this.fileName, this.selectedFile).subscribe({
       next: (res) => {
-        this.isUploading = false;
-        this.showFileNameInput = false;
-        if ('body' in res && res.body) {
-          const uploadedPdf = res.body.data;
-          console.log('Upload success:', uploadedPdf);
+        // Only handle the final response, not progress events
+        if (res.type === HttpEventType.Response) {
+          this.isUploading = false;
+          this.showFileNameInput = false;
+          console.log('Upload response:', res);
 
-          this.pdfUploaded.emit(uploadedPdf);
-          setTimeout(() => {
-            this.router.navigate(['/sign', uploadedPdf.id]);
-          }, 1500);
+          // Try to extract the PDF object robustly
+          let uploadedPdf: any = null;
+          const body = (res as HttpResponse<any>).body;
+
+          if (body) {
+            if (body.data && body.data.id) {
+              uploadedPdf = body.data;
+            } else if (body.id) {
+              uploadedPdf = body;
+            }
+          }
+
+          if (uploadedPdf && uploadedPdf.id) {
+            this.pdfUploaded.emit(uploadedPdf);
+            setTimeout(() => {
+              this.router.navigate(['/personnel/sign', uploadedPdf.id]);
+            }, 1500);
+          } else {
+            alert('Could not determine uploaded PDF ID! See console for details.');
+            console.log('Upload response (no PDF ID found):', res);
+          }
         }
       },
       error: (err) => {

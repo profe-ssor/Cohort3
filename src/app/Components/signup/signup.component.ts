@@ -106,7 +106,7 @@ onSubmit(): void {
 
       // Display error to the user
       this._toastr.error(this.errorMessage);
-  
+
       console.error('Registration error:', error);
       this.isLoading = false;
       // Clear form fields

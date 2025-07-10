@@ -182,10 +182,16 @@
                 <div class="evaluation-info">
                   <span class="personnel-name">{{ evaluation.nss_personnel_name  }}</span>
                   <span class="separator">•</span>
-               
+
                   @if (evaluation.supervisor_name) {
                     <span class="separator">•</span>
-                    <span class="supervisor">Supervisor: {{ evaluation.supervisor_name }}</span>
+                    <span class="supervisor">
+                      @if (mode === 'admin') {
+                        Administrator: {{ evaluation.administrator_name || evaluation.supervisor_name }}
+                      } @else {
+                        Supervisor: {{ evaluation.supervisor_name }}
+                      }
+                    </span>
                   }
                 </div>
                 @if (evaluation.description) {

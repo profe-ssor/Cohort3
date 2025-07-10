@@ -99,16 +99,29 @@ export class FooterComponent implements OnInit {
 // list all pdf
      loadPdfs(): void {
       this.loading = true;
+      console.log('🔄 Loading PDFs for footer component...');
+
       this.pdfService.getPdfs()
         .subscribe({
           next: (data) => {
+            console.log('✅ PDFs loaded successfully:', data);
             this.pdfs = data;
             this.loading = false;
+
+            // Log details about each PDF
+            if (data && data.length > 0) {
+              console.log(`📄 Found ${data.length} PDFs:`);
+              data.forEach((pdf, index) => {
+                console.log(`  ${index + 1}. ID: ${pdf.id}, Name: ${pdf.file_name}, Signed: ${pdf.is_signed}`);
+              });
+            } else {
+              console.log('❌ No PDFs found in response');
+            }
           },
           error: (err) => {
+            console.error('❌ Error loading PDFs:', err);
             this.error = 'Failed to load PDFs';
             this.loading = false;
-            console.error(err);
           }
         });
     }

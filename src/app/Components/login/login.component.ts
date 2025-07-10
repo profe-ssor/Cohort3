@@ -4,24 +4,13 @@ import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { Constant } from '../../constant/constant';
 import { NgIf } from '@angular/common';
-import { Credentials } from '../../model/interface/auth';
+import { Credentials, LoginResponse } from '../../model/interface/auth';
 import { ToastrService } from 'ngx-toastr';
-
-interface LoginResponse {
-  message: string; // Success message from the backend
-  user?: {
-    role: string; // User role, e.g., 'admin', 'supervisor', 'user'
-  };
-  tokens?: {
-    access: string;  // Access token returned from the backend
-    refresh: string; // Refresh token returned from the backend
-  };
-}
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, NgIf, RouterOutlet],
+  imports: [FormsModule, NgIf, RouterOutlet, RouterLink],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
@@ -38,6 +27,9 @@ export class LoginComponent {
 
   onLogin() {
     if (this.isLoading) return;
+
+    // Clear any existing tokens before login attempt
+    this.clearExistingTokens();
 
     this.isLoading = true;
     this.authService.login(this.credentials).subscribe({
@@ -60,6 +52,15 @@ export class LoginComponent {
 
     });
 
+  }
+
+  private clearExistingTokens(): void {
+    // Clear any existing tokens to ensure clean login
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('userData');
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('user_full_name');
   }
 
   private handleError(error: any) {
@@ -92,7 +93,7 @@ export class LoginComponent {
                          'An unknown error occurred. Please try again.';
     }
 
-    
+
     this._toastr.error(this.errorMessage, 'Login Failed');
     console.error('Error details:', error);
   };

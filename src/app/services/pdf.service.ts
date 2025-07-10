@@ -18,12 +18,27 @@ export class PdfService {
     // get all pdf files
     getPdfs(): Observable<PDF[]>{
       const token = this.getJwtToken();
+      console.log('🔑 PDF Service: Token check -', token ? `Token exists (${token.substring(0, 20)}...)` : 'No token found');
+
       if (!token){
         console.error("user must logged before access to pdf.");
         return new Observable<PDF[]>(observer => observer.error({ error: "Unauthorised"}));
       }
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-      return this.http.get<PDF[]>(`${environment.API_URL}file_uploads/pdf/list/`,  {headers});
+      console.log('🔄 PDF Service: Calling getPdfs() endpoint');
+      console.log('🌐 PDF Service: URL:', `${environment.API_URL}file_uploads/pdf/list/`);
+
+      return this.http.get<PDF[]>(`${environment.API_URL}file_uploads/pdf/list/`,  {headers}).pipe(
+        tap({
+          next: (data) => {
+            console.log('✅ PDF Service: getPdfs() response received:', data);
+            console.log(`📄 PDF Service: Found ${data?.length || 0} PDFs`);
+          },
+          error: (err) => {
+            console.error('❌ PDF Service: getPdfs() error:', err);
+          }
+        })
+      );
     }
     // get pdf file by id
     getPdf(id: string): Observable<PDF>{
@@ -48,7 +63,7 @@ export class PdfService {
 
       const formData = new FormData();
       formData.append('file_name', fileName);
-      formData.append('pdf', file);
+      formData.append('file', file);
 
       const req = new HttpRequest('POST', `${environment.API_URL}file_uploads/pdf/upload/`, formData, {
         reportProgress: true,
@@ -120,7 +135,7 @@ SendEvaluationForm(
     if (!token) return new Observable(observer => observer.error({ error: 'Unauthorized' }));
 
     const formData = new FormData();
-    formData.append('pdf', file);
+    formData.append('file', file);
     formData.append('file_name', fileName);
     formData.append('form_type', formType);
     formData.append('priority', priority);
@@ -135,6 +150,17 @@ SendEvaluationForm(
   }
 
   getEvaluationForms(formType?: string): Observable<PDF[]> {
+    const token = this.getJwtToken();
+    if (!token) return new Observable(observer => observer.error({ error: "Unauthorised" }));
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    let url = `${environment.API_URL}file_uploads/evaluation-forms/`;
+    if (formType) url += `?form_type=${formType}`;
+
+    return this.http.get<{ data: PDF[] }>(url, { headers }).pipe(map(res => res.data));
+  }
+
+  getReceivedEvaluationForms(formType?: string): Observable<PDF[]> {
     const token = this.getJwtToken();
     if (!token) return new Observable(observer => observer.error({ error: "Unauthorised" }));
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
@@ -166,6 +192,18 @@ SendEvaluationForm(
 
   return this.http.patch<{ data: PDF }>(
     `${environment.API_URL}file_uploads/evaluation-forms/${pdfId}/update-status/`,
+    body,
+    { headers }
+  ).pipe(map(response => response.data));
+}
+
+updateAdminPdfFormStatus(pdfId: number, status: 'pending' | 'approved' | 'rejected' | 'under_review'): Observable<PDF> {
+  const token = this.getJwtToken();
+  if (!token) return new Observable(observer => observer.error({ error: 'Unauthorized' }));
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  const body = { status };
+  return this.http.patch<{ data: PDF }>(
+    `${environment.API_URL}file_uploads/admin/evaluation-forms/${pdfId}/update-status/`,
     body,
     { headers }
   ).pipe(map(response => response.data));

@@ -5,7 +5,7 @@ import { PdfUploaderComponent } from "../pdf-uploader/pdf-uploader.component";
 import { SignatureChooserComponent } from "../signature-chooser/signature-chooser.component";
 import { NgStyle, NgIf, NgFor } from '@angular/common';
 import { environment } from '../../../environments/environment.development';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist/build/pdf.mjs';
 import { FormsModule } from '@angular/forms';
 
@@ -40,7 +40,7 @@ export class PdfSignerComponent implements OnInit {
   @ViewChild('pdfCanvas') pdfCanvasRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('pdfContainer') pdfContainerRef!: ElementRef<HTMLDivElement>;
 
-  constructor(private pdfService: PdfService, private route: ActivatedRoute) {}
+  constructor(private pdfService: PdfService, private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit() {
     const pdfId = this.route.snapshot.paramMap.get('id');
@@ -148,7 +148,7 @@ export class PdfSignerComponent implements OnInit {
     this.pdfService.signPdfWithImage(this.uploadedPdf.id, this.signatureFile, position).subscribe({
       next: () => {
         alert('PDF signed successfully!');
-        window.location.href = '/footer';
+        this.router.navigate(['/personnel/footer']);
       },
       error: () => alert('Failed to sign PDF.')
     });

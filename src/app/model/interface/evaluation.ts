@@ -24,6 +24,7 @@ export interface Evaluation {
   nss_personnel_email?: string;
   supervisor_name?: string;
   supervisor_email?: string;
+  administrator_name?: string;
 
   status_display?: string;
   priority_display?: string;
@@ -44,7 +45,8 @@ export interface BulkStatusUpdate {
 }
 
 export interface EvaluationDashboardStats {
-  pending: number;
+  total_submissions: number;
+  total_pending: number;
   approved: number;
   overdue: number;
   under_review: number;

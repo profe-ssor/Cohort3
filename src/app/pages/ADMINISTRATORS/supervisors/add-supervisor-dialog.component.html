@@ -1,0 +1,312 @@
+<div class="add-supervisor-dialog">
+  <!-- Header -->
+  <div class="dialog-header">
+    <h2 class="dialog-title">
+      <i class="fas fa-user-plus"></i>
+      Add New Supervisor
+    </h2>
+    <button class="close-btn" (click)="close()">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  <!-- Step Progress Indicator -->
+  <div class="step-progress">
+    <div class="step" [class.active]="step >= 1" [class.completed]="step > 1">
+      <div class="step-number">1</div>
+      <div class="step-label">Registration</div>
+    </div>
+    <div class="step-line" [class.completed]="step > 1"></div>
+    <div class="step" [class.active]="step >= 2" [class.completed]="step > 2">
+      <div class="step-number">2</div>
+      <div class="step-label">OTP Verification</div>
+    </div>
+    <div class="step-line" [class.completed]="step > 2"></div>
+    <div class="step" [class.active]="step >= 3" [class.completed]="step > 3">
+      <div class="step-number">3</div>
+      <div class="step-label">Supervisor Details</div>
+    </div>
+  </div>
+
+  <!-- Messages -->
+  <div *ngIf="error" class="message error-message">
+    <i class="fas fa-exclamation-circle"></i>
+    {{ error }}
+  </div>
+  <div *ngIf="success" class="message success-message">
+    <i class="fas fa-check-circle"></i>
+    {{ success }}
+  </div>
+
+  <!-- Step 1: Registration -->
+  <form *ngIf="step === 1" [formGroup]="registerForm" (ngSubmit)="submitRegister()" class="form-step">
+    <div class="form-section">
+      <h3 class="section-title">
+        <i class="fas fa-user"></i>
+        User Registration
+      </h3>
+      <p class="section-description">Create a new user account for the supervisor</p>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">
+          <i class="fas fa-user"></i>
+          Username
+        </label>
+        <input
+          formControlName="username"
+          type="text"
+          class="form-input"
+          placeholder="Enter username"
+          [class.error]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched"
+        />
+        <div *ngIf="registerForm.get('username')?.invalid && registerForm.get('username')?.touched" class="error-text">
+          Username is required
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">
+          <i class="fas fa-venus-mars"></i>
+          Gender
+        </label>
+        <select
+          formControlName="gender"
+          class="form-select"
+          [class.error]="registerForm.get('gender')?.invalid && registerForm.get('gender')?.touched"
+        >
+          <option value="">Select Gender</option>
+          <option value="M">Male</option>
+          <option value="F">Female</option>
+        </select>
+        <div *ngIf="registerForm.get('gender')?.invalid && registerForm.get('gender')?.touched" class="error-text">
+          Please select gender
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">
+          <i class="fas fa-envelope"></i>
+          Email Address
+        </label>
+        <input
+          formControlName="email"
+          type="email"
+          class="form-input"
+          placeholder="Enter email address"
+          [class.error]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
+        />
+        <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="error-text">
+          Please enter a valid email address
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">
+          <i class="fas fa-lock"></i>
+          Password
+        </label>
+        <input
+          formControlName="password"
+          type="password"
+          class="form-input"
+          placeholder="Enter password (min 6 characters)"
+          [class.error]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
+        />
+        <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="error-text">
+          Password must be at least 6 characters
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" (click)="close()">
+        <i class="fas fa-times"></i>
+        Cancel
+      </button>
+      <button type="submit" class="btn btn-primary" [disabled]="isLoading || registerForm.invalid">
+        <i class="fas fa-arrow-right"></i>
+        {{ isLoading ? 'Registering...' : 'Continue to OTP' }}
+      </button>
+    </div>
+  </form>
+
+  <!-- Step 2: OTP Verification -->
+  <form *ngIf="step === 2" [formGroup]="otpForm" (ngSubmit)="submitOtp()" class="form-step">
+    <div class="form-section">
+      <h3 class="section-title">
+        <i class="fas fa-shield-alt"></i>
+        Email Verification
+      </h3>
+      <p class="section-description">Enter the OTP code sent to your email address</p>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">
+        <i class="fas fa-envelope"></i>
+        Email Address
+      </label>
+      <input
+        formControlName="email"
+        type="email"
+        class="form-input"
+        readonly
+        [class.error]="otpForm.get('email')?.invalid && otpForm.get('email')?.touched"
+      />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">
+        <i class="fas fa-key"></i>
+        OTP Code
+      </label>
+      <input
+        formControlName="otp_code"
+        type="text"
+        class="form-input otp-input"
+        placeholder="Enter 6-digit OTP"
+        maxlength="6"
+        minlength="6"
+        [class.error]="otpForm.get('otp_code')?.invalid && otpForm.get('otp_code')?.touched"
+      />
+      <div *ngIf="otpForm.get('otp_code')?.invalid && otpForm.get('otp_code')?.touched" class="error-text">
+        Please enter the 6-digit OTP code
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" (click)="close()">
+        <i class="fas fa-times"></i>
+        Cancel
+      </button>
+      <button type="submit" class="btn btn-primary" [disabled]="isLoading || otpForm.invalid">
+        <i class="fas fa-arrow-right"></i>
+        {{ isLoading ? 'Verifying...' : 'Continue to Details' }}
+      </button>
+    </div>
+  </form>
+
+  <!-- Step 3: Supervisor DB -->
+  <form *ngIf="step === 3" [formGroup]="supervisorForm" (ngSubmit)="submitSupervisorDb()" class="form-step">
+    <div class="form-section">
+      <h3 class="section-title">
+        <i class="fas fa-user-tie"></i>
+        Supervisor Information
+      </h3>
+      <p class="section-description">Complete the supervisor profile details</p>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">
+          <i class="fas fa-user"></i>
+          Full Name
+        </label>
+        <input
+          formControlName="full_name"
+          type="text"
+          class="form-input"
+          placeholder="Enter full name"
+          [class.error]="supervisorForm.get('full_name')?.invalid && supervisorForm.get('full_name')?.touched"
+        />
+        <div *ngIf="supervisorForm.get('full_name')?.invalid && supervisorForm.get('full_name')?.touched" class="error-text">
+          Full name is required
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">
+          <i class="fas fa-id-card"></i>
+          Ghana Card Record
+        </label>
+        <input
+          formControlName="ghana_card_record"
+          type="text"
+          class="form-input"
+          placeholder="Enter Ghana Card number"
+          [class.error]="supervisorForm.get('ghana_card_record')?.invalid && supervisorForm.get('ghana_card_record')?.touched"
+        />
+        <div *ngIf="supervisorForm.get('ghana_card_record')?.invalid && supervisorForm.get('ghana_card_record')?.touched" class="error-text">
+          Ghana Card record is required
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">
+          <i class="fas fa-phone"></i>
+          Contact Number
+        </label>
+        <input
+          formControlName="contact"
+          type="text"
+          class="form-input"
+          placeholder="Enter contact number"
+          [class.error]="supervisorForm.get('contact')?.invalid && supervisorForm.get('contact')?.touched"
+        />
+        <div *ngIf="supervisorForm.get('contact')?.invalid && supervisorForm.get('contact')?.touched" class="error-text">
+          Contact number is required
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">
+          <i class="fas fa-map-marker-alt"></i>
+          Assigned Region
+        </label>
+        <select
+          formControlName="assigned_region"
+          class="form-select"
+          [class.error]="supervisorForm.get('assigned_region')?.invalid && supervisorForm.get('assigned_region')?.touched"
+        >
+          <option value="">Select Region</option>
+          <option *ngFor="let r of regions" [value]="r.id">{{ r.name }}</option>
+        </select>
+        <div *ngIf="supervisorForm.get('assigned_region')?.invalid && supervisorForm.get('assigned_region')?.touched" class="error-text">
+          Please select a region
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">
+        <i class="fas fa-building"></i>
+        Assigned Workplace
+      </label>
+      <select
+        formControlName="assigned_workplace"
+        class="form-select"
+        [class.error]="supervisorForm.get('assigned_workplace')?.invalid && supervisorForm.get('assigned_workplace')?.touched"
+      >
+        <option value="">Select Workplace</option>
+        <option *ngFor="let w of workplaces" [value]="w.id">{{ w.workplace_name }}</option>
+      </select>
+      <div *ngIf="supervisorForm.get('assigned_workplace')?.invalid && supervisorForm.get('assigned_workplace')?.touched" class="error-text">
+        Please select a workplace
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" (click)="close()">
+        <i class="fas fa-times"></i>
+        Cancel
+      </button>
+      <button type="submit" class="btn btn-success" [disabled]="isLoading || supervisorForm.invalid">
+        <i class="fas fa-check"></i>
+        {{ isLoading ? 'Creating...' : 'Create Supervisor' }}
+      </button>
+    </div>
+  </form>
+
+  <!-- Loading Overlay -->
+  <div *ngIf="isLoading" class="loading-overlay">
+    <div class="loading-spinner">
+      <i class="fas fa-spinner fa-spin"></i>
+      <p>Processing...</p>
+    </div>
+  </div>
+</div>

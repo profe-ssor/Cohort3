@@ -44,7 +44,8 @@ export const userGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  if (!authService.isAuthenticated() || !authService.hasRole('user')) {
+  const role = authService.getUserRole();
+  if (!authService.isAuthenticated() || (role !== 'user' && role !== 'supervisor')) {
     router.navigate(['/login']);
     return false;
   }
