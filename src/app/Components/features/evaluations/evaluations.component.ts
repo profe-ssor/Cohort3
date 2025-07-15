@@ -18,6 +18,8 @@ import { ToastrService } from 'ngx-toastr';
 import { DashboardService } from '../../../services/admin-services/dashboard.service';
 import { EvaluationsComponent as SupervisorEvaluationsComponent } from '../../../Components/features/evaluations/evaluations.component';
 import { DashboardStats } from '../../../model/interface/dashboard.models';
+import { Router } from '@angular/router';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-admin-evaluations-page',
@@ -40,6 +42,8 @@ export class EvaluationsComponent implements OnInit {
   private pdfService = inject(PdfService);
   private toast = inject(ToastrService);
   private dashboardService = inject(DashboardService);
+  private router = inject(Router);
+  private sanitizer = inject(DomSanitizer);
 
   selectedStatus = signal<string>('');
   selectedType = signal<string>('');
@@ -64,6 +68,9 @@ export class EvaluationsComponent implements OnInit {
   currentPage = signal<number>(1);
   totalPages = signal<number>(1);
   pageSize = signal<number>(10);
+
+  pdfViewerOpen = signal<boolean>(false);
+  pdfViewerUrl = signal<SafeResourceUrl>('');
 
   // Static status and priority types for filters
   statusTypes = [
@@ -427,15 +434,68 @@ export class EvaluationsComponent implements OnInit {
     this.selectedEvaluationIds.set([]);
   }
 
-  viewDetails(e: Evaluation) { console.log('Viewing:', e.title); }
+  viewDetails(e: Evaluation) {
+    let url = e.signed_pdf || e.file;
+    if (url && !url.startsWith('http')) {
+      url = 'http://127.0.0.1:8000/' + url.replace(/^\//, '');
+    }
+    // Use the custom Django view for signed PDFs to allow iframe embedding
+    if (url && url.includes('/media/signed_docs/')) {
+      url = url.replace('/media/signed_docs/', '/file_uploads/media/signed_docs/');
+    }
+    if (url) {
+      const safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+      this.pdfViewerUrl.set(safeUrl);
+      this.pdfViewerOpen.set(true);
+    } else {
+      this.toast.error('No PDF file available to view.');
+    }
+  }
+
+  openPdfInNewTab(e: Evaluation) {
+    let url = e.signed_pdf || e.file;
+    if (url && !url.startsWith('http')) {
+      url = 'http://127.0.0.1:8000/' + url.replace(/^\//, '');
+    }
+    if (url && url.includes('/media/signed_docs/')) {
+      url = url.replace('/media/signed_docs/', '/file_uploads/media/signed_docs/');
+    }
+    if (url) {
+      window.open(url, '_blank');
+    } else {
+      this.toast.error('No PDF file available to view.');
+    }
+  }
 
   contactPersonnel(e: Evaluation) {
     if (e.nss_personnel_email) window.location.href = `mailto:${e.nss_personnel_email}?subject=Regarding: ${e.title}`;
   }
 
   downloadEvaluationFile(e: Evaluation) {
-    const file = e.signed_pdf || e.file;
-    if (file) window.open(file, '_blank');
+    let file = e.signed_pdf || e.file;
+    if (file && !file.startsWith('http')) {
+      file = 'http://127.0.0.1:8000/' + file.replace(/^\//, '');
+    }
+    if (file) {
+      // Create a temporary anchor to trigger download
+      const link = document.createElement('a');
+      link.href = file;
+      link.target = '_blank';
+      // Try to extract a filename from the URL
+      const filename = file.split('/').pop() || 'document.pdf';
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else {
+      this.toast.error('No PDF file available to download.');
+    }
+  }
+
+  appendSignature(evaluation: Evaluation) {
+    // Use the signed PDF's id if available, otherwise the evaluation id
+    const pdfId = evaluation.id;
+    this.router.navigate(['/supervisor-dashboard/sign', pdfId]);
   }
 
   downloadForm(f: PDF) {

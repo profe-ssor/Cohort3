@@ -1,79 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+<!-- Modern Professional Login Page -->
+<div class="login-bg">
+  <div class="login-card">
+    <img src="/images/nss-image.jpeg" alt="NSS Logo" class="nss-logo" />
+    <h2 class="login-title">Welcome Back</h2>
+    <p class="login-subtitle">Sign in to your NSS Personnel account</p>
 
-</head>
-<body>
+    <form #f="ngForm" autocomplete="off" (ngSubmit)="onLogin()">
+      <div *ngIf="errorMessage" class="error-message">
+        <span class="material-icons">error_outline</span> {{ errorMessage }}
+      </div>
+      <div *ngIf="successMessage" class="success-message">
+        <span class="material-icons">check_circle</span> {{ successMessage }}
+      </div>
 
-    <main class="page">
-        <form #f="ngForm" (ngSubmit)="onLogin()">
-            <div class="wrapper">
-                <div class="email">
-                    <label for="mail">Email:</label>
-                    <input type="email" class="email" name="email"  id="email" [(ngModel)]="credentials.email"
-                    ngModel
-                    #email="ngModel"
-                    [pattern]="constant.emailRegex"
-                    placeholder="example@gmail.com"
-                    [class.ng-invalid]="email.invalid && email.touched"
-                    required>
-                    <div *ngIf="email.invalid && email.touched"  class="alert">
-                      <p *ngIf="email.errors?.['required']">{{ constant.REQUIRED }}</p>
-                      <p *ngIf="email.errors?.['pattern']">{{ constant.EMAIL_INVALID }}</p>
-                      <p *ngIf="email.errors?.['maxlength']">{{ constant.MAX_LENGTH(constant.maxLength) }}</p>
-                    </div>
-                </div>
+      <div class="form-group">
+        <label for="email">Email <span class="material-icons info-icon" title="Enter your registered email.">mail</span></label>
+        <input type="email" id="email" class="form-control" name="email" [(ngModel)]="credentials.email" ngModel #email="ngModel"
+          [pattern]="constant.emailRegex" [maxlength]="constant.maxLength" required placeholder="Enter your email address" />
+        <small *ngIf="email.invalid && email.touched" class="helper-text">
+          <span *ngIf="email.errors?.['required']">{{ constant.REQUIRED }}</span>
+          <span *ngIf="email.errors?.['pattern']">{{ constant.EMAIL_INVALID }}</span>
+          <span *ngIf="email.errors?.['maxlength']">{{ constant.MAX_LENGTH(constant.maxLength) }}</span>
+        </small>
+      </div>
 
-                <div class="password1">
-                    <label for="password">Password:</label>
-                    <input type="password" name="password" [(ngModel)]="credentials.password" class="password1" placeholder="Set Password"
-                    ngModel
-                    #password ="ngModel"
-                    [minlength]="constant.minLength"
-                    [class.ng-invalid]="password.invalid && password.touched"
-                     required>
-                     <div class="alert">
-                      @if(password.invalid && password.touched){
-                        @if(password.hasError('required')){
-                          <p>{{ constant.REQUIRED }}</p>
-                        }
-                        @if(password.hasError('minPasswordLength')){
-                          <p>{{ constant.minLength}}</p>
-                        }
-                        }
-                    </div>
-                </div>
+      <div class="form-group">
+        <label for="password">Password <span class="material-icons info-icon" title="Password is case sensitive.">lock</span></label>
+        <input type="password" id="password" class="form-control" name="password" [(ngModel)]="credentials.password" ngModel #password="ngModel"
+          [minlength]="constant.minPasswordLength" [maxlength]="constant.maxPasswordLength" required placeholder="Enter your password" />
+        <small *ngIf="password.invalid && password.touched" class="helper-text">
+          <span *ngIf="password.errors?.['required']">{{ constant.REQUIRED }}</span>
+          <span *ngIf="password.errors?.['minlength']">{{ constant.MIN_PASSWORD_LENGTH(constant.minPasswordLength) }}</span>
+          <span *ngIf="password.errors?.['maxlength']">{{ constant.MAX_PASSWORD_LENGTH(constant.maxPasswordLength) }}</span>
+        </small>
+      </div>
 
-                <!-- Forgot Password Link -->
-                <div class="forgot-password">
-                    <a routerLink="/password-reset" class="forgot-password-link">Forgot Password?</a>
-                </div>
+      <div class="forgot-password">
+        <a routerLink="/password-reset" class="forgot-password-link">Forgot Password?</a>
+      </div>
 
-            </div>
-            <section>
-              <button
-              type="button"
-              [disabled]="isLoginLoading"
-              (click)="onSignUp()"
-              class="btn button login">
-
-              <span *ngIf="isLoginLoading" class="spinner-border spinner-border-sm text-info"></span>
-             SIGNUP
-            </button>
-
-              <button type="submit" [disabled]="f.invalid" class="button signup">
-                <span *ngIf="isLoading" class="spinner-border spinner-border-sm text-success"></span>
-                LOGIN
-              </button>
-          </section>
-          <div *ngIf="successMessage" class="success-message">
-            {{ successMessage }}
-          </div>
-        </form>
-    </main>
-    <router-outlet></router-outlet>
-</body>
-</html>
+      <div class="form-actions">
+        <button type="button" class="btn btn-outline-primary" [disabled]="isLoginLoading" (click)="onSignUp()">
+          <span *ngIf="isLoginLoading" class="spinner-border spinner-border-sm text-info"></span>
+          Sign Up
+        </button>
+        <button type="submit" class="btn btn-success" [disabled]="f.invalid || isLoading">
+          <span *ngIf="isLoading" class="spinner-border spinner-border-sm text-success"></span>
+          Login
+        </button>
+      </div>
+    </form>
+    <footer class="login-footer">
+      <span>Don't have an account?</span>
+      <a routerLink="/signup">Sign up here</a>
+    </footer>
+  </div>
+</div>

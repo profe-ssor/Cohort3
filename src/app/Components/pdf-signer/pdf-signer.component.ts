@@ -8,6 +8,7 @@ import { environment } from '../../../environments/environment.development';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist/build/pdf.mjs';
 import { FormsModule } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString();
 
@@ -36,11 +37,19 @@ export class PdfSignerComponent implements OnInit {
   renderedPdfHeight = 0;
   renderedPdfWidth = 0;
 
+  signatureWidth = 100;
+  signatureHeight = 50;
+  isResizing = false;
+  resizeStartX = 0;
+  resizeStartY = 0;
+  initialWidth = 100;
+  initialHeight = 50;
+
 
   @ViewChild('pdfCanvas') pdfCanvasRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('pdfContainer') pdfContainerRef!: ElementRef<HTMLDivElement>;
 
-  constructor(private pdfService: PdfService, private route: ActivatedRoute, private router: Router) {}
+  constructor(public pdfService: PdfService, public route: ActivatedRoute, public router: Router, public toastr: ToastrService) {}
 
   ngOnInit() {
     const pdfId = this.route.snapshot.paramMap.get('id');
@@ -131,26 +140,72 @@ export class PdfSignerComponent implements OnInit {
     document.removeEventListener('mouseup', this.stopDragging);
   };
 
+  startResizing(event: MouseEvent) {
+    event.stopPropagation();
+    this.isResizing = true;
+    this.resizeStartX = event.clientX;
+    this.resizeStartY = event.clientY;
+    this.initialWidth = this.signatureWidth;
+    this.initialHeight = this.signatureHeight;
+    document.addEventListener('mousemove', this.onResizeMove);
+    document.addEventListener('mouseup', this.stopResizing);
+  }
+
+  onResizeMove = (event: MouseEvent) => {
+    if (this.isResizing) {
+      const dx = event.clientX - this.resizeStartX;
+      const dy = event.clientY - this.resizeStartY;
+      this.signatureWidth = Math.max(30, this.initialWidth + dx);
+      this.signatureHeight = Math.max(15, this.initialHeight + dy);
+    }
+  };
+
+  stopResizing = () => {
+    this.isResizing = false;
+    document.removeEventListener('mousemove', this.onResizeMove);
+    document.removeEventListener('mouseup', this.stopResizing);
+  };
+
+  onPdfCanvasClick(event: MouseEvent) {
+    if (!this.pdfCanvasRef) return;
+    const rect = this.pdfCanvasRef.nativeElement.getBoundingClientRect();
+    // Center the signature at the click point
+    this.signatureX = event.clientX - rect.left - 50; // 50 = half width
+    this.signatureY = event.clientY - rect.top - 25;  // 25 = half height
+  }
+
   finishSigning() {
     if (!this.uploadedPdf || !this.signatureFile) return;
 
         // Adjust Y coordinate from canvas space (top-left origin) to PDF (bottom-left origin)
-        const adjustedY = this.renderedPdfHeight - this.signatureY - 50;
+        const adjustedY = this.renderedPdfHeight - this.signatureY - this.signatureHeight;
 
     const position: SignaturePosition = {
       x: this.signatureX,
       y: this.signatureY,
-      width: 100,
-      height: 50,
+      width: this.signatureWidth,
+      height: this.signatureHeight,
       page: this.selectedSignaturePage
     };
 
     this.pdfService.signPdfWithImage(this.uploadedPdf.id, this.signatureFile, position).subscribe({
       next: () => {
-        alert('PDF signed successfully!');
-        this.router.navigate(['/personnel/footer']);
+        // Show a non-blocking success message and redirect
+        const role = localStorage.getItem('userRole') || '';
+        if (this.toastr) {
+          this.toastr.success('PDF signed successfully!');
+        }
+        if (role.toLowerCase().includes('supervisor')) {
+          this.router.navigate(['/supervisor-dashboard/evaluations']);
+        } else {
+          this.router.navigate(['/personnel/footer']);
+        }
       },
-      error: () => alert('Failed to sign PDF.')
+      error: () => {
+        if (this.toastr) {
+          this.toastr.error('Failed to sign PDF.');
+        }
+      }
     });
   }
 }

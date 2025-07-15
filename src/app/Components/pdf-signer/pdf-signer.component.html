@@ -1,41 +1,74 @@
-<div class="top-controls" *ngIf="uploadedPdf">
-  <div class="left">
-    <app-signature-chooser (signatureReady)="handleSignatureReady($event)"></app-signature-chooser>
+<div class="signer-page-container">
+  <div class="signer-card">
+    <div class="signer-header">
+      <h2>Sign PDF Document</h2>
+      <p class="signer-helper">Drag, click, or resize your signature. Place it where you want it to appear on the document.</p>
+    </div>
+    <div class="signer-main">
+      <div class="signer-controls">
+        <app-signature-chooser (signatureReady)="handleSignatureReady($event)"></app-signature-chooser>
+        <button class="reset-btn" (click)="signatureX = 50; signatureY = 50; signatureWidth = 100; signatureHeight = 50;">Reset Position/Size</button>
+        <button class="remove-btn" (click)="signatureFile = null; signatureUrl = null;">Remove Signature</button>
+      </div>
+      <div class="signer-pdf-area">
+        <div class="loading-overlay" *ngIf="uploadedPdf && !pdfLoaded && !pdfLoadError">
+          <div class="loading-spinner"></div>
+          <p>Loading PDF...</p>
+        </div>
+        <div class="error-message" *ngIf="pdfLoadError">
+          <p>Failed to load PDF: {{ pdfLoadError }}</p>
+          <button (click)="loadAndRenderPDF(uploadedPdf!.file)">Retry</button>
+        </div>
+        <div class="pdf-canvas-wrapper">
+          <canvas #pdfCanvas (click)="onPdfCanvasClick($event)"></canvas>
+          <img *ngIf="signatureUrl && pdfLoaded"
+               [src]="signatureUrl"
+               [ngStyle]="{
+                 position: 'absolute',
+                 left: signatureX + 'px',
+                 top: signatureY + 'px',
+                 width: signatureWidth + 'px',
+                 height: signatureHeight + 'px',
+                 cursor: isResizing ? 'nwse-resize' : 'move',
+                 'z-index': 10,
+                 'box-shadow': isDragging ? '0 0 0 3px #2196f3' : '0 2px 8px rgba(0,0,0,0.15)',
+                 'border': isDragging ? '2px dashed #2196f3' : '2px solid #fff',
+                 'border-radius': '6px',
+                 'transition': 'box-shadow 0.2s, border 0.2s'
+               }"
+               (mousedown)="startDragging($event)"
+               title="Drag or click to move. Use the handle to resize." />
+          <div *ngIf="signatureUrl && pdfLoaded"
+               [ngStyle]="{
+                 position: 'absolute',
+                 left: (signatureX + signatureWidth - 10) + 'px',
+                 top: (signatureY + signatureHeight - 10) + 'px',
+                 width: '16px',
+                 height: '16px',
+                 'background-color': '#2196f3',
+                 border: '2px solid #fff',
+                 'border-radius': '50%',
+                 cursor: 'nwse-resize',
+                 'z-index': 20,
+                 display: isResizing ? 'block' : 'block'
+               }"
+               (mousedown)="startResizing($event)"
+               title="Drag to resize signature">
+            <span class="resize-icon">↔</span>
+          </div>
+        </div>
+        <div class="signer-hints">
+          <span>💡 <b>Tip:</b> Drag or click to move your signature. Use the blue handle to resize.</span>
+        </div>
+      </div>
+    </div>
+    <div class="signer-footer">
+      <button class="finish-btn" (click)="finishSigning()" [disabled]="!pdfLoaded || !signatureUrl">
+        <span>Finish & Sign</span>
+      </button>
+      <button class="cancel-btn" (click)="router.navigate(['/supervisor-dashboard/evaluations'])">
+        Cancel
+      </button>
+    </div>
   </div>
-  <div class="right">
-    <button (click)="finishSigning()" [disabled]="!pdfLoaded || !signatureUrl" class="finish-btn">
-      Finish
-    </button>
-  </div>
-</div>
-
-<div class="pdf-container" #pdfContainer *ngIf="uploadedPdf">
-  <div class="loading-overlay" *ngIf="uploadedPdf && !pdfLoaded && !pdfLoadError">
-    <div class="loading-spinner"></div>
-    <p>Loading PDF...</p>
-  </div>
-
-  <div class="error-message" *ngIf="pdfLoadError">
-    <p>Failed to load PDF: {{ pdfLoadError }}</p>
-    <button (click)="loadAndRenderPDF(uploadedPdf!.file)">Retry</button>
-  </div>
-
-  <canvas #pdfCanvas></canvas>
-
-  <img *ngIf="signatureUrl && pdfLoaded"
-       [src]="signatureUrl"
-       [ngStyle]="{
-         position: 'absolute',
-         left: signatureX + 'px',
-         top: signatureY + 'px',
-         width: '100px',
-         height: '50px',
-         cursor: 'move'
-       }"
-       (mousedown)="startDragging($event)" />
-</div>
-
-<div class="pdf-debug-info" *ngIf="uploadedPdf">
-  <p><strong>PDF Info:</strong> {{ uploadedPdf.file_name }}</p>
-  <p><strong>URL:</strong> {{ environment.API_URL + (uploadedPdf.file.startsWith('/') ? uploadedPdf.file.substring(1) : uploadedPdf.file) }}</p>
 </div>

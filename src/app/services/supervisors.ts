@@ -37,7 +37,7 @@ export class SupervisorService {
 
   // 1. Fetch all supervisors
   getAllSupervisors(): Observable<ISupervisorDatabase[]> {
-    return this.http.get<ISupervisorDatabase[]>(`${environment.API_URL}nss_supervisor/getAllsupervisors/`, { headers: this.getAuthHeaders() })
+    return this.http.get<ISupervisorDatabase[]>(`${environment.API_URL}nss_supervisors/getAllsupervisors/`, { headers: this.getAuthHeaders() })
       .pipe(catchError(this.handleError));
   }
 
@@ -61,7 +61,7 @@ export class SupervisorService {
 
   // 5. Add supervisor
   addSupervisor(data: ISupervisorDatabase): Observable<any> {
-    return this.http.post(`${environment.API_URL}nss_supervisor/supervisorsdb/`, data, { headers: this.getAuthHeaders() })
+    return this.http.post(`${environment.API_URL}nss_supervisors/supervisorsdb/`, data, { headers: this.getAuthHeaders() })
       .pipe(catchError(this.handleError));
   }
 
@@ -73,7 +73,7 @@ export class SupervisorService {
 
   // 7. Delete supervisor
   deleteSupervisor(id: number): Observable<any> {
-    return this.http.delete(`${environment.API_URL}supervisorsdb/${id}/`, { headers: this.getAuthHeaders() })
+    return this.http.delete(`${environment.API_URL}nss_supervisors/supervisorsdb/${id}/`, { headers: this.getAuthHeaders() })
       .pipe(catchError(this.handleError));
   }
 

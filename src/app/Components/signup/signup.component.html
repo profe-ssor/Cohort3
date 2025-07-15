@@ -1,133 +1,93 @@
-<!DOCTYPE html>
-<html lang="en">
+<!-- Modern Professional Signup Page -->
+<div class="signup-bg">
+  <div class="signup-card">
+    <img src="/images/nss-image.jpeg" alt="NSS Logo" class="nss-logo" />
+    <h2 class="signup-title">NSS Personnel Registration</h2>
+    <p class="signup-subtitle">Create your account to access the NSS Personnel Portal</p>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NSS Personnel Registration Portal</title>
+    <form #f="ngForm" autocomplete="off">
+      <div *ngIf="errorMessage" class="error-message">
+        <span class="material-icons">error_outline</span> {{ errorMessage }}
+      </div>
+      <div *ngIf="successMessage" class="success-message">
+        <span class="material-icons">check_circle</span> {{ successMessage }}
+      </div>
 
-</head>
-
-<body>
-
-  <main>
-    <div *ngIf="errorMessage" class="error-message">
-      {{ errorMessage }}
-    </div>
-
-    <form #f="ngForm">
-    <div id="p1" class="row">
-      <div class="col">
-          <label for="username">User Name:</label>
-          <input type="text" class="form-control form-control-lg" id="username" [(ngModel)]="user.username" autocomplete="username" name="username" ngModel
+      <div class="form-row">
+        <div class="form-group">
+          <label for="username">User Name</label>
+          <input type="text" id="username" class="form-control" [(ngModel)]="user.username" name="username" ngModel
             #username="ngModel" [minlength]="constant.minLength" [maxlength]="constant.maxLength"
-            [class.ng-invalid]="username.invalid && username.touched" required />
-          <div *ngIf="username.invalid && username.touched"  class="alert">
-            <p *ngIf="username.errors?.['required']">{{ constant.REQUIRED }}</p>
-            <p *ngIf="username.errors?.['minlength']">{{ constant.MIN_LENGTH(constant.minLength) }}</p>
-            <p *ngIf="username.errors?.['maxlength']">{{ constant.MAX_LENGTH(constant.maxLength) }}</p>
-          </div>
-    </div>
-
-
-    <div class="col" id="p2">
-      <div>
-        <label for="gender">GENDER:</label>
-        <select class="form-select form-select-lg" id="gender" [(ngModel)]="user.gender" name="gender" ngModel #gender="ngModel"
-          [class.ng-invalid]="gender.invalid && gender.touched" required>
-          <option value="">Select Gender</option>
-          <option value="M">Male</option>
-          <option value="F">Female</option>
-        </select>
-        <div class="alert">
-          @if(gender.invalid && gender.touched){
-          @if(gender.hasError('required')){
-          <p>{{ constant.REQUIRED }}</p>
-          }
-          }
+            [class.ng-invalid]="username.invalid && username.touched" required placeholder="Enter your full name" />
+          <small *ngIf="username.invalid && username.touched" class="helper-text">
+            <span *ngIf="username.errors?.['required']">{{ constant.REQUIRED }}</span>
+            <span *ngIf="username.errors?.['minlength']">{{ constant.MIN_LENGTH(constant.minLength) }}</span>
+            <span *ngIf="username.errors?.['maxlength']">{{ constant.MAX_LENGTH(constant.maxLength) }}</span>
+          </small>
+        </div>
+        <div class="form-group">
+          <label for="gender">Gender</label>
+          <select id="gender" class="form-control" [(ngModel)]="user.gender" name="gender" ngModel #gender="ngModel" required>
+            <option value="">Select Gender</option>
+            <option value="M">Male</option>
+            <option value="F">Female</option>
+          </select>
+          <small *ngIf="gender.invalid && gender.touched" class="helper-text">
+            <span *ngIf="gender.errors?.['required']">{{ constant.REQUIRED }}</span>
+          </small>
         </div>
       </div>
-</div>
-</div>
 
-        <div class="row">
-          <div class="col">
-            <label for="email">EMAIL:</label>
-            <input type="email" class="form-control form-control-lg" id="email" [(ngModel)]="user.email" name="email" autocomplete="email" #email="ngModel"
-              [class.ng-invalid]="email.invalid && email.touched" required [pattern]="constant.emailRegex" />
-            <div *ngIf="email.invalid && email.touched" class="alert">
-              <p *ngIf="email.errors?.['required']">{{ constant.REQUIRED }}</p>
-              <p *ngIf="email.errors?.['pattern']">{{ constant.EMAIL_INVALID }}</p>
-              <p *ngIf="email.errors?.['maxlength']">{{ constant.MAX_LENGTH(constant.maxLength) }}</p>
-            </div>
-          </div>
-
-          <div class="col">
-            <label for="gender">USER TYPE:</label>
-            <select class="form-select form-select-lg" id="gender" [(ngModel)]="user.user_type" name="user_type" ngModel #user_type="ngModel"
-              [class.ng-invalid]="user_type.invalid && user_type.touched" required>
-              <option value="">Select </option>
-              <option value="nss">National Service Personel</option>
-
-            </select>
-            <div class="alert">
-              @if(user_type.invalid && user_type.touched){
-              @if(user_type.hasError('required')){
-              <p>{{ constant.REQUIRED }}</p>
-              }
-              }
-            </div>
-          </div>
-
-
+      <div class="form-row">
+        <div class="form-group">
+          <label for="email">Email <span class="material-icons info-icon" title="We'll never share your email.">info</span></label>
+          <input type="email" id="email" class="form-control" [(ngModel)]="user.email" name="email" ngModel #email="ngModel"
+            [pattern]="constant.emailRegex" [maxlength]="constant.maxLength" required placeholder="Enter your email address" />
+          <small *ngIf="email.invalid && email.touched" class="helper-text">
+            <span *ngIf="email.errors?.['required']">{{ constant.REQUIRED }}</span>
+            <span *ngIf="email.errors?.['pattern']">{{ constant.EMAIL_INVALID }}</span>
+            <span *ngIf="email.errors?.['maxlength']">{{ constant.MAX_LENGTH(constant.maxLength) }}</span>
+          </small>
         </div>
-
-
-        <div class="row">
-
-        <label for="region_of_posting">Password:</label>
-        <input type="password" class="form-control form-control-lg" id="password" placeholder="Enter your password" [(ngModel)]="user.password"
-          name="password" autocomplete="current-password" #password="ngModel" [minlength]="constant.minLength"
-          [class.ng-invalid]="password.invalid && password.touched" required />
-        <div class="alert">
-          @if(password.invalid && password.touched){
-          @if(password.hasError('required')){
-          <p>{{ constant.REQUIRED }}</p>
-          }
-          @if(password.hasError('minPasswordLength')){
-          <p>{{ constant.minLength}}</p>
-          }
-          }
+        <div class="form-group">
+          <label for="user_type">User Type</label>
+          <select id="user_type" class="form-control" [(ngModel)]="user.user_type" name="user_type" ngModel #user_type="ngModel" required>
+            <option value="">Select</option>
+            <option value="nss">National Service Personnel</option>
+          </select>
+          <small *ngIf="user_type.invalid && user_type.touched" class="helper-text">
+            <span *ngIf="user_type.errors?.['required']">{{ constant.REQUIRED }}</span>
+          </small>
         </div>
+      </div>
 
-
+      <div class="form-row">
+        <div class="form-group full-width">
+          <label for="password">Password <span class="material-icons info-icon" title="Password must be at least {{constant.minPasswordLength}} characters.">lock</span></label>
+          <input type="password" id="password" class="form-control" [(ngModel)]="user.password" name="password" ngModel #password="ngModel"
+            [minlength]="constant.minPasswordLength" [maxlength]="constant.maxPasswordLength" required placeholder="Create a password" />
+          <small *ngIf="password.invalid && password.touched" class="helper-text">
+            <span *ngIf="password.errors?.['required']">{{ constant.REQUIRED }}</span>
+            <span *ngIf="password.errors?.['minlength']">{{ constant.MIN_PASSWORD_LENGTH(constant.minPasswordLength) }}</span>
+            <span *ngIf="password.errors?.['maxlength']">{{ constant.MAX_PASSWORD_LENGTH(constant.maxPasswordLength) }}</span>
+          </small>
         </div>
+      </div>
 
-      <!-- Action Buttons -->
-      <div class="row">
-<div class="col">
-          <button
-          [disabled]="isLoginLoading"
-          (click)="onLogin()"
-          type="button" class="btn btn-primary btn-lg">
-
+      <div class="form-actions">
+        <button type="button" class="btn btn-outline-primary" [disabled]="isLoginLoading" (click)="onLogin()">
           <span *ngIf="isLoginLoading" class="spinner-border spinner-border-sm text-info"></span>
           Login
         </button>
-</div>
-<div class="col">
-  <button type="button" class="btn btn-success btn-lg" [disabled]="f.invalid" (click)="onSubmit()" >
-    <span *ngIf="isLoading" class="spinner-border spinner-border-sm text-success"></span>
-    Submit
-  </button>
-</div>
-<div *ngIf="successMessage" class="success-message">
-  {{ successMessage }}
-</div>
-</div>
+        <button type="button" class="btn btn-success" [disabled]="f.invalid || isLoading" (click)="onSubmit()">
+          <span *ngIf="isLoading" class="spinner-border spinner-border-sm text-success"></span>
+          Create Account
+        </button>
+      </div>
     </form>
-  </main>
-  <router-outlet></router-outlet>
-</body>
-
-</html>
+    <footer class="signup-footer">
+      <span>Already have an account?</span>
+      <a routerLink="/login">Login here</a>
+    </footer>
+  </div>
+</div>
