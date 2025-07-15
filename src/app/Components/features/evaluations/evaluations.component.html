@@ -218,10 +218,10 @@
 </span>
 
                 <span class="badge" [class]="'badge-' + evaluation.evaluation_type">
-                  {{ getTypeLabel(evaluation.evaluation_type) }}
+                  {{ getSafeTypeLabel(evaluation) }}
                 </span>
                 <span class="badge" [class]="'badge-priority-' + evaluation.priority">
-                  {{ getPriorityLabel(evaluation.priority) }}
+                  {{ getSafePriorityLabel(evaluation) }}
                 </span>
                 @if (evaluation.is_overdue) {
                   <span class="badge badge-danger">Overdue</span>
@@ -242,7 +242,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 <span class="detail-label">Due:</span>
-                <span class="detail-value" [class]="getDueDateClass(evaluation.due_date)">
+                <span class="detail-value" [class]="getDueDateClass(evaluation.due_date ?? evaluation.uploaded_at ?? '')">
                   {{ formatDate(evaluation.due_date) }}
                 </span>
               </div>
@@ -270,7 +270,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 <span class="detail-label">Time:</span>
-                <span class="detail-value">{{ getDaysUntilDueText(evaluation.due_date) }}</span>
+                <span class="detail-value">{{ getDaysUntilDueText(evaluation.due_date ?? evaluation.uploaded_at ?? '') }}</span>
               </div>
             </div>
 

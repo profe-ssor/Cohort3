@@ -227,3 +227,137 @@
     text-align: right;
   }
 }
+
+.evaluation-status-section {
+  margin: 40px auto 0 auto;
+  max-width: 1100px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  padding: 32px 24px 24px 24px;
+  border-top: 6px solid #006600;
+}
+.evaluation-status-section h2 {
+  color: #006600;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.filters-row {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 18px;
+  align-items: center;
+}
+.filters-row label {
+  font-weight: 500;
+  color: #222;
+}
+.filters-row select {
+  margin-left: 8px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+.evaluation-table-wrapper {
+  overflow-x: auto;
+}
+.evaluation-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  margin-top: 8px;
+}
+.evaluation-table th, .evaluation-table td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  font-size: 1rem;
+}
+.evaluation-table th {
+  background: #f8f8f8;
+  color: #222;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+}
+.evaluation-table th:hover {
+  background: #e6f4ea;
+}
+.evaluation-table tr:last-child td {
+  border-bottom: none;
+}
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-weight: 600;
+  font-size: 0.98rem;
+  background: #f5f5f5;
+  color: #222;
+}
+.status-badge.pending {
+  background: #fffbe6;
+  color: #b8860b;
+  border: 1.5px solid #b8860b;
+}
+.status-badge.under_review {
+  background: #e6f0fa;
+  color: #0056b3;
+  border: 1.5px solid #0056b3;
+}
+.status-badge.approved {
+  background: #e8f5e9;
+  color: #006600;
+  border: 1.5px solid #006600;
+}
+.status-badge.rejected {
+  background: #ffebee;
+  color: #d32f2f;
+  border: 1.5px solid #d32f2f;
+}
+.no-feedback {
+  color: #aaa;
+  font-style: italic;
+}
+.empty-row {
+  text-align: center;
+  color: #888;
+  font-style: italic;
+}
+.notification-toast {
+  position: fixed;
+  top: 80px;
+  right: 40px;
+  background: #222;
+  color: #fff;
+  padding: 16px 28px;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+  z-index: 9999;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: fadeInOut 5s linear;
+}
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-20px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-20px); }
+}
+.evaluation-table a {
+  color: #d32f2f;
+  text-decoration: none;
+  font-size: 1.2em;
+}
+.evaluation-table a:hover {
+  text-decoration: underline;
+}

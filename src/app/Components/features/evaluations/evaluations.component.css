@@ -363,6 +363,19 @@
       margin-right: auto;
     }
 
+    .evaluation-table th, .evaluation-table td {
+      font-size: 0.45rem;
+    }
+
+    .badge, .badge-priority-high, .badge-priority-medium, .badge-priority-low {
+      font-size: 0.55rem;
+      padding: 2px 8px;
+    }
+
+    .detail-label, .detail-value {
+      font-size: 0.32rem;
+    }
+
     @media (max-width: 1024px) {
       .evaluations-header {
         flex-direction: column;

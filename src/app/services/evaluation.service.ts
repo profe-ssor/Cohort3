@@ -81,6 +81,19 @@ export class EvaluationService {
     );
   }
 
+  getPersonnelEvaluations(params?: any): Observable<EvaluationListResponse> {
+    const query = new URLSearchParams();
+    for (const key in params) {
+      if (params[key as keyof typeof params]) {
+        query.set(key, String(params[key as keyof typeof params]));
+      }
+    }
+    return this.http.get<EvaluationListResponse>(
+      `${environment.API_URL}evaluations/personnel/evaluations/?${query.toString()}`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
   storeJwtToken(token: string): void {
     localStorage.setItem('access_token', token);
   }

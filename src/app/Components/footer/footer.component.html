@@ -1,95 +1,105 @@
-<div  *ngIf="showUpload" class="upload-container">
-  <h2>Upload PDF Document</h2>
+<!-- Evaluation Submission Status Section -->
+<div class="evaluation-status-section">
+  <h2>
+    <i class="fa fa-tasks" style="color:#006600;"></i>
+    Evaluation Submission Status
+  </h2>
 
-  <div class="upload-card">
-    <div *ngIf="errorMessage" class="error-message">
-      {{ errorMessage }}
-    </div>
-
-    <div *ngIf="successMessage" class="success-message">
-      {{ successMessage }}
-    </div>
-
-    <div class="file-upload-section">
-      <div class="file-input-wrapper">
-        <div class="file-drop-area" [class.has-file]="selectedFile">
-          <span class="file-message" *ngIf="!selectedFile">
-            <i class="fas fa-cloud-upload-alt"></i>
-            Drag & drop your PDF here or click to browse
-          </span>
-          <span class="file-name" *ngIf="selectedFile">
-            <i class="fas fa-file-pdf"></i>
-            {{ selectedFile.name }}
-          </span>
-          <input
-            type="file"
-            class="file-input"
-            accept=".pdf"
-            (change)="onFileSelect($event)">
-        </div>
-      </div>
-
-      <div class="file-name-input" *ngIf="selectedFile">
-        <label for="fileName">Document Name</label>
-        <input
-          type="text"
-          id="fileName"
-          [(ngModel)]="fileName"
-
-          placeholder="Enter document name">
-      </div>
-    </div>
-
-    <div class="action-buttons">
-      <button
-        class="btn btn-secondary"
-        (click)="clearSelection()"
-        [disabled]="isUploading || !selectedFile">
-        Clear
-      </button>
-
-      <button
-        class="btn btn-primary"
-        (click)="saveFile()"
-        [disabled]="isUploading || !selectedFile">
-        <span *ngIf="!isUploading">Save File</span>
-        <span *ngIf="isUploading">
-          <i class="fas fa-spinner fa-spin"></i> Saving...
-        </span>
-      </button>
-    </div>
-  </div>
-</div>
-
-  <!-- Loading state -->
-  <div *ngIf="loading" class="loading">
-    Loading PDFs...
+  <!-- Notification Toast -->
+  <div *ngIf="showNotification" class="notification-toast">
+    <i class="fa fa-bell"></i> {{ notificationMessage }}
   </div>
 
-  <!-- Error state -->
-  <div *ngIf="error" class="error">
-    {{ error }}
+  <!-- Filters -->
+  <div class="filters-row">
+    <label>Status:
+      <select [(ngModel)]="filterStatus" (change)="onFilterChange()">
+        <option value="">All</option>
+        <option value="pending">Pending</option>
+        <option value="under_review">Under Review</option>
+        <option value="approved">Approved</option>
+        <option value="rejected">Rejected</option>
+      </select>
+    </label>
+    <label>Type:
+      <select [(ngModel)]="filterType" (change)="onFilterChange()">
+        <option value="">All</option>
+        <option value="monthly">Monthly</option>
+        <option value="quarterly">Quarterly</option>
+        <option value="annual">Annual</option>
+        <option value="project">Project</option>
+      </select>
+    </label>
   </div>
 
-  <!-- Loaded state -->
-  <div *ngIf="!loading && !error">
-    <!-- Show message if no PDFs -->
-    <div *ngIf="pdfs.length === 0" class="no-pdfs">
-      No PDF documents found.
-    </div>
-
-    <!-- PDF list -->
-  <!-- PDF list -->
-<div *ngFor="let pdf of pdfs" class="pdf-item">
-  <div class="pdf-info">
-   <a [href]="environment['API_URL'] + (pdf.signed_file || pdf.file)" target="_blank" class="btn btn-link pdf-name">
-{{ pdf.file_name }}
-</a>
-
-    <span class="pdf-status" [ngClass]="{'signed': pdf.is_signed, 'unsigned': !pdf.is_signed}">
-      {{ pdf.is_signed ? 'Signed' : 'Unsigned' }}
-    </span>
-    <span class="pdf-date">{{ pdf.uploaded_at | date:'short' }}</span>
+  <!-- Table/List -->
+  <div class="evaluation-table-wrapper">
+    <table class="evaluation-table">
+      <thead>
+        <tr>
+          <th (click)="onSort('title')">Title <i class="fa fa-sort"></i></th>
+          <th>Type</th>
+          <th (click)="onSort('created_at')">Submitted <i class="fa fa-sort"></i></th>
+          <th (click)="onSort('status')">Status <i class="fa fa-sort"></i></th>
+          <th (click)="onSort('reviewed_at')">Reviewed <i class="fa fa-sort"></i></th>
+          <th (click)="onSort('due_date')">Due <i class="fa fa-sort"></i></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let eval of filteredEvaluations">
+          <td>
+            <ng-container *ngIf="eval.source === 'pdf'; else evalTitle">
+              {{ eval.file_name }}
+            </ng-container>
+            <ng-template #evalTitle>
+              {{ eval.title }}
+            </ng-template>
+          </td>
+          <td>
+            <ng-container *ngIf="eval.source === 'pdf'; else evalType">
+              {{ eval.form_type }}
+            </ng-container>
+            <ng-template #evalType>
+              {{ eval.type_display || eval.evaluation_type }}
+            </ng-template>
+          </td>
+          <td>
+            <ng-container *ngIf="eval.source === 'pdf'; else evalDate">
+              {{ eval.uploaded_at | date:'short' }}
+            </ng-container>
+            <ng-template #evalDate>
+              {{ eval.created_at | date:'short' }}
+            </ng-template>
+          </td>
+          <td>
+            <span class="status-badge" [ngClass]="eval.status">
+              <i class="fa"
+                 [ngClass]="{
+                   'fa-hourglass-start': eval.status === 'pending',
+                   'fa-search': eval.status === 'under_review',
+                   'fa-check-circle': eval.status === 'approved',
+                   'fa-times-circle': eval.status === 'rejected'
+                 }"></i>
+              {{ eval.status_display || eval.status }}
+            </span>
+          </td>
+          <td>
+            <ng-container *ngIf="eval.source === 'pdf'; else evalReviewed">
+              {{ eval.is_signed ? 'Signed' : 'Unsigned' }}
+            </ng-container>
+            <ng-template #evalReviewed>
+              {{ eval.reviewed_at ? (eval.reviewed_at | date:'short') : '-' }}
+            </ng-template>
+          </td>
+          <td>
+            {{ eval.due_date | date:'shortDate' }}
+          </td>
+        </tr>
+        <tr *ngIf="filteredEvaluations.length === 0">
+          <td colspan="6" class="empty-row">No evaluation submissions found.</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>
 

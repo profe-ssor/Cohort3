@@ -127,15 +127,19 @@ export class EvaluationsComponent implements OnInit {
       const q = this.searchQuery().toLowerCase();
       filtered = filtered.filter(e =>
         (e.nss_personnel_name?.toLowerCase() || '').includes(q) ||
-        e.title.toLowerCase().includes(q) ||
-        e.description.toLowerCase().includes(q) ||
+        (e.title ?? e.file_name ?? '').toLowerCase().includes(q) ||
+        (e.description ?? '').toLowerCase().includes(q) ||
         (e.supervisor_name?.toLowerCase() || '').includes(q)
       );
     }
     return filtered.sort((a, b) => {
       const priorityOrder = { high: 0, medium: 1, low: 2 };
-      if (a.priority !== b.priority) return priorityOrder[a.priority] - priorityOrder[b.priority];
-      return new Date(a.due_date).getTime() - new Date(b.due_date).getTime();
+      const pa = (a.priority ?? 'medium') as keyof typeof priorityOrder;
+      const pb = (b.priority ?? 'medium') as keyof typeof priorityOrder;
+      if (pa !== pb) return priorityOrder[pa] - priorityOrder[pb];
+      const da = a.due_date ?? a.uploaded_at ?? '';
+      const db = b.due_date ?? b.uploaded_at ?? '';
+      return new Date(da || '').getTime() - new Date(db || '').getTime();
     });
   });
 
@@ -270,6 +274,16 @@ export class EvaluationsComponent implements OnInit {
 
   getPriorityLabel(p: EvaluationPriority) {
     return { low: 'Low', medium: 'Medium', high: 'High' }[p] || p;
+  }
+
+  getSafeTypeLabel(evaluation: Evaluation): string {
+    const type = (evaluation.evaluation_type ?? evaluation.form_type ?? 'monthly') as EvaluationType;
+    return this.getTypeLabel(type);
+  }
+
+  getSafePriorityLabel(evaluation: Evaluation): string {
+    const priority = (evaluation.priority ?? 'medium') as EvaluationPriority;
+    return this.getPriorityLabel(priority);
   }
 
   updatePdfFormStatus(id: number, status: EvaluationStatus) {
