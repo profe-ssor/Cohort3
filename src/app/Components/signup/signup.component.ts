@@ -23,6 +23,7 @@ export class SignupComponent {
     email: '',
     user_type: '',
     password: '',
+    start_date: '', // Added to fix TS2741 error
   };
 
   regions =[
@@ -54,6 +55,7 @@ export class SignupComponent {
   constant = Constant;
   errorMessage: string = '';
   successMessage: string | null = null;
+  startDateError: string = '';
 
   constructor(private authService: AuthService, private router: Router, private _toastr:ToastrService) { }
 
@@ -61,16 +63,35 @@ export class SignupComponent {
 
 
 
-onSubmit(): void {
-  if (this.isLoading) return;
+  validateStartDate(startDate: string): boolean {
+    if (!startDate) return true;
+    const year = parseInt(startDate.slice(0, 4), 10);
+    const currentYear = new Date().getFullYear();
+    if (year !== currentYear) {
+      this.startDateError = `Batch year must be ${currentYear}. You entered ${year}.`;
+      return false;
+    }
+    this.startDateError = '';
+    return true;
+  }
 
-  this.isLoading = true;
-  // this.formatDates();
-  console.log('User data being sent:', this.user);
+  onSubmit(): void {
+    if (this.isLoading) return;
 
-  // Send user data to the server for registration
-  this.authService.register(this.user).subscribe({
-    next: (response: registerResponse) => {
+    // Frontend year validation
+    if (!this.validateStartDate(this.user.start_date)) {
+      this._toastr.error(this.startDateError);
+      this.isLoading = false;
+      return;
+    }
+
+    this.isLoading = true;
+    // this.formatDates();
+    console.log('User data being sent:', this.user);
+
+    // Send user data to the server for registration
+    this.authService.register(this.user).subscribe({
+      next: (response: registerResponse) => {
 
       if (response.id) {
         localStorage.setItem('user_id', response.id.toString()); // Save user ID
@@ -116,6 +137,7 @@ onSubmit(): void {
         email: '',
         password: '',
         user_type: '',
+        start_date: '', // Added to fix TS2741 error
       };
     },
     complete: () => {

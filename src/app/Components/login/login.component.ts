@@ -38,7 +38,22 @@ export class LoginComponent {
         this._toastr.success(this.successMessage, 'Login Successful')
         console.log('Logged in successfully:', response);
 
-        },
+        // Store user id and user_type in localStorage for profile page
+        if (response && response.user) {
+          // Only store id if it exists
+          if ('id' in response.user && response.user.id) {
+            localStorage.setItem('user_id', String(response.user.id));
+          }
+          // Only store user_type if it exists, otherwise use role
+          if ('user_type' in response.user && response.user.user_type) {
+            localStorage.setItem('user_type', String(response.user.user_type));
+          } else if ('role' in response.user && response.user.role) {
+            localStorage.setItem('user_type', String(response.user.role));
+          }
+        } else {
+          console.warn('No user object in login response:', response);
+        }
+      },
       error: (error) => {
         console.error('Login error:', error);
         this.handleError(error);

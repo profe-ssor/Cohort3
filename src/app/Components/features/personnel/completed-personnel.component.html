@@ -1,0 +1,49 @@
+<div class="completed-personnel-container">
+  <h2>Completed Service (Archived NSS Personnel)</h2>
+  <mat-form-field appearance="outline" class="search-bar">
+    <mat-label>Search by Name, Ghana Card, or NSS ID</mat-label>
+    <input matInput [(ngModel)]="searchTerm" placeholder="Search...">
+  </mat-form-field>
+
+  <div *ngIf="loading" class="loading-spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <table mat-table [dataSource]="filteredPersonnel" class="mat-elevation-z8" *ngIf="!loading">
+    <ng-container matColumnDef="full_name">
+      <th mat-header-cell *matHeaderCellDef>Full Name</th>
+      <td mat-cell *matCellDef="let person">{{ person.full_name }}</td>
+    </ng-container>
+    <ng-container matColumnDef="ghana_card_record">
+      <th mat-header-cell *matHeaderCellDef>Ghana Card ID</th>
+      <td mat-cell *matCellDef="let person">{{ person.ghana_card_record }}</td>
+    </ng-container>
+    <ng-container matColumnDef="nss_id">
+      <th mat-header-cell *matHeaderCellDef>NSS ID</th>
+      <td mat-cell *matCellDef="let person">{{ person.nss_id }}</td>
+    </ng-container>
+    <ng-container matColumnDef="batch_year">
+      <th mat-header-cell *matHeaderCellDef>Batch Year</th>
+      <td mat-cell *matCellDef="let person">{{ person.batch_year }}</td>
+    </ng-container>
+    <ng-container matColumnDef="completion_date">
+      <th mat-header-cell *matHeaderCellDef>Completion Date</th>
+      <td mat-cell *matCellDef="let person">{{ person.completion_date }}</td>
+    </ng-container>
+    <ng-container matColumnDef="archived_at">
+      <th mat-header-cell *matHeaderCellDef>Archived At</th>
+      <td mat-cell *matCellDef="let person">{{ person.archived_at | date:'medium' }}</td>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Actions</th>
+      <td mat-cell *matCellDef="let person">
+        <button mat-raised-button color="primary" (click)="restorePersonnel(person.id)">Restore</button>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="['full_name', 'ghana_card_record', 'nss_id', 'batch_year', 'completion_date', 'archived_at', 'actions']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['full_name', 'ghana_card_record', 'nss_id', 'batch_year', 'completion_date', 'archived_at', 'actions'];"></tr>
+  </table>
+  <div *ngIf="!loading && filteredPersonnel.length === 0" class="no-results">
+    <p>No archived personnel found.</p>
+  </div>
+</div>

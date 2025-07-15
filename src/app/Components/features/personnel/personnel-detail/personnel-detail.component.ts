@@ -72,6 +72,9 @@ export class PersonnelDetailComponent implements OnInit {
   performances: { value: string, label: string }[] = [];
   isAdmin = true; // TODO: Replace with real admin check
 
+  loading = signal<boolean>(true);
+  error = signal<string | null>(null);
+
   // Mock data - in real app, this would come from a service
   mockPersonnelData: PersonnelDetail = {
     id: 'P001',
@@ -107,35 +110,7 @@ export class PersonnelDetailComponent implements OnInit {
     }
   };
 
-  recentSubmissions = signal<Submission[]>([
-    {
-      id: 'S001',
-      title: 'Monthly Performance Evaluation - November 2024',
-      type: 'monthly',
-      status: 'approved',
-      submittedDate: new Date('2024-11-30'),
-      reviewedDate: new Date('2024-12-02'),
-      feedback: 'Excellent work on student engagement initiatives.',
-      rating: 5
-    },
-    {
-      id: 'S002',
-      title: 'Community Outreach Project Report',
-      type: 'project',
-      status: 'pending',
-      submittedDate: new Date('2024-12-01')
-    },
-    {
-      id: 'S003',
-      title: 'Quarterly Assessment - Q3 2024',
-      type: 'quarterly',
-      status: 'approved',
-      submittedDate: new Date('2024-10-15'),
-      reviewedDate: new Date('2024-10-18'),
-      feedback: 'Good progress on teaching methodologies.',
-      rating: 4
-    }
-  ]);
+  recentSubmissions = signal<any[]>([]);
 
   recentActivities = signal<Activity[]>([
     {
@@ -166,12 +141,14 @@ export class PersonnelDetailComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.personnelId.set(params['id']);
+      this.loading.set(true);
+      this.error.set(null);
       this.nssPersonnelService.getPersonnelDetail(params['id']).subscribe({
         next: (data) => {
           // Map backend fields to frontend interface with fallbacks
           this.personnel.set({
             id: data.id,
-            name: data.full_name || data.name || '', // Use full_name if available
+            name: data.full_name || data.name || '',
             email: data.email || '',
             phone: data.phone || '',
             region: data.region_name || data.region || '',
@@ -188,12 +165,22 @@ export class PersonnelDetailComponent implements OnInit {
             lastActivity: data.last_activity ? new Date(data.last_activity) : new Date(0),
             performance: data.performance || '',
             supervisor: data.supervisor_name || data.supervisor || '',
-            emergencyContact: data.emergency_contact || { name: '', relationship: '', phone: '' },
-            address: data.address || { street: '', city: '', region: '' },
+            emergencyContact: data.emergency_contact || { name: data.full_name || '', relationship: 'Self', phone: data.phone || data.contact || '' },
+            address: data.ghana_card_address || '',
             education: data.education || { institution: '', degree: '', year: 0 }
           });
+          this.loading.set(false);
         },
-        error: () => this.personnel.set(null)
+        error: (err) => {
+          this.personnel.set(null);
+          this.error.set('Failed to load personnel details. Please try again.');
+          this.loading.set(false);
+        }
+      });
+      // Fetch recent submissions
+      this.nssPersonnelService.getRecentSubmissions(params['id']).subscribe({
+        next: (data) => this.recentSubmissions.set(data),
+        error: () => this.recentSubmissions.set([])
       });
     });
     this.nssPersonnelService.getPerformanceChoices().subscribe((perfs: { value: string, label: string }[]) => this.performances = perfs);
@@ -236,40 +223,46 @@ export class PersonnelDetailComponent implements OnInit {
   }
 
   getServiceDuration(): string {
-    const personnel = this.personnel();
-    if (!personnel) return '';
-
-    const start = personnel.startDate;
-    const end = personnel.endDate || new Date();
-    const diffMonths = Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24 * 30));
-
-    if (diffMonths < 12) {
-      return `${diffMonths} months`;
-    } else {
-      const years = Math.floor(diffMonths / 12);
-      const months = diffMonths % 12;
-      return months > 0 ? `${years} year${years > 1 ? 's' : ''}, ${months} month${months > 1 ? 's' : ''}` : `${years} year${years > 1 ? 's' : ''}`;
-    }
+    const start = this.personnel()?.startDate;
+    const end = this.personnel()?.endDate;
+    if (!start || !end) return 'N/A';
+    const diff = end.getTime() - start.getTime();
+    const years = diff / (1000 * 60 * 60 * 24 * 365.25);
+    if (years >= 1) return `${Math.round(years)} year${Math.round(years) > 1 ? 's' : ''}`;
+    const months = diff / (1000 * 60 * 60 * 24 * 30.44);
+    if (months >= 1) return `${Math.round(months)} month${Math.round(months) > 1 ? 's' : ''}`;
+    const days = diff / (1000 * 60 * 60 * 24);
+    return `${Math.round(days)} day${Math.round(days) > 1 ? 's' : ''}`;
   }
 
-  formatDate(date: Date): string {
-    return date.toLocaleDateString('en-GB', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric'
-    });
-  }
-
-  getRelativeTime(timestamp: Date): string {
+  getRelativeTime(date: Date | undefined): string {
+    if (!date) return 'N/A';
     const now = new Date();
-    const diffInMinutes = Math.floor((now.getTime() - timestamp.getTime()) / (1000 * 60));
+    const diff = now.getTime() - date.getTime();
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    if (days > 0) return `${days}d ago`;
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    if (hours > 0) return `${hours}h ago`;
+    const minutes = Math.floor(diff / (1000 * 60));
+    if (minutes > 0) return `${minutes}m ago`;
+    return 'Just now';
+  }
 
-    if (diffInMinutes < 60) {
-      return `${diffInMinutes}m ago`;
-    } else if (diffInMinutes < 1440) {
-      return `${Math.floor(diffInMinutes / 60)}h ago`;
-    } else {
-      return `${Math.floor(diffInMinutes / 1440)}d ago`;
+  formatDate(date: Date | string | undefined | null): string {
+    if (!date) return 'N/A';
+
+    try {
+      const dateObj = typeof date === 'string' ? new Date(date) : date;
+      if (isNaN(dateObj.getTime())) return 'N/A';
+
+      return dateObj.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+    } catch (error) {
+      console.warn('Error formatting date:', date, error);
+      return 'N/A';
     }
   }
 

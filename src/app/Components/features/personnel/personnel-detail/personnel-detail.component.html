@@ -1,7 +1,15 @@
-    <div class="personnel-detail">
+<div class="personnel-detail">
+  <ng-container *ngIf="loading(); else loadedContent">
+    <div class="loading-state">
+      <div class="loading-spinner"></div>
+      <p>Loading personnel details...</p>
+    </div>
+  </ng-container>
+  <ng-template #loadedContent>
+    <ng-container *ngIf="!error(); else errorContent">
       @if (personnel()) {
         <div class="detail-header">
-          <button class="back-btn" routerLink="/personnel">
+          <button class="back-btn" routerLink="/admin-dashboard/personnel">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
             </svg>
@@ -91,7 +99,7 @@
                       </svg>
                     </div>
                     <div class="stat-content">
-                      <div class="stat-value">{{ personnel()!.approvedSubmissions }}</div>
+                      <div class="stat-value badge badge-success">{{ personnel()!.approvedSubmissions }}</div>
                       <div class="stat-label">Approved</div>
                     </div>
                   </div>
@@ -103,7 +111,7 @@
                       </svg>
                     </div>
                     <div class="stat-content">
-                      <div class="stat-value">{{ personnel()!.pendingSubmissions }}</div>
+                      <div class="stat-value badge badge-warning">{{ personnel()!.pendingSubmissions }}</div>
                       <div class="stat-label">Pending</div>
                     </div>
                   </div>
@@ -115,7 +123,7 @@
                       </svg>
                     </div>
                     <div class="stat-content">
-                      <div class="stat-value">{{ personnel()!.rejectedSubmissions }}</div>
+                      <div class="stat-value badge badge-danger">{{ personnel()!.rejectedSubmissions }}</div>
                       <div class="stat-label">Rejected</div>
                     </div>
                   </div>
@@ -149,30 +157,15 @@
                       <div class="submission-meta">
                         <span class="submission-type">{{ getTypeLabel(submission.type) }}</span>
                         <span class="separator">•</span>
-                        <span class="submission-date">{{ formatDate(submission.submittedDate) }}</span>
-                        @if (submission.rating) {
-                          <span class="separator">•</span>
-                          <div class="rating">
-                            @for (star of [1,2,3,4,5]; track star) {
-                              <svg
-                                class="star"
-                                [class.filled]="star <= submission.rating!"
-                                fill="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
-                              </svg>
-                            }
-                          </div>
-                        }
+                        <span class="submission-date">{{ formatDate(submission.submitted_date) }}</span>
+                        <span *ngIf="submission.reviewed_date">• Reviewed: {{ formatDate(submission.reviewed_date) }}</span>
                       </div>
-                      @if (submission.feedback) {
-                        <div class="submission-feedback">
-                          <strong>Feedback:</strong> {{ submission.feedback }}
-                        </div>
-                      }
+                      <div *ngIf="submission.feedback" class="submission-feedback">
+                        <strong>Feedback:</strong> {{ submission.feedback }}
+                      </div>
                     </div>
                   }
+                  <div *ngIf="recentSubmissions().length === 0" class="empty-state">No recent submissions found.</div>
                 </div>
               </div>
             </div>
@@ -218,9 +211,7 @@
                     <div class="contact-content">
                       <div class="contact-label">Address</div>
                       <div class="contact-value">
-                        <span>{{ personnel()?.address?.street || 'N/A' }}</span>,
-                        <span>{{ personnel()?.address?.city || 'N/A' }}</span>,
-                        <span>{{ personnel()?.address?.region || 'N/A' }}</span>
+                        <span>{{ personnel()!.address || 'N/A' }}</span>
                       </div>
                     </div>
                   </div>
@@ -238,12 +229,10 @@
                     <span class="detail-label">Start Date:</span>
                     <span class="detail-value">{{ formatDate(personnel()!.startDate) }}</span>
                   </div>
-                  @if (personnel()!.endDate) {
-                    <div class="detail-row">
-                      <span class="detail-label">End Date:</span>
-                      <span class="detail-value">{{ formatDate(personnel()!.endDate!) }}</span>
-                    </div>
-                  }
+                  <div class="detail-row">
+                    <span class="detail-label">End Date:</span>
+                    <span class="detail-value">{{ formatDate(personnel()!.endDate) }}</span>
+                  </div>
                   <div class="detail-row">
                     <span class="detail-label">Service Duration:</span>
                     <span class="detail-value">{{ getServiceDuration() }}</span>
@@ -296,10 +285,13 @@
             </div>
           </div>
         </div>
-      } @else {
-        <div class="loading-state">
-          <div class="loading-spinner"></div>
-          <p>Loading personnel details...</p>
-        </div>
       }
-    </div>
+    </ng-container>
+    <ng-template #errorContent>
+      <div class="error-state">
+        <div class="error-icon">&#9888;</div>
+        <p>{{ error() }}</p>
+      </div>
+    </ng-template>
+  </ng-template>
+</div>

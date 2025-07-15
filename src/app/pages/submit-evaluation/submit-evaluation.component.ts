@@ -65,9 +65,16 @@ export class SubmitEvaluationComponent implements OnInit {
 
     this.pdfService.getSignedPdfs().subscribe({
       next: (pdfs) => {
-        this.signedPdfs = pdfs;
-        if (pdfs.length > 0) {
-          console.log('Sample PDF URL:', pdfs[0].signed_file);
+        // Deduplicate by id and file_name
+        const seen = new Set();
+        this.signedPdfs = pdfs.filter(pdf => {
+          const key = pdf.id + '|' + pdf.file_name;
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
+        if (this.signedPdfs.length > 0) {
+          console.log('Sample PDF URL:', this.signedPdfs[0].signed_file);
         }
       },
       error: (err) => console.error('Error fetching signed PDFs:', err)
@@ -230,7 +237,7 @@ export class SubmitEvaluationComponent implements OnInit {
 
       // Call the actual ghost detection API
       const response = await this.http.post(
-        `${environment.API_URL}admin/test-ghost-detection/`,
+        `${environment.API_URL}test-ghost-detection/`,
         { personnel_id: this.getCurrentPersonnelId() },
         { headers }
       ).toPromise();

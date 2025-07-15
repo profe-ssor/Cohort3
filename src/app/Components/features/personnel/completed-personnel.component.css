@@ -1,0 +1,44 @@
+.completed-personnel-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+h2 {
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.search-bar {
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 120px;
+}
+
+.no-results {
+  text-align: center;
+  color: #888;
+  margin-top: 2rem;
+}
+
+table {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+th.mat-header-cell, td.mat-cell {
+  padding: 0.75rem 1rem;
+}
+
+button[mat-raised-button] {
+  min-width: 100px;
+}

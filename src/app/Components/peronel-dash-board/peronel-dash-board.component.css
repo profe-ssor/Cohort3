@@ -161,6 +161,8 @@ h3{
   padding: 10px;
 }
 
+/* Remove burger menu and responsive nav styles */
+
 @media (max-width: 480px) {
   .main h6 {
     line-height: 10px;
@@ -210,5 +212,72 @@ h3{
   .posting {
     margin-left: 20px;
     padding: 5px;
+  }
+}
+
+/* Extra: Make dashboard more responsive and visually appealing on all devices */
+@media (max-width: 900px) {
+  .hero {
+    flex-direction: column;
+    align-items: stretch;
+    margin-top: 2em;
+  }
+  .basicinfo, .personelName, .nssNumber {
+    min-width: unset;
+    min-height: unset;
+    margin-bottom: 1.5em;
+    text-align: left;
+  }
+  .hero2 {
+    margin-left: 0;
+    padding: 0 1em;
+  }
+  .posting {
+    margin-left: 0;
+    padding: 10px 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .main {
+    padding: 0 5px;
+    height: auto;
+  }
+  .header {
+    margin-left: 0;
+    padding: 10px;
+    min-height: 60px;
+    width: 100vw;
+    margin-top: 0;
+  }
+  .main h6, .header h1 {
+    margin-left: 10px;
+    font-size: 18px;
+  }
+  .section1 {
+    padding: 5px;
+    height: auto;
+  }
+  .section1 h1, .section1 small {
+    font-size: 18px;
+    padding: 5px;
+    margin-left: 0;
+  }
+  .hero, .hero2 {
+    margin-top: 1em;
+    margin-bottom: 1em;
+    padding: 0;
+  }
+  .basicinfo, .personelName, .nssNumber {
+    font-size: 14px;
+    min-width: unset;
+    min-height: unset;
+    margin-bottom: 1em;
+    padding: 0 5px;
+  }
+  .posting {
+    font-size: 14px;
+    margin-left: 0;
+    padding: 5px 0;
   }
 }

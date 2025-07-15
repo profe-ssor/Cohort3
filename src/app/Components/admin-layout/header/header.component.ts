@@ -92,7 +92,7 @@ import { Router } from '@angular/router';
 
         <mat-divider></mat-divider>
 
-        <button mat-menu-item>
+        <button mat-menu-item (click)="goToProfileSettings()">
           <mat-icon>person</mat-icon>
           <span>Profile Settings</span>
         </button>
@@ -355,6 +355,10 @@ export class HeaderComponent {
       case 'supervisor': return 'Supervisor';
       default: return 'User';
     }
+  }
+
+  goToProfileSettings(): void {
+    this.router.navigate(['/admin-dashboard/profile']);
   }
 
   logout(): void {

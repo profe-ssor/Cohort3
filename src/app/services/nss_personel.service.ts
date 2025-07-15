@@ -167,5 +167,39 @@ export class NssPersonelService {
     return this.http.get<nss_database[]>(`${environment.API_URL}unassigned-nss/`, { headers });
   }
 
+  // Get all archived personnel
+  getArchivedPersonnel(): Observable<any[]> {
+    const token = this.getJwtToken();
+    if (!token) {
+      return throwError(() => new Error('Unauthorized'));
+    }
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<any[]>(`${environment.API_URL}nss_personnel/archived/`, { headers });
+  }
+
+  // Restore archived personnel
+  restoreArchivedPersonnel(id: number): Observable<any> {
+    const token = this.getJwtToken();
+    if (!token) {
+      return throwError(() => new Error('Unauthorized'));
+    }
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.post<any>(`${environment.API_URL}nss_personnel/archived/restore/${id}/`, {}, { headers });
+  }
+
+  getPersonnelByUserId(userId: string) {
+    const token = this.getJwtToken();
+    if (!token) return throwError(() => new Error('Unauthorized'));
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<any>(`${environment.API_URL}nss_personnel/personnel/by_user/${userId}/`, { headers });
+  }
+
+  getRecentSubmissions(personnelId: string) {
+    const token = this.getJwtToken();
+    if (!token) return throwError(() => new Error('Unauthorized'));
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<any[]>(`${environment.API_URL}nss_personnel/personnel/${personnelId}/recent-submissions/`, { headers });
+  }
+
 }
 

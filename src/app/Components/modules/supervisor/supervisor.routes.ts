@@ -36,6 +36,10 @@ export const supervisorRoutes: Routes = [
         path: 'messages',
         loadComponent: () => import('../../../Components/features/messages/messages.component').then(m => m.MessagesComponent)
       },
+      {
+        path: 'profile',
+        loadComponent: () => import('../../profile-settings/profile-settings.component').then(m => m.ProfileSettingsComponent),
+      },
       { path: '**', redirectTo: 'dashboard' },
     ],
   },

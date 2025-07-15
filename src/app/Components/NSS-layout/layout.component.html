@@ -11,18 +11,18 @@
 <!-- Container for the entire content -->
 <div class=" container-content">
 
-   <!-- Aside Section (Sidebar Navigation) -->
+   <!-- Navigation Toggle for Mobile (move outside .aside) -->
+    <input type="checkbox" id="nav-checkbox" class="nav-checkbox">
+    <label for="nav-checkbox" class="nav-toggle-label">
+      <span class="burger-icon">&#9776;</span>
+    </label>
+
+    <!-- Aside Section (Sidebar Navigation) -->
     <div class="aside">
       <!-- Logo/Image Section -->
       <div class="image">
         <img src="images/nss-image.jpeg" alt="no image found">
       </div>
-
-      <!-- Navigation Toggle for Mobile -->
-      <input type="checkbox" id="nav-checkbox" class="nav-checkbox">
-      <label for="nav-checkbox" class="nav-toggle-label">
-        <span></span>
-      </label>
 
       <!-- Navigation Menu -->
       <nav>
@@ -40,9 +40,9 @@
               </a>
           </li>
           <li class="appointment items" routerLinkActive="active-item">
-              <a routerLink="/personnel/nss-assignment">
+              <a routerLink="/personnel/evalute">
                 <i class="fa fa-user fa-2x" aria-hidden="true"></i>
-                <p>YOUR APPOINTMENT</p>
+                <p>EVALUATE</p>
               </a>
           </li>
           <li class="history items" routerLinkActive="active-item">
@@ -58,7 +58,7 @@
               </a>
           </li>
           <li class="resertpassword items" routerLinkActive="active-item">
-              <a  routerLink="/personnel/evalute">
+              <a  routerLink="/change-password">
                 <i class="fa fa-key fa-2x" aria-hidden="true"></i>
                 <p>RESET PASSWORD</p>
               </a>

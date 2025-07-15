@@ -4,6 +4,7 @@ export interface registerUser {
   email: string;
   user_type: string;
   password: string;
+  start_date: string; // Added for batch year validation
 }
 
 export interface registerResponse {

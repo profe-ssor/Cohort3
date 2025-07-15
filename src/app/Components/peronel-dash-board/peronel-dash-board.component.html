@@ -1,4 +1,5 @@
 <div class="main">
+  <!-- Remove burger menu and responsive nav -->
   <div class="header">
       <h6>Your general information area</h6>
       <h1>Dashboard</h1>
@@ -17,15 +18,15 @@
       <div class="personelName">
           <div class="info">
               <h3>Personel Name</h3>
-              <p>Boansi Collins Kyeremateng</p>
+              <p>{{ personnel?.university_record?.full_name || personnel?.full_name || '-' }}</p>
           </div>
           <div class="institude">
               <h3>Institution</h3>
-              <p>UNIVERSITY OF ENERGY AND NATURAL RESOURCES</p>
+              <p>{{ personnel?.university_record?.university_name || personnel?.assigned_institution || '-' }}</p>
           </div>
           <div class="course">
               <h3>Course of Study</h3>
-              <p>BSC. COMPUTER SCIENCE</p>
+              <p>{{ personnel?.university_record?.course || personnel?.department || '-' }}</p>
           </div>
       </div>
           <!-- Basic Section Ended-->
@@ -33,25 +34,23 @@
       <div class="nssNumber">
         <div class="NSS">
           <h3>NSS NUMBER</h3>
-          <p>NSSGUE7853324 </p>
+          <p>{{ personnel?.nss_id || '-' }} </p>
       </div>
       <div class="INDEX">
           <h3>Index Number</h3>
-          <p>UEB3509820</p>
+          <p>{{ personnel?.university_record?.student_id || personnel?.ghana_card_record || '-' }}</p>
       </div>
       <div class="INDEX">
           <h3>Enrolment Status</h3>
-          <p>User Agency Acceptance, Approved By Region </p>
+          <p>{{ personnel?.status || '-' }}</p>
       </div>
       </div>
       <!-- NSS Column Ended -->
   </div>
   <div class="hero2">
-
-
   <div class="posting">
       <h3>Place of Posting</h3>
-      <p>UNIVERSITY OF GHANA - GRADUATE STUDENTS' ASSOCIATION OF GHANA-LEGON, LA </p>
-      <p>NKWANTANANG MADINA MUNICIPAL DISTRICT, GREATER ACCRA REGION </p>
+      <p>{{ personnel?.assigned_institution || '-' }}</p>
+      <p>{{ personnel?.region_of_posting?.name || personnel?.region_name || '-' }}</p>
   </div>
 </div>

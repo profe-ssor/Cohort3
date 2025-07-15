@@ -33,6 +33,10 @@ export const adminRoutes: Routes = [
           import('../../../Components/features/personnel/personnel-detail/personnel-detail.component').then(m => m.PersonnelDetailComponent),
       },
       {
+        path: 'completed',
+        loadComponent: () => import('../../../Components/features/personnel/completed-personnel.component').then(m => m.CompletedPersonnelComponent),
+      },
+      {
         path: 'supervisors',
         loadComponent: () =>
           import('../../../pages/ADMINISTRATORS/supervisors/supervisors.component').then(m => m.SupervisorsComponent),
@@ -46,6 +50,10 @@ export const adminRoutes: Routes = [
         path: 'settings',
         loadComponent: () =>
           import('../../../pages/ADMINISTRATORS/settings/settings.component').then(m => m.SettingsComponent),
+      },
+      {
+        path: 'profile',
+        loadComponent: () => import('../../profile-settings/profile-settings.component').then(m => m.ProfileSettingsComponent),
       },
       { path: '**', redirectTo: 'dashboard' },
     ],

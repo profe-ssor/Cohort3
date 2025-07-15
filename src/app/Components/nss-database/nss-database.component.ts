@@ -39,6 +39,7 @@ export class NssDatabaseComponent implements OnInit {
     data: []
   };
   departments: { value: string, label: string }[] = [];
+  startDateError: string = '';
   constructor(private nssauth: AuthService, private router: Router, private http: HttpClient) {}
 
   ngOnInit(): void {
@@ -55,8 +56,27 @@ export class NssDatabaseComponent implements OnInit {
     });
   }
 
+  validateStartDate(startDate: string): boolean {
+    if (!startDate) return true;
+    const year = parseInt(startDate.slice(0, 4), 10);
+    const currentYear = new Date().getFullYear();
+    if (year !== currentYear) {
+      this.startDateError = `Batch year must be ${currentYear}. You entered ${year}.`;
+      return false;
+    }
+    this.startDateError = '';
+    return true;
+  }
+
   onSubmit() {
     if (this.isLoading) return;
+
+    // Frontend year validation
+    if (!this.validateStartDate(this.nssdb.start_date)) {
+      alert(this.startDateError);
+      this.isLoading = false;
+      return;
+    }
 
     this.isLoading = true;
     this.nssauth.nssDatabase(this.nssdb).subscribe({

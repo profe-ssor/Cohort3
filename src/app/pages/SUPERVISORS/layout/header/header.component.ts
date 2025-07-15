@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { LogoutResponse } from '../../../../model/interface/auth';
 import { AuthService } from '../../../../services/auth.service';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, MatIconModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })

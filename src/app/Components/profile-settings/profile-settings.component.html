@@ -1,0 +1,94 @@
+<div class="profile-settings-container">
+  <mat-card class="profile-card">
+    <h2>Profile Settings</h2>
+    <ng-container *ngIf="!isLoading">
+      <ng-container *ngIf="!isEditMode; else editForm">
+        <div *ngIf="userDetails" class="profile-details-view enhanced-profile-card">
+          <div class="profile-header">
+            <mat-icon class="profile-avatar">account_circle</mat-icon>
+            <div class="profile-header-info">
+              <div class="profile-name">{{ userDetails.full_name }}</div>
+              <span class="user-type-badge">{{ userDetails.user_type | titlecase }}</span>
+            </div>
+          </div>
+          <div class="profile-info-list">
+            <div class="profile-info-item">
+              <mat-icon class="profile-info-icon">email</mat-icon>
+              <span class="profile-info-label">Email:</span>
+              <span class="profile-info-value">{{ userDetails.email }}</span>
+            </div>
+            <div class="profile-info-item">
+              <mat-icon class="profile-info-icon">phone</mat-icon>
+              <span class="profile-info-label">Phone:</span>
+              <span class="profile-info-value">{{ userDetails.phone || userDetails.contact }}</span>
+            </div>
+            <div class="profile-info-item">
+              <mat-icon class="profile-info-icon">person</mat-icon>
+              <span class="profile-info-label">Gender:</span>
+              <span class="profile-info-value">{{ userDetails.gender }}</span>
+            </div>
+          </div>
+          <div class="profile-actions">
+            <button mat-raised-button color="primary" (click)="enterEditMode()">Edit</button>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #editForm>
+        <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="profile-edit-form">
+          <mat-form-field appearance="outline">
+            <mat-label>Full Name</mat-label>
+            <input matInput formControlName="full_name" required />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" required type="email" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Phone</mat-label>
+            <input matInput formControlName="phone" required />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Gender</mat-label>
+            <input matInput formControlName="gender" required />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>User Type</mat-label>
+            <input matInput formControlName="user_type" [disabled]="true" />
+          </mat-form-field>
+          <div class="edit-actions">
+            <button mat-raised-button color="primary" type="submit" [disabled]="profileForm.invalid || isLoading">
+              Save Changes
+            </button>
+            <button mat-stroked-button color="warn" type="button" (click)="cancelEdit()">Cancel</button>
+          </div>
+        </form>
+      </ng-template>
+    </ng-container>
+    <ng-template #loading>
+      <div class="loading-spinner" style="display: flex; justify-content: center; align-items: center; min-height: 120px;">
+        <mat-spinner></mat-spinner>
+      </div>
+    </ng-template>
+  </mat-card>
+
+  <mat-card class="password-card">
+    <h2>Change Password</h2>
+    <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+      <mat-form-field appearance="outline">
+        <mat-label>Current Password</mat-label>
+        <input matInput formControlName="current_password" required type="password" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>New Password</mat-label>
+        <input matInput formControlName="new_password" required type="password" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Confirm New Password</mat-label>
+        <input matInput formControlName="confirm_password" required type="password" />
+      </mat-form-field>
+      <button mat-raised-button color="accent" type="submit" [disabled]="passwordForm.invalid || isPasswordLoading">
+        Change Password
+      </button>
+    </form>
+  </mat-card>
+</div>

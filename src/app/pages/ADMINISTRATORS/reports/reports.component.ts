@@ -313,6 +313,9 @@ interface GhostStatistics {
       padding: 20px;
       margin-top: 20px;
       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      /* Add max height and scroll */
+      max-height: 350px;
+      overflow-y: auto;
     }
 
     .activity-title {
@@ -628,6 +631,8 @@ interface GhostStatistics {
 
     .table-wrapper {
       overflow-x: auto;
+      max-height: 400px;
+      overflow-y: auto;
     }
 
     .detections-table {
