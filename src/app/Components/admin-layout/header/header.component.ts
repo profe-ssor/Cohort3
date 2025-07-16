@@ -36,12 +36,7 @@ import { Router } from '@angular/router';
 
       <!-- Ghana NSS Logo and Title -->
       <div class="logo-section">
-        <div class="ghana-flag-mini">
-          <div class="flag-stripe red"></div>
-          <div class="flag-stripe gold"></div>
-          <div class="flag-stripe green"></div>
-          <div class="flag-star">★</div>
-        </div>
+        <img src="/images/nss-image.jpeg" alt="NSS Logo" class="nss-logo" />
         <div class="logo-text">
           <span class="logo-title">Ghana National Service</span>
           <span class="logo-subtitle">Administration Dashboard</span>
@@ -301,6 +296,16 @@ import { Router } from '@angular/router';
 
     .logout-btn mat-icon {
       color: var(--status-red) !important;
+    }
+
+    .nss-logo {
+      max-width: 50px;
+      max-height: 50px;
+      border-radius: 6px;
+      box-shadow: 0 1px 4px rgba(99,102,241,0.08);
+      background: #fff;
+      object-fit: contain;
+      display: block;
     }
 
     @media (max-width: 768px) {
