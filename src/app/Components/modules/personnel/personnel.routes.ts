@@ -10,6 +10,7 @@ import { MessageCenterComponent } from '../../message-center/message-center.comp
 import { ReceivedMessagesComponent } from '../../received-messages/received-messages.component';
 import { MessagesComponent } from '../../features/messages/messages.component';
 import { SubmitEvaluationComponent } from '../../../pages/submit-evaluation/submit-evaluation.component';
+import { ApprovedEvaluationsComponent } from '../../features/personnel/approved-evaluations/approved-evaluations.component';
 
 
 export const personnelRoutes: Routes = [
@@ -26,7 +27,8 @@ export const personnelRoutes: Routes = [
       { path: 'message', component: MessageCenterComponent },
       { path: 'inbox', component: ReceivedMessagesComponent },
       { path: 'messages', component: MessagesComponent },
-      {path: 'evalute', component: SubmitEvaluationComponent}
+      {path: 'evalute', component: SubmitEvaluationComponent},
+      {path: 'approved-evaluations', component: ApprovedEvaluationsComponent},
     ]
   }
 ];

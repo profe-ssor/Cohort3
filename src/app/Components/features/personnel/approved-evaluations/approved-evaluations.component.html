@@ -1,0 +1,100 @@
+<div class="approved-evaluations-page">
+  <h2 class="page-title">Approved Evaluations</h2>
+
+  <div *ngIf="notification" class="notification" [ngClass]="notification.type">
+    <span>{{ notification.message }}</span>
+    <button class="close-btn" (click)="closeNotification()">&times;</button>
+  </div>
+
+  <div *ngIf="loading" class="loading-state">Loading approved evaluations...</div>
+  <div *ngIf="error" class="error-state">{{ error }}</div>
+  <div *ngIf="!loading && evaluations.length === 0" class="empty-state">No approved evaluations found.</div>
+
+  <div *ngIf="isGhostChecking$ | async" class="ghost-detection-overlay">
+    <div class="ghost-detection-modal">
+      <div class="ghost-detection-header">
+        <div class="ghost-icon">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+        <h3 class="ghost-title">Security Verification</h3>
+        <p class="ghost-subtitle">Verifying personnel authenticity before submission</p>
+      </div>
+      <div class="ghost-progress-container" *ngIf="ghostCheckProgress$ | async as ghostProgress">
+        <div class="ghost-progress-bar">
+          <div class="ghost-progress-fill" [style.width.%]="ghostProgress"></div>
+        </div>
+        <div class="ghost-progress-text">{{ asNumber(ghostProgress) | number:'1.0-0' }}% Complete</div>
+      </div>
+      <div class="ghost-steps-container" *ngIf="currentGhostStep$ | async as ghostStep">
+        <div *ngFor="let step of ghostCheckSteps; let i = index"
+             class="ghost-step"
+             [class.active]="i === asNumber(ghostStep)"
+             [class.completed]="i < asNumber(ghostStep)">
+          <div class="step-icon">
+            <i *ngIf="i < asNumber(ghostStep)" class="fas fa-check"></i>
+            <i *ngIf="i === asNumber(ghostStep)" class="fas fa-spinner fa-spin"></i>
+            <i *ngIf="i > asNumber(ghostStep)" class="fas fa-circle"></i>
+          </div>
+          <div class="step-content">
+            <div class="step-text">{{ step }}</div>
+            <div *ngIf="i === asNumber(ghostStep)" class="step-status">Processing...</div>
+            <div *ngIf="i < asNumber(ghostStep)" class="step-status completed">Completed</div>
+          </div>
+        </div>
+      </div>
+      <div class="ghost-message" *ngIf="ghostCheckMessage$ | async as ghostMsg">
+        <i class="fas fa-info-circle"></i>
+        {{ ghostMsg }}
+      </div>
+    </div>
+  </div>
+
+  <div class="evaluations-list">
+    <div class="evaluation-card" *ngFor="let eval of evaluations">
+      <div class="card-header">
+        <div class="pdf-title">{{ eval.title }}</div>
+        <div class="pdf-meta">
+          <span>Form Type: {{ eval.type_display }}</span>
+          <span>Supervisor: {{ eval.supervisor_name }}</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <button type="button" class="pdf-link" (click)="downloadPdf(eval.signed_pdf || eval.signed_file || eval.file, eval.file_name || eval.title || 'signed.pdf')">
+          Download Signed PDF
+        </button>
+        <form (ngSubmit)="submitToAdmin(eval)" autocomplete="off">
+          <div class="form-row">
+            <label>Form Type *</label>
+            <select [ngModel]="submissionState[eval.id]?.formType" (ngModelChange)="setField(eval.id, 'formType', $event)" name="formType-{{eval.id}}" required>
+              <option value="" disabled selected>Select Form Type</option>
+              <option *ngFor="let type of formTypes" [value]="type.value">{{ type.label }}</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label>Priority *</label>
+            <select [ngModel]="submissionState[eval.id]?.priority" (ngModelChange)="setField(eval.id, 'priority', $event)" name="priority-{{eval.id}}" required>
+              <option value="" disabled selected>Select Priority</option>
+              <option *ngFor="let p of priorities" [value]="p.value">{{ p.label }}</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label>Send To *</label>
+            <select [ngModel]="submissionState[eval.id]?.sendTo" (ngModelChange)="setField(eval.id, 'sendTo', $event)" name="sendTo-{{eval.id}}" required>
+              <option value="" disabled selected>Select Admin</option>
+              <option *ngFor="let admin of admins" [value]="admin.id">{{ admin.full_name || admin.email }}</option>
+            </select>
+          </div>
+          <div *ngIf="progress > 0 && progress < 100" class="progress-container mt-2">
+            <div class="progress-bar">
+              <div class="progress-fill" [style.width.%]="progress"></div>
+            </div>
+            <div class="text-sm text-gray-500 mt-1">Upload Progress: {{ progress }}%</div>
+          </div>
+          <button type="submit" class="submit-btn">Submit to Admin</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #numberHelper let-Number="Number"></ng-template>

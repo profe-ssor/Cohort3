@@ -1,0 +1,280 @@
+.approved-evaluations-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  color: var(--primary-green, #008000);
+  text-align: center;
+}
+
+.evaluations-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+.evaluation-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  padding: 1.5rem 2rem;
+  transition: box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+.evaluation-card:hover {
+  box-shadow: 0 4px 24px rgba(0,128,0,0.12);
+}
+
+.card-header {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+.pdf-title {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #222;
+}
+.pdf-meta {
+  font-size: 0.95rem;
+  color: #666;
+  margin-top: 0.25rem;
+  display: flex;
+  gap: 1.5rem;
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+.pdf-link {
+  color: var(--primary-green, #008000);
+  font-weight: 500;
+  text-decoration: underline;
+  margin-bottom: 0.5rem;
+}
+
+form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  align-items: flex-end;
+}
+.form-row {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 180px;
+  min-width: 160px;
+}
+.form-row label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+  color: #333;
+}
+select, .submit-btn {
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  margin-top: 0.1rem;
+}
+.submit-btn {
+  background: var(--primary-green, #008000);
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-left: 1rem;
+  min-width: 160px;
+}
+.submit-btn:hover {
+  background: #005f00;
+}
+
+.loading-state, .error-state, .empty-state {
+  text-align: center;
+  color: #888;
+  margin: 2rem 0;
+  font-size: 1.1rem;
+}
+
+.notification {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+.notification.success {
+  background: #e6f9ea;
+  color: #008000;
+  border: 1px solid #b2e5c2;
+}
+.notification.error {
+  background: #ffeaea;
+  color: #d32f2f;
+  border: 1px solid #f5bdbd;
+}
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  color: #888;
+  cursor: pointer;
+  margin-left: 1rem;
+}
+
+/* Ghost Detection Overlay Styles */
+.ghost-detection-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(30, 32, 40, 0.75);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s;
+}
+.ghost-detection-modal {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  padding: 2.5rem 2.5rem 2rem 2.5rem;
+  min-width: 350px;
+  max-width: 95vw;
+  width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeIn 0.4s;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+.ghost-detection-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+.ghost-icon {
+  font-size: 2.5rem;
+  color: #4f8cff;
+  margin-bottom: 0.5rem;
+}
+.ghost-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+}
+.ghost-subtitle {
+  font-size: 1rem;
+  color: #666;
+}
+.ghost-progress-container {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+.ghost-progress-bar {
+  width: 100%;
+  height: 12px;
+  background: #e6eaf3;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 0.3rem;
+}
+.ghost-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4f8cff 0%, #6be6c1 100%);
+  border-radius: 6px;
+  transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+.ghost-progress-text {
+  font-size: 0.95rem;
+  color: #4f8cff;
+  text-align: right;
+}
+.ghost-steps-container {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+.ghost-step {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+.ghost-step.active {
+  opacity: 1;
+  font-weight: 600;
+}
+.ghost-step.completed {
+  opacity: 0.5;
+}
+.step-icon {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  margin-right: 0.7rem;
+}
+.step-content {
+  flex: 1;
+}
+.step-text {
+  font-size: 1rem;
+}
+.step-status {
+  font-size: 0.85rem;
+  color: #888;
+}
+.step-status.completed {
+  color: #4f8cff;
+}
+.ghost-message {
+  margin-top: 1.2rem;
+  font-size: 1.05rem;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.ghost-message i {
+  color: #4f8cff;
+  font-size: 1.2rem;
+}
+
+@media (max-width: 600px) {
+  .approved-evaluations-page {
+    padding: 1rem 0.2rem;
+  }
+  .evaluation-card {
+    padding: 1rem 0.5rem;
+  }
+  form {
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+  .submit-btn {
+    margin-left: 0;
+    width: 100%;
+  }
+}
