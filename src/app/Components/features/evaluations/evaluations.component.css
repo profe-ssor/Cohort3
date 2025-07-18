@@ -423,6 +423,159 @@
   background: #d32f2f;
 }
 
+.modern-evaluation-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+  padding: 2rem 2.2rem 1.5rem 2.2rem;
+  margin-bottom: 1.5rem;
+  border: none;
+  transition: box-shadow 0.2s, transform 0.2s;
+  position: relative;
+}
+.modern-evaluation-card:hover {
+  box-shadow: 0 6px 32px rgba(0,128,0,0.13);
+  transform: translateY(-2px) scale(1.01);
+}
+.modern-evaluation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+.modern-badges {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.modern-badge {
+  border-radius: 6px;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  background: #f3f4f6;
+  color: #222;
+  box-shadow: 0 1px 4px rgba(0,128,0,0.04);
+  margin-bottom: 0.2rem;
+  letter-spacing: 0.01em;
+}
+.modern-badge.badge-approved {
+  background: #DCFCE7;
+  color: #166534;
+}
+.modern-badge.badge-pending {
+  background: #FEF3C7;
+  color: #92400E;
+}
+.modern-badge.badge-under_review {
+  background: #DBEAFE;
+  color: #1E40AF;
+}
+.modern-badge.badge-rejected {
+  background: #FEE2E2;
+  color: #991B1B;
+}
+.modern-badge.badge-danger {
+  background: #FEE2E2;
+  color: #991B1B;
+}
+.modern-divider {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 1.2rem 0 1.2rem 0;
+}
+.modern-evaluation-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 1.2rem;
+}
+.modern-evaluation-details .detail-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  color: #444;
+  min-width: 180px;
+}
+.modern-evaluation-details .detail-icon {
+  width: 20px;
+  height: 20px;
+  color: #008000;
+}
+.modern-evaluation-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+.modern-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.5rem 1.1rem;
+  box-shadow: 0 1px 4px rgba(0,128,0,0.04);
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+.modern-action-btn.btn-success {
+  background: #DCFCE7;
+  color: #166534;
+  border: none;
+}
+.modern-action-btn.btn-success:hover {
+  background: #bbf7d0;
+  color: #14532d;
+}
+.modern-action-btn.btn-primary {
+  background: #008000;
+  color: #fff;
+  border: none;
+}
+.modern-action-btn.btn-primary:hover {
+  background: #005f00;
+  color: #fff;
+}
+.modern-action-btn.btn-secondary {
+  background: #f3f4f6;
+  color: #222;
+  border: none;
+}
+.modern-action-btn.btn-secondary:hover {
+  background: #e5e7eb;
+  color: #111;
+}
+.modern-modal {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  padding: 2.5rem 2.5rem 2rem 2.5rem;
+  min-width: 350px;
+  max-width: 95vw;
+  width: 700px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeIn 0.4s;
+  position: relative;
+}
+.modern-close {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.2rem;
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 1.7rem;
+  cursor: pointer;
+  z-index: 10;
+  transition: color 0.2s;
+}
+.modern-close:hover {
+  color: #008000;
+}
+
     @media (max-width: 1024px) {
       .evaluations-header {
         flex-direction: column;

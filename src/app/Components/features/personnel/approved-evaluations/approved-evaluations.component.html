@@ -59,8 +59,13 @@
         </div>
       </div>
       <div class="card-body">
-        <button type="button" class="pdf-link" (click)="downloadPdf(eval.signed_pdf || eval.signed_file || eval.file, eval.file_name || eval.title || 'signed.pdf')">
-          Download Signed PDF
+        <button type="button" class="pdf-download-btn" (click)="downloadPdf(eval.signed_pdf || eval.signed_file || eval.file, eval.file_name || eval.title || 'signed.pdf')" aria-label="Download signed PDF">
+          <span class="pdf-download-icon">
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V4" />
+            </svg>
+          </span>
+          <span>Download Signed PDF</span>
         </button>
         <form (ngSubmit)="submitToAdmin(eval)" autocomplete="off">
           <div class="form-row">
@@ -81,7 +86,7 @@
             <label>Send To *</label>
             <select [ngModel]="submissionState[eval.id]?.sendTo" (ngModelChange)="setField(eval.id, 'sendTo', $event)" name="sendTo-{{eval.id}}" required>
               <option value="" disabled selected>Select Admin</option>
-              <option *ngFor="let admin of admins" [value]="admin.id">{{ admin.full_name || admin.email }}</option>
+              <option *ngFor="let admin of admins" [value]="admin.user">{{ admin.full_name || admin.email }}</option>
             </select>
           </div>
           <div *ngIf="progress > 0 && progress < 100" class="progress-container mt-2">

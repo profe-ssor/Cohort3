@@ -59,6 +59,19 @@ export class GhostDetectionService {
     }
   }
 
+  resolveGhostDetection(detectionId: number, resolutionType: string, actionTaken: string, notes: string, token: string | null) {
+    const headers = token ? new HttpHeaders().set('Authorization', `Bearer ${token}`) : undefined;
+    return this.http.post(
+      `${environment.API_URL}ghost-resolve/${detectionId}/`,
+      {
+        resolution_type: resolutionType,
+        action_taken: actionTaken,
+        notes: notes
+      },
+      { headers }
+    );
+  }
+
   reset() {
     this.isCheckingSubject.next(false);
     this.progressSubject.next(0);

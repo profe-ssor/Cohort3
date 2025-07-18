@@ -26,7 +26,6 @@ export class SubmitEvaluationComponent implements OnInit {
   selectedPdf: PDF | null = null;
 
   supervisor: ISupervisorDatabase | null = null;
-  admin: IAdminDatabase | null = null;
 
   // Ghost detection properties
   isGhostChecking = false;
@@ -61,8 +60,6 @@ export class SubmitEvaluationComponent implements OnInit {
 
   ngOnInit(): void {
     this.getMySupervisor();
-    this.getMyAdnib();
-
     this.pdfService.getSignedPdfs().subscribe({
       next: (pdfs) => {
         // Deduplicate by id and file_name
@@ -93,17 +90,6 @@ export class SubmitEvaluationComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error fetching supervisor data:', error);
-      }
-    });
-  }
-
-  getMyAdnib() {
-    this.nssService.getMyAdmin().subscribe({
-      next: (adminData) => {
-        this.admin = adminData;
-      },
-      error: (error) => {
-        console.error('Error fetching admin data:', error);
       }
     });
   }
@@ -152,14 +138,11 @@ export class SubmitEvaluationComponent implements OnInit {
     }
 
     // Check if receiver is an admin
-    const isReceiverAdmin = this.admin && this.admin.user === receiverIdNumber;
+    const isReceiverAdmin = false;
 
     console.log('🔍 Ghost Detection Debug:', {
-      admin: this.admin,
       receiverIdNumber,
-      isReceiverAdmin,
-      adminUser: this.admin?.user,
-      adminId: this.admin?.id
+      isReceiverAdmin
     });
 
     if (isReceiverAdmin) {

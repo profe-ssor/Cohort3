@@ -1,109 +1,159 @@
-/* General Styles */
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f8f9fa;
+/* Glassy background overlay */
+.otp-bg {
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #e0e7ff 0%, #f8fafc 100%);
+  position: fixed;
+  top: 0; left: 0;
+  z-index: 0;
+}
+
+.otp-card-glass {
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.3);
+  padding: 2.5rem 2rem 2rem 2rem;
+  width: 100%;
+  max-width: 370px;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  animation: fadeIn 0.7s cubic-bezier(.39,.575,.56,1.000);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.otp-logo {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  margin: 0;
+  margin-bottom: 1rem;
+}
+.otp-logo .material-icons {
+  font-size: 3rem;
+  color: #2563eb;
+  background: rgba(37,99,235,0.1);
+  border-radius: 50%;
+  padding: 0.5rem;
 }
 
-/* Main Form Container */
-main {
-  background: #ffffff;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  width: 500px;
-  text-align: center;
+h2 {
+  color: #2563eb;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
 }
-
-/* Instruction Text */
 .instruction {
-  font-size: 16px;
+  color: #555;
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+}
+
+.otp-input-group {
+  margin-bottom: 1.2rem;
+  text-align: left;
+}
+.otp-input-group label {
+  font-weight: 600;
   color: #333;
-  margin-bottom: 15px;
+  margin-bottom: 0.3rem;
+  display: block;
 }
-
-/* OTP Input Fields */
-.otp {
-  margin-bottom: 20px;
-}
-
 .otp-input {
   width: 100%;
-  padding: 10px;
-  font-size: 16px;
-  border: 2px solid #ced4da;
-  border-radius: 5px;
-  text-align: center;
-  outline: none;
-  transition: border 0.3s ease-in-out;
+  padding: 12px 10px;
+  border-radius: 8px;
+  border: 1.5px solid #c7d2fe;
+  font-size: 1rem;
+  background: rgba(255,255,255,0.6);
+  margin-bottom: 0.2rem;
+  transition: border 0.2s, box-shadow 0.2s;
 }
-
 .otp-input:focus {
-  border-color: #007bff;
+  border: 1.5px solid #2563eb;
+  box-shadow: 0 0 0 2px #2563eb33;
+  outline: none;
+}
+.otp-input.ng-invalid.ng-touched {
+  border: 1.5px solid #ef4444;
+  background: #fef2f2;
 }
 
-/* Validation Error Messages */
-.alert {
-  color: red;
-  font-size: 14px;
-
-}
-.alert p{
-  margin: 0;
-  padding: 0;
-}
-/* Buttons */
-button {
+.btn-glass {
   width: 100%;
   padding: 12px;
-  font-size: 16px;
-  font-weight: bold;
-  border-radius: 5px;
+  border-radius: 8px;
   border: none;
+  background: linear-gradient(90deg, #2563eb 0%, #60a5fa 100%);
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.7rem;
   cursor: pointer;
-  transition: background 0.3s;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.08);
+  transition: background 0.2s, box-shadow 0.2s;
 }
-
-.btn-primary {
-  background: #007bff;
-  color: white;
-}
-
-.btn-primary:hover {
-  background: #0056b3;
-}
-
-.btn-outline-warning {
-  background: none;
-  color: #ff9800;
-  border: 2px solid #ff9800;
-}
-
-.btn-outline-warning:hover {
-  background: #ff9800;
-  color: white;
-}
-
-/* Disabled Button */
-button:disabled {
-  background: #ccc;
+.btn-glass:disabled {
+  background: #c7d2fe;
+  color: #fff;
   cursor: not-allowed;
 }
-
-/* Error & Success Messages */
-.error-message, .success-message {
-  font-size: 2px;
-
+.btn-glass:hover:not(:disabled) {
+  background: linear-gradient(90deg, #1d4ed8 0%, #2563eb 100%);
+  box-shadow: 0 4px 16px rgba(37,99,235,0.13);
 }
 
-.error-message {
-  color: red;
+.btn-glass-outline {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 2px solid #2563eb;
+  background: transparent;
+  color: #2563eb;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1.2rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.btn-glass-outline:hover {
+  background: #2563eb;
+  color: #fff;
 }
 
+.response-message {
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 6px;
+  padding: 0.5rem 0.7rem;
+}
 .success-message {
-  color: green;
+  color: #16a34a;
+  background: #dcfce7;
+}
+.error-message {
+  color: #ef4444;
+  background: #fee2e2;
+}
+
+.alert {
+  color: #ef4444;
+  font-size: 0.95rem;
+  margin-top: 0.1rem;
+}
+
+@media (max-width: 600px) {
+  .otp-card-glass {
+    max-width: 95vw;
+    padding: 1.2rem 0.5rem 1.5rem 0.5rem;
+  }
 }

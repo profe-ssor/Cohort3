@@ -67,7 +67,7 @@ export class EvaluationsComponent implements OnInit {
   loading = signal<boolean>(false);
   currentPage = signal<number>(1);
   totalPages = signal<number>(1);
-  pageSize = signal<number>(10);
+  pageSize = signal<number>(50);
 
   pdfViewerOpen = signal<boolean>(false);
   pdfViewerUrl = signal<SafeResourceUrl>('');
@@ -192,17 +192,22 @@ export class EvaluationsComponent implements OnInit {
   }
 
   loadDashboardStats() {
-    this.evaluationService.getDashboardStats().subscribe({
-      next: stats => this.dashboardStats.set({
-        totalSubmissions: stats.total_submissions || 0,
-        pendingReviews: stats.total_pending || 0,
-        approvedSubmissions: stats.approved || 0,
-        rejectedSubmissions: 0,
-        totalPersonnel: 0,
-        activeSupervisors: 0
-      }),
-      error: err => console.error('Dashboard stats error:', err)
-    });
+    if (this.mode === 'admin') {
+      this.loadAdminDashboardStats();
+    } else {
+      this.evaluationService.getDashboardStats().subscribe({
+        next: stats => this.dashboardStats.set({
+          totalSubmissions: stats.total_submissions || 0,
+          pendingReviews: stats.total_pending || 0,
+          approvedSubmissions: stats.approved || 0,
+          rejectedSubmissions: stats.rejected || 0,
+          totalPersonnel: 0,
+          activeSupervisors: 0,
+          completedToday: stats.completed_today || 0
+        }),
+        error: err => console.error('Dashboard stats error:', err)
+      });
+    }
   }
 
   loadAdminDashboardStats() {
@@ -439,14 +444,11 @@ export class EvaluationsComponent implements OnInit {
     if (url && !url.startsWith('http')) {
       url = 'http://127.0.0.1:8000/' + url.replace(/^\//, '');
     }
-    // Use the custom Django view for signed PDFs to allow iframe embedding
     if (url && url.includes('/media/signed_docs/')) {
       url = url.replace('/media/signed_docs/', '/file_uploads/media/signed_docs/');
     }
     if (url) {
-      const safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
-      this.pdfViewerUrl.set(safeUrl);
-      this.pdfViewerOpen.set(true);
+      window.open(url, '_blank');
     } else {
       this.toast.error('No PDF file available to view.');
     }
@@ -493,9 +495,12 @@ export class EvaluationsComponent implements OnInit {
   }
 
   appendSignature(evaluation: Evaluation) {
-    // Use the signed PDF's id if available, otherwise the evaluation id
     const pdfId = evaluation.id;
-    this.router.navigate(['/supervisor-dashboard/sign', pdfId]);
+    if (this.mode === 'admin') {
+      this.router.navigate(['/admin-dashboard/sign', pdfId]);
+    } else {
+      this.router.navigate(['/supervisor-dashboard/sign', pdfId]);
+    }
   }
 
   downloadForm(f: PDF) {

@@ -201,6 +201,21 @@ export class PersonnelDetailComponent implements OnInit {
       });
   }
 
+  updateStatus(newStatus: string) {
+    const person = this.personnel();
+    if (!person) return;
+    this.nssPersonnelService.updatePersonnelStatus(person.id, newStatus)
+      .subscribe({
+        next: () => {
+          person.status = newStatus as 'active' | 'inactive' | 'on_leave' | 'completed';
+          // Optionally show a success message
+        },
+        error: () => {
+          // Optionally show an error message
+        }
+      });
+  }
+
   getInitials(name: string | undefined | null): string {
     if (!name || typeof name !== 'string') return '';
     return name.split(' ').map(n => n[0]).join('').toUpperCase();

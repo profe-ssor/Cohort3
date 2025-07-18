@@ -88,9 +88,9 @@ export class ApprovedEvaluationsComponent implements OnInit {
   }
 
   fetchAdmins() {
-    this.nssService.getMyAdmin().subscribe({
-      next: (adminData: any) => {
-        this.admins = adminData ? [adminData] : [];
+    this.nssService.getAllMyAdmins().subscribe({
+      next: (admins: any[]) => {
+        this.admins = admins || [];
       },
       error: () => {
         this.admins = [];
@@ -122,9 +122,16 @@ export class ApprovedEvaluationsComponent implements OnInit {
     const selectedAdmin = this.admins.find(a => Number(a.id) === sendToId || Number(a.user) === sendToId);
     const isReceiverAdmin = !!selectedAdmin;
     console.log('[DEBUG] selectedAdmin:', selectedAdmin, 'isReceiverAdmin:', isReceiverAdmin, 'admins:', this.admins, 'sendTo:', state.sendTo);
+    // Log the payload that will be sent to the backend
+    console.log('[DEBUG] Payload to backend:', {
+      fileName: evaluation.file_name || evaluation.title || 'signed.pdf',
+      formType: state.formType,
+      priority: state.priority,
+      sendTo: state.sendTo
+    });
     if (isReceiverAdmin) {
       // Use GhostDetectionService
-      const userData = localStorage.getItem('user');
+      const userData = localStorage.getItem('userData');
       let personnelId = 1;
       if (userData) {
         const user = JSON.parse(userData);

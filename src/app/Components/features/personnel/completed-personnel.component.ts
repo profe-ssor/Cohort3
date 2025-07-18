@@ -9,6 +9,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { MatDialog } from '@angular/material/dialog';
+import { RestorePersonnelDialogComponent } from './restore-personnel-dialog.component';
 
 @Component({
   selector: 'app-completed-personnel',
@@ -33,7 +35,8 @@ export class CompletedPersonnelComponent implements OnInit {
 
   constructor(
     private nssService: NssPersonelService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -55,13 +58,22 @@ export class CompletedPersonnelComponent implements OnInit {
   }
 
   restorePersonnel(id: number) {
-    this.nssService.restoreArchivedPersonnel(id).subscribe({
-      next: () => {
-        this.snackBar.open('Personnel restored successfully', 'Close', { duration: 3000 });
-        this.fetchArchivedPersonnel();
-      },
-      error: () => {
-        this.snackBar.open('Failed to restore personnel', 'Close', { duration: 3000 });
+    const dialogRef = this.dialog.open(RestorePersonnelDialogComponent, {
+      width: '400px',
+      data: {}
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.nssService.restoreArchivedPersonnel(id, result).subscribe({
+          next: () => {
+            this.snackBar.open('Personnel restored successfully', 'Close', { duration: 3000 });
+            this.fetchArchivedPersonnel();
+          },
+          error: (err) => {
+            const msg = err?.error?.error || 'Failed to restore personnel';
+            this.snackBar.open(msg, 'Close', { duration: 4000 });
+          }
+        });
       }
     });
   }

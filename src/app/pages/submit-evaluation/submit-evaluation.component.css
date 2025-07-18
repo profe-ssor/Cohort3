@@ -299,3 +299,156 @@
     font-size: 13px;
   }
 }
+
+.modern-bg {
+  min-height: 100vh;
+  background: linear-gradient(120deg, #e0f7fa 0%, #f0fff4 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 0;
+}
+.modern-card {
+  background: #fff;
+  border-radius: 1.3rem;
+  box-shadow: 0 8px 32px rgba(0,128,0,0.13);
+  padding: 2.5rem 2.2rem 2rem 2.2rem;
+  max-width: 480px;
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+}
+.modern-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2.2rem;
+}
+.modern-header-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e0f2f1;
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 0.7rem;
+  box-shadow: 0 2px 8px rgba(0,128,0,0.07);
+}
+.modern-title {
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: #008000;
+  margin-bottom: 0.2rem;
+  text-align: center;
+  letter-spacing: -0.5px;
+}
+.modern-form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+.modern-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin-bottom: 0.2rem;
+}
+.modern-floating-label {
+  position: relative;
+  margin-bottom: 0.2rem;
+}
+.modern-floating-label select,
+.modern-floating-label input[type="text"],
+.modern-floating-label input[type="number"],
+.modern-floating-label input[type="email"],
+.modern-floating-label input[type="password"] {
+  width: 100%;
+  padding: 1.1rem 0.9rem 0.5rem 0.9rem;
+  border: 1.5px solid #d1d5db;
+  border-radius: 0.7rem;
+  background: #f9fafb;
+  font-size: 1.05rem;
+  transition: border 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+.modern-floating-label label {
+  position: absolute;
+  left: 0.95rem;
+  top: 1.1rem;
+  color: #888;
+  font-size: 1.02rem;
+  font-weight: 500;
+  pointer-events: none;
+  background: transparent;
+  transition: all 0.18s;
+}
+.modern-floating-label select:focus + label,
+.modern-floating-label select:not([value=""]):not(:invalid) + label,
+.modern-floating-label input:focus + label,
+.modern-floating-label input:not(:placeholder-shown) + label {
+  top: -0.7rem;
+  left: 0.7rem;
+  font-size: 0.89rem;
+  color: #008000;
+  background: #fff;
+  padding: 0 0.2rem;
+  border-radius: 0.3rem;
+}
+.modern-checkbox-group {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 0.2rem;
+}
+.modern-checkbox {
+  accent-color: #008000;
+  width: 1.2rem;
+  height: 1.2rem;
+  margin-right: 0.5rem;
+}
+.modern-submit-btn {
+  width: 100%;
+  padding: 1.1rem;
+  background: linear-gradient(90deg, #008000 0%, #4ade80 100%);
+  color: #fff;
+  font-weight: 800;
+  border: none;
+  border-radius: 0.8rem;
+  font-size: 1.15rem;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0,128,0,0.07);
+}
+.modern-submit-btn:hover:not(:disabled) {
+  background: linear-gradient(90deg, #005f00 0%, #22c55e 100%);
+  transform: translateY(-1px) scale(1.01);
+}
+.modern-submit-btn:disabled {
+  background: #93c5fd;
+  cursor: not-allowed;
+}
+.modern-error {
+  color: #d32f2f !important;
+  font-size: 1.01rem;
+  margin-top: 0.2rem;
+  font-weight: 600;
+}
+.modern-success {
+  color: #008000 !important;
+  font-size: 1.08rem;
+  margin-top: 0.2rem;
+  font-weight: 700;
+}
+@media (max-width: 600px) {
+  .modern-card {
+    padding: 1.2rem 0.5rem 1rem 0.5rem;
+  }
+  .modern-title {
+    font-size: 1.3rem;
+  }
+}

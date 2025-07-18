@@ -1,29 +1,33 @@
 <div *ngIf="pdfViewerOpen()" class="pdf-viewer-modal">
-  <div class="pdf-viewer-content">
-    <button class="close-btn" (click)="pdfViewerOpen.set(false)">&times;</button>
+  <div class="pdf-viewer-content modern-modal">
+    <button class="close-btn modern-close" (click)="pdfViewerOpen.set(false)" aria-label="Close PDF viewer">
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
     <iframe [src]="pdfViewerUrl()" width="100%" height="700px" style="border:none;"></iframe>
   </div>
 </div>
-<div class="evaluations">
-  <div class="evaluations-header">
+<div class="evaluations modern-evaluations">
+  <div class="evaluations-header modern-header">
     <div class="header-content">
       <h1 class="page-title">Evaluation Submissions</h1>
       <p class="page-subtitle">Review and manage personnel evaluation submissions</p>
     </div>
     <div class="header-actions">
-      <button class="btn btn-secondary">
+      <button class="btn btn-secondary modern-btn">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.707A1 1 0 013 7V4z"></path>
         </svg>
         Filter
       </button>
-      <button class="btn btn-secondary">
+      <button class="btn btn-secondary modern-btn">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
         </svg>
         Export
       </button>
-      <button class="btn btn-primary" [class.disabled]="selectedEvaluationIds().length === 0">
+      <button class="btn btn-primary modern-btn" [class.disabled]="selectedEvaluationIds().length === 0">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
         </svg>
@@ -95,8 +99,8 @@
     </div>
   </ng-container>
   <ng-template #evaluationsContent>
-    <div class="evaluations-content">
-      <div class="filters-section">
+    <div class="evaluations-content modern-evaluations-content">
+      <div class="filters-section modern-filters">
         <div class="filters-row">
           <div class="filter-group">
             <label class="filter-label">Status</label>
@@ -171,9 +175,9 @@
         }
       </div>
 
-      <div class="evaluations-list">
+      <div class="evaluations-list modern-evaluations-list">
         @for (evaluation of filteredEvaluations(); track evaluation.id) {
-          <div class="evaluation-card" [class]="'status-' + evaluation.status">
+          <div class="evaluation-card modern-evaluation-card" [class]="'status-' + evaluation.status">
             <div class="evaluation-checkbox">
               <input
                 type="checkbox"
@@ -181,14 +185,12 @@
                 (change)="toggleEvaluationSelection(evaluation.id)"
               />
             </div>
-
-            <div class="evaluation-header">
+            <div class="evaluation-header modern-evaluation-header">
               <div class="evaluation-meta">
                 <h3 class="evaluation-title">{{ evaluation.title }}</h3>
                 <div class="evaluation-info">
                   <span class="personnel-name">{{ evaluation.nss_personnel_name  }}</span>
                   <span class="separator">•</span>
-
                   @if (evaluation.supervisor_name) {
                     <span class="separator">•</span>
                     <span class="supervisor">
@@ -204,38 +206,37 @@
                   <p class="evaluation-description">{{ evaluation.description }}</p>
                 }
               </div>
-              <div class="evaluation-badges">
-               <span
-  class="badge clickable"
-  [class]="'badge-' + getStatusClass(evaluation.status)"
-  (click)="
-    evaluation.status === 'pending'
-      ? startReview(evaluation)
-      : evaluation.status === 'under_review'
-        ? approveEvaluation(evaluation)
-        : null
-  "
-  [title]="
-    evaluation.status === 'pending' ? 'Click to start review' :
-    evaluation.status === 'under_review' ? 'Click to approve' : ''
-  "
->
-  {{ getStatusLabel(evaluation.status) }}
-</span>
-
-                <span class="badge" [class]="'badge-' + evaluation.evaluation_type">
+              <div class="evaluation-badges modern-badges">
+                <span
+                  class="badge clickable modern-badge"
+                  [class]="'badge-' + getStatusClass(evaluation.status)"
+                  (click)="
+                    evaluation.status === 'pending'
+                      ? startReview(evaluation)
+                      : evaluation.status === 'under_review'
+                        ? approveEvaluation(evaluation)
+                        : null
+                  "
+                  [title]="
+                    evaluation.status === 'pending' ? 'Click to start review' :
+                    evaluation.status === 'under_review' ? 'Click to approve' : ''
+                  "
+                >
+                  {{ getStatusLabel(evaluation.status) }}
+                </span>
+                <span class="badge modern-badge" [class]="'badge-' + evaluation.evaluation_type">
                   {{ getSafeTypeLabel(evaluation) }}
                 </span>
-                <span class="badge" [class]="'badge-priority-' + evaluation.priority">
+                <span class="badge modern-badge" [class]="'badge-priority-' + evaluation.priority">
                   {{ getSafePriorityLabel(evaluation) }}
                 </span>
                 @if (evaluation.is_overdue) {
-                  <span class="badge badge-danger">Overdue</span>
+                  <span class="badge badge-danger modern-badge">Overdue</span>
                 }
               </div>
             </div>
-
-            <div class="evaluation-details">
+            <hr class="modern-divider" />
+            <div class="evaluation-details modern-evaluation-details">
               <div class="detail-item">
                 <svg class="detail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
@@ -248,98 +249,65 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 <span class="detail-label">Due:</span>
-                <span class="detail-value" [class]="getDueDateClass(evaluation.due_date ?? evaluation.uploaded_at ?? '')">
-                  {{ formatDate(evaluation.due_date) }}
-                </span>
+                <span class="detail-value">{{ formatDate(evaluation.due_date) }}</span>
               </div>
-              @if (evaluation.updated_at !== evaluation.created_at) {
-                <div class="detail-item">
-                  <svg class="detail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                  </svg>
-                  <span class="detail-label">Updated:</span>
-                  <span class="detail-value">{{ formatDate(evaluation.updated_at) }}</span>
-                </div>
-              }
-              @if (evaluation.reviewed_at) {
-                <div class="detail-item">
-                  <svg class="detail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                  </svg>
-                  <span class="detail-label">Reviewed:</span>
-                  <span class="detail-value">{{ formatDate(evaluation.reviewed_at) }}</span>
-                </div>
-              }
               <div class="detail-item">
                 <svg class="detail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                 </svg>
-                <span class="detail-label">Time:</span>
-                <span class="detail-value">{{ getDaysUntilDueText(evaluation.due_date ?? evaluation.uploaded_at ?? '') }}</span>
+                <span class="detail-label">Status:</span>
+                <span class="detail-value">{{ getStatusLabel(evaluation.status) }}</span>
+              </div>
+              <div class="detail-item">
+                <svg class="detail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span class="detail-label">Priority:</span>
+                <span class="detail-value">{{ getSafePriorityLabel(evaluation) }}</span>
               </div>
             </div>
-
-            @if (evaluation.supervisor_comments) {
-              <div class="evaluation-comments">
-                <h4>Supervisor Comments:</h4>
-                <p>{{ evaluation.supervisor_comments }}</p>
-              </div>
-            }
-
-            <div class="evaluation-actions">
-              @if (evaluation.status === 'pending') {
-                <button class="btn btn-primary btn-sm" (click)="startReview(evaluation)">
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                  </svg>
-                  Start Review
-                </button>
-              }
-              @if (evaluation.status === 'under_review') {
-                <button class="btn btn-success btn-sm" (click)="approveEvaluation(evaluation)">
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                  </svg>
-                  Approve
-                </button>
-                <button class="btn btn-danger btn-sm" (click)="rejectEvaluation(evaluation)">
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                  </svg>
-                  Reject
-                </button>
-              }
-              <button class="btn btn-secondary btn-sm" (click)="openPdfInNewTab(evaluation)">
+            <div class="evaluation-actions modern-evaluation-actions">
+              <button class="btn btn-success btn-sm modern-action-btn" (click)="viewDetails(evaluation)">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                 </svg>
                 View Details
               </button>
-              <button class="btn btn-primary btn-sm" (click)="appendSignature(evaluation)">
+              <button class="btn btn-primary btn-sm modern-action-btn" (click)="appendSignature(evaluation)">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7v6a2 2 0 01-2 2H8m8-8h-8a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2V9a2 2 0 00-2-2z"></path>
                 </svg>
                 Append Signature
               </button>
-              @if (evaluation.file || evaluation.signed_pdf) {
-                <button class="btn btn-secondary btn-sm" (click)="downloadEvaluationFile(evaluation)">
+              <button class="btn btn-secondary btn-sm modern-action-btn" (click)="downloadEvaluationFile(evaluation)">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                Download
+              </button>
+              <button *ngIf="evaluation.status === 'pending'" class="btn btn-warning btn-sm modern-action-btn" (click)="startReview(evaluation)">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                </svg>
+                Start Review
+              </button>
+              <ng-container *ngIf="evaluation.status === 'under_review'">
+                <button class="btn btn-success btn-sm modern-action-btn" (click)="approveEvaluation(evaluation)">
                   <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                   </svg>
-                  Download
+                  Approve
                 </button>
-              }
-              @if (evaluation.nss_personnel_email) {
-                <button class="btn btn-secondary btn-sm" (click)="contactPersonnel(evaluation)">
+                <button class="btn btn-danger btn-sm modern-action-btn" (click)="rejectEvaluation(evaluation)">
                   <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                   </svg>
-                  Message
+                  Reject
                 </button>
-              }
+              </ng-container>
             </div>
           </div>
         }

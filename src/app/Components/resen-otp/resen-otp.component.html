@@ -1,28 +1,26 @@
-<div class="container">
-  <div class="otp-card">
+<!-- Modern Glassy Resend OTP Card -->
+<div class="otp-bg">
+  <div class="otp-card-glass">
+    <div class="otp-logo">
+      <span class="material-icons">refresh</span>
+    </div>
     <h2>Resend OTP</h2>
-    <form #f="ngForm"  (ngSubmit)="resendOtp()">
-      <div class="form-group">
+    <p class="instruction">Enter your email to receive a new OTP</p>
+    <form #f="ngForm" (ngSubmit)="resendOtp()">
+      <div class="otp-input-group">
         <label for="email">Email Address</label>
-        <input
-          type="email"
-          id="email"
-          [(ngModel)]="resendotp.email"
-          #email=ngModel
-          name="email"
-          class="form-control"
-          required
-          placeholder="Enter your email"
-          [class.ng-invalid]="email.invalid && email.touched"
-          [pattern]="constant.emailRegex"
-        />
-        <div *ngIf="email.invalid && email.touched"  class="alert">
+        <input type="email" id="email" class="otp-input" [(ngModel)]="resendotp.email" #email="ngModel" name="email" required placeholder="Enter your email" [class.ng-invalid]="email.invalid && email.touched" [pattern]="constant.emailRegex" />
+        <div *ngIf="email.invalid && email.touched" class="alert">
           <p *ngIf="email.errors?.['required']">{{ constant.REQUIRED }}</p>
           <p *ngIf="email.errors?.['pattern']">{{ constant.EMAIL_INVALID }}</p>
           <p *ngIf="email.errors?.['maxlength']">{{ constant.MAX_LENGTH(constant.maxLength) }}</p>
         </div>
       </div>
-      <button type="submit" class="btn">GENERATE NEW OTP</button>
+      <button type="submit" class="btn-glass">Generate New OTP</button>
+      <div *ngIf="response?.message" class="response-message">
+        {{ response?.message }}
+      </div>
     </form>
   </div>
 </div>
+<!-- End Modern Glassy Resend OTP Card -->

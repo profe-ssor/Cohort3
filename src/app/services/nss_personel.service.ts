@@ -134,6 +134,16 @@ export class NssPersonelService {
     );
   }
 
+  updatePersonnelStatus(nssId: string, status: string) {
+    const token = this.getJwtToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.patch(
+      `${environment.API_URL}nss_personnel/admin/update-nss/${nssId}/`,
+      { status },
+      { headers }
+    );
+  }
+
   getAllPersonnel(): Observable<nss_database[]> {
     const token = this.getJwtToken();
     if (!token) {
@@ -178,13 +188,13 @@ export class NssPersonelService {
   }
 
   // Restore archived personnel
-  restoreArchivedPersonnel(id: number): Observable<any> {
+  restoreArchivedPersonnel(id: number, data: any): Observable<any> {
     const token = this.getJwtToken();
     if (!token) {
       return throwError(() => new Error('Unauthorized'));
     }
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.post<any>(`${environment.API_URL}nss_personnel/archived/restore/${id}/`, {}, { headers });
+    return this.http.post<any>(`${environment.API_URL}nss_personnel/archived/restore/${id}/`, data, { headers });
   }
 
   getPersonnelByUserId(userId: string) {
@@ -199,6 +209,10 @@ export class NssPersonelService {
     if (!token) return throwError(() => new Error('Unauthorized'));
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.get<any[]>(`${environment.API_URL}nss_personnel/personnel/${personnelId}/recent-submissions/`, { headers });
+  }
+
+  getAllMyAdmins() {
+    return this.http.get<IAdminDatabase[]>(`${environment.API_URL}nss_personnel/my-admins/`);
   }
 
 }

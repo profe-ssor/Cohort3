@@ -11,6 +11,8 @@ import { MatDividerModule } from '@angular/material/divider';
 import { AuthService } from '../../../services/auth.service';
 import { User } from '../../../model/interface/dashboard.models';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 
 
 @Component({
@@ -336,13 +338,28 @@ export class HeaderComponent {
 
   private authService = inject(AuthService);
   private router = inject(Router);
+  private http = inject(HttpClient);
   currentUser: User | null = null;
-  notificationCount = 5;
+  notificationCount = 0;
 
   constructor() {
     this.authService.currentUser$.subscribe(user => {
        console.log('User:', user);
       this.currentUser = user;
+    });
+    this.fetchPendingGhostCount();
+  }
+
+  fetchPendingGhostCount() {
+    const token = localStorage.getItem('access_token');
+    const headers = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+    this.http.get<any>(`${environment.API_URL}ghost-dashboard/?status=pending`, headers).subscribe({
+      next: (response) => {
+        this.notificationCount = response.statistics?.pending_count || 0;
+      },
+      error: () => {
+        this.notificationCount = 0;
+      }
     });
   }
 

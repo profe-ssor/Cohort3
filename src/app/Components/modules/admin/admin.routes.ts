@@ -55,6 +55,10 @@ export const adminRoutes: Routes = [
         path: 'profile',
         loadComponent: () => import('../../profile-settings/profile-settings.component').then(m => m.ProfileSettingsComponent),
       },
+      {
+        path: 'sign/:id',
+        loadComponent: () => import('../../pdf-signer/pdf-signer.component').then(m => m.PdfSignerComponent),
+      },
       { path: '**', redirectTo: 'dashboard' },
     ],
   },

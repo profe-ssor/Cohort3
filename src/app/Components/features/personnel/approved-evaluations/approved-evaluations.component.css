@@ -61,6 +61,34 @@
   margin-bottom: 0.5rem;
 }
 
+.pdf-download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--primary-green, #008000);
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,128,0,0.08);
+  transition: background 0.2s, box-shadow 0.2s;
+  margin-bottom: 0.5rem;
+  text-decoration: none;
+}
+.pdf-download-btn:hover, .pdf-download-btn:focus {
+  background: #005f00;
+  box-shadow: 0 4px 16px rgba(0,128,0,0.13);
+  outline: none;
+}
+.pdf-download-icon {
+  display: flex;
+  align-items: center;
+  margin-right: 0.2rem;
+}
+
 form {
   display: flex;
   flex-wrap: wrap;

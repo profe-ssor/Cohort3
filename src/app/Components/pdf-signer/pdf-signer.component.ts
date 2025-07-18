@@ -177,8 +177,8 @@ export class PdfSignerComponent implements OnInit {
   finishSigning() {
     if (!this.uploadedPdf || !this.signatureFile) return;
 
-        // Adjust Y coordinate from canvas space (top-left origin) to PDF (bottom-left origin)
-        const adjustedY = this.renderedPdfHeight - this.signatureY - this.signatureHeight;
+    // Adjust Y coordinate from canvas space (top-left origin) to PDF (bottom-left origin)
+    const adjustedY = this.renderedPdfHeight - this.signatureY - this.signatureHeight;
 
     const position: SignaturePosition = {
       x: this.signatureX,
@@ -190,15 +190,18 @@ export class PdfSignerComponent implements OnInit {
 
     this.pdfService.signPdfWithImage(this.uploadedPdf.id, this.signatureFile, position).subscribe({
       next: () => {
-        // Show a non-blocking success message and redirect
-        const role = localStorage.getItem('userRole') || '';
         if (this.toastr) {
           this.toastr.success('PDF signed successfully!');
         }
-        if (role.toLowerCase().includes('supervisor')) {
+        const role = (localStorage.getItem('userRole') || '').toLowerCase();
+        if (role.includes('admin')) {
+          this.router.navigate(['/admin-dashboard/evaluations']);
+        } else if (role.includes('supervisor')) {
           this.router.navigate(['/supervisor-dashboard/evaluations']);
+        } else if (role.includes('nss') || role.includes('user')) {
+          this.router.navigate(['/personnel/persneldashboard']);
         } else {
-          this.router.navigate(['/personnel/footer']);
+          this.router.navigate(['/']);
         }
       },
       error: () => {

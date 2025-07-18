@@ -112,8 +112,8 @@ interface NavigationItem {
       @if (isExpanded) {
         <div class="sidebar-footer">
           <div class="version-info">
-            <div class="version-label">NSS Dashboard</div>
-            <div class="version-number">v2.1.0</div>
+            <div class="version-label">PROFESSOR</div>
+            <div class="version-number">0549361771</div>
           </div>
         </div>
       }

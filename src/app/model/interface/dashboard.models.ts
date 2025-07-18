@@ -6,6 +6,7 @@ export interface DashboardStats {
   totalPersonnel: number;
   activeSupervisors: number;
   completedToday?: number;
+  rejected?: number;
 }
 
 export interface SubmissionData {

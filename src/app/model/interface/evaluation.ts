@@ -57,6 +57,7 @@ export interface EvaluationDashboardStats {
   overdue: number;
   under_review: number;
   completed_today: number;
+  rejected?: number;
 }
 
 export interface EvaluationListResponse {

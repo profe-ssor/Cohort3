@@ -3,6 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
+import { GhostDetectionService } from '../../../services/ghost-detection.service';
+import { MatDialog } from '@angular/material/dialog';
+import { FormBuilder } from '@angular/forms';
+import { GhostResolutionDialogComponent } from './ghost-resolution-dialog.component';
+import { GhostDetailsDialogComponent } from './ghost-details-dialog.component';
 
 interface GhostDetection {
   id: number;
@@ -863,7 +868,7 @@ export class ReportsComponent implements OnInit {
 
   recentNotifications: any[] = []; // Placeholder for notifications
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private ghostDetectionService: GhostDetectionService, private dialog: MatDialog, private fb: FormBuilder) {}
 
   ngOnInit() {
     this.loadDetections();
@@ -933,15 +938,40 @@ export class ReportsComponent implements OnInit {
     });
   }
 
-  resolveDetection(detectionId: number) {
-    // This would open a dialog to collect resolution details
-    // For now, we'll just show an alert
-    alert('Resolution dialog would open here to collect action taken and notes');
+  async resolveDetection(detectionId: number) {
+    const dialogRef = this.dialog.open(GhostResolutionDialogComponent, {
+      width: '400px',
+      data: {}
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (!result) return;
+      this.loading = true;
+      const token = localStorage.getItem('access_token');
+      this.ghostDetectionService.resolveGhostDetection(
+        detectionId,
+        result.resolution_type,
+        result.action_taken,
+        result.notes,
+        token
+      ).subscribe({
+        next: () => {
+          this.addNotification('Ghost Detection', 'Detection resolved successfully.', 'success');
+          this.loadDetections();
+          this.loading = false;
+        },
+        error: (err: any) => {
+          alert('Failed to resolve detection: ' + (err?.error?.error || err.message || 'Unknown error'));
+          this.loading = false;
+        }
+      });
+    });
   }
 
   viewDetails(detection: GhostDetection) {
-    // This would open a detailed view dialog
-    alert(`Viewing details for ${detection.nss_personnel_name}`);
+    this.dialog.open(GhostDetailsDialogComponent, {
+      width: '440px',
+      data: detection
+    });
   }
 
   exportData() {

@@ -304,6 +304,6 @@ export class ChangePasswordComponent {
   }
 
   goBack(): void {
-    this.router.navigate(['/login']);
+    this.router.navigate(['/personnel/persneldashboard']);
   }
 }

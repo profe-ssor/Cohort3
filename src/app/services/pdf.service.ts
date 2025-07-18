@@ -95,7 +95,18 @@ export class PdfService {
       formData.append('position', JSON.stringify(position));
 
       const headers = new HttpHeaders().set('Authorization', `Bearer ${this.getJwtToken()!}`);
-      return this.http.post<PdfSignResponse>(`${environment.API_URL}file_uploads/pdf/sign/image/${pdfId}/`, formData, { headers });
+      const role = (localStorage.getItem('userRole') || '').toLowerCase();
+      let endpoint = '';
+      if (role.includes('supervisor')) {
+        endpoint = `${environment.API_URL}file_uploads/pdf/sign/supervisor/${pdfId}/`;
+      } else if (role.includes('admin')) {
+        endpoint = `${environment.API_URL}file_uploads/pdf/sign/admin/${pdfId}/`;
+      } else if (role.includes('nss') || role.includes('user')) { // Accept both 'nss' and 'user'
+        endpoint = `${environment.API_URL}file_uploads/pdf/sign/nss/${pdfId}/`;
+      } else {
+        throw new Error('User role not recognized. Cannot sign PDF.');
+      }
+      return this.http.post<PdfSignResponse>(endpoint, formData, { headers });
     }
 
  // Returns a list of all PDFs that have been signed by the current authenticated user.

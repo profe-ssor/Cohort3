@@ -45,6 +45,21 @@
                   <span *ngIf="!isAdmin" class="badge" [class]="'badge-performance-' + personnel()?.performance">
                     {{ getPerformanceLabel(personnel()?.performance || '') }}
                   </span>
+
+                  <!-- Status Dropdown for Admins -->
+                  <span class="performance-label" style="margin-left: 2rem;">Status:</span>
+                  <select
+                    *ngIf="isAdmin"
+                    [ngModel]="personnel()?.status"
+                    (ngModelChange)="updateStatus($event)">
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                    <option value="on_leave">On Leave</option>
+                    <option value="completed">Completed</option>
+                  </select>
+                  <span *ngIf="!isAdmin" class="badge" [class]="'badge-status-' + personnel()?.status">
+                    {{ personnel()?.status | titlecase }}
+                  </span>
                 </div>
               </div>
             </div>

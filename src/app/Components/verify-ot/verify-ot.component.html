@@ -7,60 +7,39 @@
 
 </head>
 <body>
-    <main>
-      <form #f="ngForm" (ngSubmit)="onSubmit()">
-
-        <div class="row">
-          <p class="instruction">Enter the OTP sent to your email</p>
-
-          <div class="otp">
-            <input type="text" id="otp"
-              class="form-control form-control-lg otp-input"
-              placeholder=" XXXX"
-              name="otp"
-              [(ngModel)]="otpData.otp_code"
-              #otp="ngModel"
-              [class.ng-invalid]="otp.invalid && otp.touched"
-              maxlength="6"
-              required>
-            <div *ngIf="otp.invalid && otp.touched" class="alert">
-              <p *ngIf="otp.errors?.['required']">{{ constant.REQUIRED }}</p>
-            </div>
-          </div>
-
-          <div class="otp">
-            <input type="email" id="email"
-              class="form-control form-control-lg otp-input"
-              placeholder="example@example.com"
-              name="email"
-              [(ngModel)]="otpData.email"
-              #email="ngModel"
-              [pattern]="constant.emailRegex"
-              [class.ng-invalid]="email.invalid && email.touched"
-              required>
-            <div *ngIf="email.invalid && email.touched" class="alert">
-              <p *ngIf="email.errors?.['required']">{{ constant.REQUIRED }}</p>
-              <p *ngIf="email.errors?.['pattern']">{{ constant.EMAIL_INVALID }}</p>
-            </div>
-          </div>
+    <!-- Modern Glassy OTP Verification Card -->
+<div class="otp-bg">
+  <div class="otp-card-glass">
+    <div class="otp-logo">
+      <span class="material-icons">lock</span>
+    </div>
+    <h2>OTP Verification</h2>
+    <p class="instruction">Enter the OTP sent to your email</p>
+    <form #f="ngForm" (ngSubmit)="onSubmit()">
+      <div class="otp-input-group">
+        <label for="otp">OTP Code</label>
+        <input type="text" id="otp" maxlength="6" class="otp-input" placeholder="XXXXXX" name="otp" [(ngModel)]="otpData.otp_code" #otp="ngModel" [class.ng-invalid]="otp.invalid && otp.touched" required />
+        <div *ngIf="otp.invalid && otp.touched" class="alert">
+          <p *ngIf="otp.errors?.['required']">{{ constant.REQUIRED }}</p>
         </div>
-
-        <div class="row">
-          <div class="col">
-            <button type="submit" [disabled]="f.form.invalid" id="submitBtn" class="btn btn-primary btn-lg">Submit</button>
-          </div>
-          <div class="col">
-            <button type="button" id="resendBtn"
-              [routerLink]="['/resend-otp']" routerLinkActive="router-link-active"
-              class="btn btn-outline-warning btn-lg">Resend OTP</button>
-          </div>
+      </div>
+      <div class="otp-input-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" class="otp-input" placeholder="example@example.com" name="email" [(ngModel)]="otpData.email" #email="ngModel" [pattern]="constant.emailRegex" [class.ng-invalid]="email.invalid && email.touched" required />
+        <div *ngIf="email.invalid && email.touched" class="alert">
+          <p *ngIf="email.errors?.['required']">{{ constant.REQUIRED }}</p>
+          <p *ngIf="email.errors?.['pattern']">{{ constant.EMAIL_INVALID }}</p>
         </div>
+      </div>
+      <button type="submit" [disabled]="f.form.invalid" class="btn-glass">Verify OTP</button>
+      <button type="button" [routerLink]="['/resend-otp']" routerLinkActive="router-link-active" class="btn-glass-outline">Resend OTP</button>
+      <div *ngIf="response?.message" class="response-message">
+        {{ response?.message }}
+      </div>
+    </form>
+  </div>
+</div>
+<!-- End Modern Glassy OTP Verification Card -->
 
-        <p class="error-message" id="errorMsg"></p>
-        <p class="success-message" id="successMsg"></p>
-
-      </form>
-
-    </main>
 </body>
 </html>
