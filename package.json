@@ -20,7 +20,7 @@
     "@angular/platform-browser": "^18.2.0",
     "@angular/platform-browser-dynamic": "^18.2.0",
     "@angular/router": "^18.2.0",
-    "@compdfkit_pdf_sdk/webviewer": "^2.7.1",
+    "@compdfkit_pdf_sdk/webviewer": "^2.7.6",
     "boostrap": "^2.0.0",
     "lucide-angular": "^0.515.0",
     "ngx-file-drop": "^16.0.0",
