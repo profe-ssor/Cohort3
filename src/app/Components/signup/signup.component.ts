@@ -9,7 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [RouterOutlet, FormsModule, NgIf],
+  imports: [RouterOutlet, FormsModule, NgIf, RouterLink,],
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.css']
 })

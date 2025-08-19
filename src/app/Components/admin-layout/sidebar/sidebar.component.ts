@@ -112,7 +112,7 @@ interface NavigationItem {
       @if (isExpanded) {
         <div class="sidebar-footer">
           <div class="version-info">
-            <div class="version-label">PROFESSOR</div>
+            <div class="version-label">Powered by PROFESSOR</div>
             <div class="version-number">0549361771</div>
           </div>
         </div>
@@ -378,20 +378,20 @@ export class SidebarComponent implements OnInit {
   ];
 
   systemItems: NavigationItem[] = [
-    {
-      id: 'settings',
-      label: 'System Settings',
-      icon: 'settings',
-      route: '/admin-dashboard/settings',
-      permission: 'system_admin'
-    },
-    {
-      id: 'users',
-      label: 'User Management',
-      icon: 'admin_panel_settings',
-      route: '/admin-dashboard/users',
-      permission: 'system_admin'
-    },
+    // {
+    //   id: 'settings',
+    //   label: 'System Settings',
+    //   icon: 'settings',
+    //   route: '/admin-dashboard/settings',
+    //   permission: 'system_admin'
+    // },
+    // {
+    //   id: 'users',
+    //   label: 'User Management',
+    //   icon: 'admin_panel_settings',
+    //   route: '/admin-dashboard/users',
+    //   permission: 'system_admin'
+    // },
     {
       id: 'support',
       label: 'Help & Support',
