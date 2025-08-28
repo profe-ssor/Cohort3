@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ActivityLog } from '../model/interface/activity-log.interface';
-import { environment } from '../../environments/environment';
+import { ActivityLog } from '../model/interface/dashboard.models';
+import { environment } from '../../environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ActivityFeedService {
-  private apiUrl = `${environment.apiUrl}/nss_supervisor/recent-activity/`;
+  private apiUrl = `${environment.API_URL}nss_supervisors/recent-activity/`;
 
   constructor(private http: HttpClient) {}
 

@@ -232,7 +232,7 @@ export class SupervisorsComponent implements OnInit {
             </label>
             <select [(ngModel)]="selectedPersonnelId" class="form-select" [disabled]="loading">
               <option value="">Select NSS Personnel</option>
-              <option *ngFor="let p of personnel" [value]="(p.id ?? 0) * 1">
+              <option *ngFor="let p of personnel" [ngValue]="p.id">
                 {{ p.full_name }} ({{ p.nss_id }})
               </option>
             </select>
@@ -246,7 +246,7 @@ export class SupervisorsComponent implements OnInit {
             </label>
             <select [(ngModel)]="selectedSupervisorId" class="form-select" [disabled]="loading">
               <option value="">Select Supervisor</option>
-              <option *ngFor="let s of supervisors" [value]="(s.id ?? 0) * 1">
+              <option *ngFor="let s of supervisors" [ngValue]="s.id">
                 {{ s.full_name }}
               </option>
             </select>
@@ -258,7 +258,7 @@ export class SupervisorsComponent implements OnInit {
             {{ error }}
           </div>
 
-          <div *ngIf="selectedPersonnelId && selectedSupervisorId" class="assignment-preview">
+          <div *ngIf="selectedPersonnelId !== null && selectedSupervisorId !== null" class="assignment-preview">
             <div class="preview-header">
               <i class="fas fa-eye"></i>
               Assignment Preview

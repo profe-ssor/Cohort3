@@ -6,95 +6,109 @@
     </div>
     <h2>NSS Personnel Registration</h2>
     <form #f="ngForm" (ngSubmit)="onSubmit()">
-      <div class="nss-form-group">
-        <label for="userid">User ID</label>
-        <input type="text" id="userid" class="otp-input" [(ngModel)]="nssdb.user_id" name="user_id" #user_id="ngModel" required readonly />
-      </div>
-      <div class="nss-form-group">
-        <label for="username">Full Name</label>
-        <input type="text" id="username" class="otp-input" [(ngModel)]="nssdb.full_name" name="full_name" #full_name="ngModel" required />
-        <div *ngIf="full_name.invalid && full_name.touched" class="alert">
-          <p *ngIf="full_name.errors?.['required']">{{ constant.REQUIRED }}</p>
+      <div class="form-grid">
+        <!-- Row 1: User ID | Full Name -->
+        <div class="nss-form-group">
+          <label for="userid">User ID</label>
+          <input type="text" id="userid" class="otp-input" [(ngModel)]="nssdb.user_id" name="user_id" #user_id="ngModel" required readonly />
+        </div>
+        <div class="nss-form-group">
+          <label for="username">Full Name</label>
+          <input type="text" id="username" class="otp-input" [(ngModel)]="nssdb.full_name" name="full_name" #full_name="ngModel" required />
+          <div *ngIf="full_name.invalid && full_name.touched" class="alert">
+            <p *ngIf="full_name.errors?.['required']">{{ constant.REQUIRED }}</p>
+          </div>
+        </div>
+
+        <!-- Row 2: National ID | NSS Number -->
+        <div class="nss-form-group">
+          <label for="ghana_card">National ID Number</label>
+          <input type="text" id="ghana_card" class="otp-input" [(ngModel)]="nssdb.ghana_card_record" name="ghana_card" #ghana_card_record="ngModel" required />
+          <div *ngIf="ghana_card_record.invalid && ghana_card_record.touched" class="alert">
+            <p *ngIf="ghana_card_record.errors?.['required']">{{ constant.REQUIRED }}</p>
+          </div>
+        </div>
+        <div class="nss-form-group">
+          <label for="nss_id">NSS Number</label>
+          <input type="text" id="nss_id" class="otp-input" [(ngModel)]="nssdb.nss_id" name="nss_id" #nss_id="ngModel" required />
+          <div *ngIf="nss_id.invalid && nss_id.touched" class="alert">
+            <p *ngIf="nss_id.errors?.['required']">{{ constant.REQUIRED }}</p>
+          </div>
+        </div>
+
+        <!-- Row 3: Start Date | End Date -->
+        <div class="nss-form-group">
+          <label for="start_date">Start Date</label>
+          <input type="text" id="start_date" class="otp-input" [(ngModel)]="nssdb.start_date" name="start_date" #start_date="ngModel" placeholder="YYYY-MM-DD" required />
+          <div *ngIf="start_date.invalid && start_date.touched" class="alert">
+            <p *ngIf="start_date.errors?.['required']">{{ constant.REQUIRED }}</p>
+          </div>
+        </div>
+        <div class="nss-form-group">
+          <label for="end_date">End Date</label>
+          <input type="text" id="end_date" class="otp-input" [(ngModel)]="nssdb.end_date" name="end_date" #end_date="ngModel" placeholder="YYYY-MM-DD" required />
+          <div *ngIf="end_date.invalid && end_date.touched" class="alert">
+            <p *ngIf="end_date.errors?.['required']">{{ constant.REQUIRED }}</p>
+          </div>
+        </div>
+
+        <!-- Row 4: Phone Number | Department -->
+        <div class="nss-form-group">
+          <label for="phone">Phone Number</label>
+          <input type="text" id="phone" class="otp-input" [(ngModel)]="nssdb.phone" name="phone" #phone="ngModel" required [pattern]="constant.phoneRegex" />
+          <div *ngIf="phone.invalid && phone.touched" class="alert">
+            <p *ngIf="phone.errors?.['required']">{{ constant.REQUIRED }}</p>
+            <p *ngIf="phone.errors?.['pattern']">{{ constant.HONE_REGEX_INVALID }}</p>
+          </div>
+        </div>
+        <div class="nss-form-group">
+          <label for="department">Department</label>
+          <select id="department" class="otp-input" [(ngModel)]="nssdb.department" name="department" #department="ngModel" required>
+            <option value="">Select Department</option>
+            <option *ngFor="let dept of departments" [value]="dept.value">{{ dept.label }}</option>
+          </select>
+          <div *ngIf="department.invalid && department.touched" class="alert">
+            <p *ngIf="department.errors?.['required']">{{ constant.REQUIRED }}</p>
+          </div>
+        </div>
+
+        <!-- Row 5: Assigned Institution (full width) -->
+        <div class="nss-form-group full-span">
+          <label for="assigned_institution">Assigned Institution</label>
+          <input type="text" id="assigned_institution" class="otp-input" [(ngModel)]="nssdb.assigned_institution" name="assigned_institution" #assigned_institution="ngModel" required />
+          <div *ngIf="assigned_institution.invalid && assigned_institution.touched" class="alert">
+            <p *ngIf="assigned_institution.errors?.['required']">{{ constant.REQUIRED }}</p>
+          </div>
+        </div>
+
+        <!-- Row 6: Region of Posting (full width) -->
+        <div class="nss-form-group full-span">
+          <label for="region_of_posting">Region of Posting</label>
+          <select id="region_of_posting" class="otp-input" [(ngModel)]="nssdb.region_of_posting" name="region_of_posting" #region_of_posting="ngModel" required>
+            <option value="">Select Region</option>
+            <option value="1">Greater Accra</option>
+            <option value="2">Western</option>
+            <option value="3">Ashanti</option>
+            <option value="4">Eastern</option>
+            <option value="5">Central</option>
+            <option value="6">Volta</option>
+            <option value="7">Northern</option>
+            <option value="8">Western North</option>
+            <option value="9">Oti</option>
+            <option value="10">Ahafo</option>
+            <option value="11">Bono</option>
+            <option value="12">Bono East</option>
+            <option value="13">Upper East</option>
+            <option value="14">Upper West</option>
+            <option value="15">North East</option>
+            <option value="16">Western Region</option>
+          </select>
+          <div *ngIf="region_of_posting.invalid && region_of_posting.touched" class="alert">
+            <p *ngIf="region_of_posting.errors?.['required']">{{ constant.REQUIRED }}</p>
+          </div>
         </div>
       </div>
-      <div class="nss-form-group">
-        <label for="ghana_card">National ID Number</label>
-        <input type="text" id="ghana_card" class="otp-input" [(ngModel)]="nssdb.ghana_card_record" name="ghana_card" #ghana_card_record="ngModel" required />
-        <div *ngIf="ghana_card_record.invalid && ghana_card_record.touched" class="alert">
-          <p *ngIf="ghana_card_record.errors?.['required']">{{ constant.REQUIRED }}</p>
-        </div>
-      </div>
-      <div class="nss-form-group">
-        <label for="nss_id">NSS Number</label>
-        <input type="text" id="nss_id" class="otp-input" [(ngModel)]="nssdb.nss_id" name="nss_id" #nss_id="ngModel" required />
-        <div *ngIf="nss_id.invalid && nss_id.touched" class="alert">
-          <p *ngIf="nss_id.errors?.['required']">{{ constant.REQUIRED }}</p>
-        </div>
-      </div>
-      <div class="nss-form-group">
-        <label for="start_date">Start Date</label>
-        <input type="text" id="start_date" class="otp-input" [(ngModel)]="nssdb.start_date" name="start_date" #start_date="ngModel" placeholder="YYYY-MM-DD" required />
-        <div *ngIf="start_date.invalid && start_date.touched" class="alert">
-          <p *ngIf="start_date.errors?.['required']">{{ constant.REQUIRED }}</p>
-        </div>
-      </div>
-      <div class="nss-form-group">
-        <label for="end_date">End Date</label>
-        <input type="text" id="end_date" class="otp-input" [(ngModel)]="nssdb.end_date" name="end_date" #end_date="ngModel" placeholder="YYYY-MM-DD" required />
-        <div *ngIf="end_date.invalid && end_date.touched" class="alert">
-          <p *ngIf="end_date.errors?.['required']">{{ constant.REQUIRED }}</p>
-        </div>
-      </div>
-      <div class="nss-form-group">
-        <label for="phone">Phone Number</label>
-        <input type="text" id="phone" class="otp-input" [(ngModel)]="nssdb.phone" name="phone" #phone="ngModel" required [pattern]="constant.phoneRegex" />
-        <div *ngIf="phone.invalid && phone.touched" class="alert">
-          <p *ngIf="phone.errors?.['required']">{{ constant.REQUIRED }}</p>
-          <p *ngIf="phone.errors?.['pattern']">{{ constant.HONE_REGEX_INVALID }}</p>
-        </div>
-      </div>
-      <div class="nss-form-group">
-        <label for="assigned_institution">Assigned Institution</label>
-        <input type="text" id="assigned_institution" class="otp-input" [(ngModel)]="nssdb.assigned_institution" name="assigned_institution" #assigned_institution="ngModel" required />
-        <div *ngIf="assigned_institution.invalid && assigned_institution.touched" class="alert">
-          <p *ngIf="assigned_institution.errors?.['required']">{{ constant.REQUIRED }}</p>
-        </div>
-      </div>
-      <div class="nss-form-group">
-        <label for="department">Department</label>
-        <select id="department" class="otp-input" [(ngModel)]="nssdb.department" name="department" #department="ngModel" required>
-          <option value="">Select Department</option>
-          <option *ngFor="let dept of departments" [value]="dept.value">{{ dept.label }}</option>
-        </select>
-        <div *ngIf="department.invalid && department.touched" class="alert">
-          <p *ngIf="department.errors?.['required']">{{ constant.REQUIRED }}</p>
-        </div>
-      </div>
-      <div class="nss-form-group">
-        <label for="region_of_posting">Region of Posting</label>
-        <select id="region_of_posting" class="otp-input" [(ngModel)]="nssdb.region_of_posting" name="region_of_posting" #region_of_posting="ngModel" required>
-          <option value="">Select Region</option>
-          <option value="1">Greater Accra</option>
-          <option value="2">Western</option>
-          <option value="3">Ashanti</option>
-          <option value="4">Eastern</option>
-          <option value="5">Central</option>
-          <option value="6">Volta</option>
-          <option value="7">Northern</option>
-          <option value="8">Western North</option>
-          <option value="9">Oti</option>
-          <option value="10">Ahafo</option>
-          <option value="11">Bono</option>
-          <option value="12">Bono East</option>
-          <option value="13">Upper East</option>
-          <option value="14">Upper West</option>
-          <option value="15">North East</option>
-          <option value="16">Western Region</option>
-        </select>
-        <div *ngIf="region_of_posting.invalid && region_of_posting.touched" class="alert">
-          <p *ngIf="region_of_posting.errors?.['required']">{{ constant.REQUIRED }}</p>
-        </div>
-      </div>
+
       <div class="nss-btn-group">
         <button type="button" [disabled]="isLoginLoading" (click)="onLogin()" class="btn-glass-outline">
           <span *ngIf="isLoginLoading" class="spinner-border spinner-border-sm text-info"></span>
@@ -107,7 +121,7 @@
       </div>
       <div *ngIf="successMessage" class="success-message response-message">{{ successMessage }}</div>
       <div *ngIf="errorMessage" class="error-message response-message">{{ errorMessage }}</div>
-      <div *ngIf="startDateError" class="error-message response-message">{{ startDateError }}</div>
+      <div *ngIf="endDateError" class="error-message response-message">{{ endDateError }}</div>
     </form>
   </div>
 </div>

@@ -23,7 +23,7 @@ export class SignupComponent {
     email: '',
     user_type: '',
     password: '',
-    start_date: '', // Added to fix TS2741 error
+    end_date: '', // Use end_date for batch year validation
   };
 
   regions =[
@@ -55,32 +55,28 @@ export class SignupComponent {
   constant = Constant;
   errorMessage: string = '';
   successMessage: string | null = null;
-  startDateError: string = '';
+  endDateError: string = '';
 
   constructor(private authService: AuthService, private router: Router, private _toastr:ToastrService) { }
 
-
-
-
-
-  validateStartDate(startDate: string): boolean {
-    if (!startDate) return true;
-    const year = parseInt(startDate.slice(0, 4), 10);
+  validateEndDate(endDate: string): boolean {
+    if (!endDate) return true;
+    const year = parseInt(endDate.slice(0, 4), 10);
     const currentYear = new Date().getFullYear();
     if (year !== currentYear) {
-      this.startDateError = `Batch year must be ${currentYear}. You entered ${year}.`;
+      this.endDateError = `Batch year must be ${currentYear}. You entered ${year}.`;
       return false;
     }
-    this.startDateError = '';
+    this.endDateError = '';
     return true;
   }
 
   onSubmit(): void {
     if (this.isLoading) return;
 
-    // Frontend year validation
-    if (!this.validateStartDate(this.user.start_date)) {
-      this._toastr.error(this.startDateError);
+    // Frontend year validation now uses end_date
+    if (!this.validateEndDate(this.user.end_date)) {
+      this._toastr.error(this.endDateError);
       this.isLoading = false;
       return;
     }
@@ -137,7 +133,7 @@ export class SignupComponent {
         email: '',
         password: '',
         user_type: '',
-        start_date: '', // Added to fix TS2741 error
+        end_date: '', // Use end_date for batch year validation
       };
     },
     complete: () => {

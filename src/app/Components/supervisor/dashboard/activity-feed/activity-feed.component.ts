@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivityFeedService } from '../../../../services/activity-feed.service';
-import { ActivityLog } from '../../../../model/interface/activity-log.interface';
+import { ActivityLog } from '../../../../model/interface/dashboard.models';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-activity-feed',
@@ -16,7 +17,7 @@ export class ActivityFeedComponent implements OnInit {
   loading = false;
   error: string | null = null;
 
-  constructor(private activityFeedService: ActivityFeedService) {}
+  constructor(private activityFeedService: ActivityFeedService, private toastr: ToastrService) {}
 
   ngOnInit(): void {
     this.loadActivities();
@@ -30,11 +31,13 @@ export class ActivityFeedComponent implements OnInit {
       next: (data) => {
         this.activities = data;
         this.loading = false;
+        this.toastr.success('Recent activity loaded', 'Success', { timeOut: 1500 });
       },
       error: (error) => {
         console.error('Error loading activities:', error);
         this.error = 'Failed to load recent activities';
         this.loading = false;
+        this.toastr.error(this.error, 'Error');
       }
     });
   }

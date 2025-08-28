@@ -9,6 +9,8 @@ import { EvaluationService } from '../../../services/evaluation.service';
 import { SupervisorCount } from '../../../model/interface/supervor';
 import { EvaluationDashboardStats } from '../../../model/interface/evaluation';
 import { DashboardService } from '../../../services/admin-services/dashboard.service';
+import { ActivityFeedService } from '../../../services/activity-feed.service';
+import { ToastrService } from 'ngx-toastr';
 
 interface MetricCard {
   title: string;
@@ -103,7 +105,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private supervisorService: SupervisorService,
     private evaluationService: EvaluationService,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private activityFeedService: ActivityFeedService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -167,13 +171,77 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data: PersonnelSubmission[]) => {
-          this.personnelSubmissions.set(data);
+          // Normalize lastActivity from multiple possible backend fields
+          const normalized = (data || []).map((item: any) => {
+            const dateRaw = item?.lastActivity
+              ?? item?.last_activity
+              ?? item?.last_submission
+              ?? item?.last_submission_date
+              ?? item?.last_submitted_at
+              ?? item?.last_reviewed_at
+              ?? item?.updated_at
+              ?? item?.created_at
+              ?? item?.timestamp
+              ?? item?.last_evaluation_at;
+            let dateVal: Date | null = null;
+            if (dateRaw !== undefined && dateRaw !== null) {
+              if (typeof dateRaw === 'number') {
+                // Could be epoch seconds or ms; assume seconds if it looks small
+                dateVal = new Date(dateRaw < 1e12 ? dateRaw * 1000 : dateRaw);
+              } else {
+                dateVal = new Date(String(dateRaw));
+              }
+            }
+            return {
+              ...item,
+              lastActivity: dateVal && !isNaN(dateVal.getTime()) ? dateVal : null
+            } as PersonnelSubmission;
+          });
+          this.personnelSubmissions.set(normalized as any);
+          // Debug counts to console to help diagnose filtering
+          const validDates = (normalized as any[]).filter(i => i.lastActivity instanceof Date && !isNaN(i.lastActivity.getTime())).length;
+          console.log('[Dashboard] Personnel submissions loaded:', normalized.length, 'items; with valid dates:', validDates);
         },
         error: (error: any) => {
           console.error('Failed to load personnel submissions:', error);
           this.personnelSubmissions.set([]);
         }
       });
+  }
+
+  // Return submissions filtered by the selected period (week, month, quarter)
+  getFilteredPersonnelSubmissions(): PersonnelSubmission[] {
+    const list = this.personnelSubmissions();
+    const now = new Date();
+    let cutoff = new Date(0);
+    switch (this.selectedPeriod) {
+      case 'week':
+        cutoff = new Date(now);
+        cutoff.setDate(now.getDate() - 7);
+        break;
+      case 'month':
+        cutoff = new Date(now);
+        cutoff.setMonth(now.getMonth() - 1);
+        break;
+      case 'quarter':
+        cutoff = new Date(now);
+        cutoff.setMonth(now.getMonth() - 3);
+        break;
+    }
+    const withDates = list.filter((item: any) => {
+      const ts: any = item?.lastActivity instanceof Date ? item.lastActivity : (item?.lastActivity ? new Date(item.lastActivity) : null);
+      return ts && !isNaN((ts as Date).getTime());
+    });
+
+    if (withDates.length === 0) {
+      console.warn('[Dashboard] No valid lastActivity dates detected in personnel submissions; returning unfiltered list');
+      return list;
+    }
+
+    return withDates.filter((item: any) => {
+      const ts: Date = item.lastActivity as Date;
+      return ts >= cutoff;
+    });
   }
 
   updateMetricsWithEvaluationStats(stats: EvaluationDashboardStats): void {
@@ -285,9 +353,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   fetchRecentActivities(): void {
     this.loadingActivities.set(true);
-    this.dashboardService.getRecentActivity(10).subscribe({
-      next: (activities) => {
-        this.recentActivities.set(activities.map((a: any) => ({
+    const user = this.authService.getUser();
+    const isAdmin = user && (user.user_type === 'admin' || user.userType === 'admin');
+
+    const source$ = isAdmin
+      ? this.dashboardService.getRecentActivity(10)
+      : this.activityFeedService.getRecentActivity();
+
+    source$.subscribe({
+      next: (activities: any[]) => {
+        this.recentActivities.set((activities || []).map((a: any) => ({
           id: a.id,
           action: a.action,
           title: a.title,
@@ -297,10 +372,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
           priority: a.priority,
         })));
         this.loadingActivities.set(false);
+        this.toastr.success('Recent activity loaded', 'Success', { timeOut: 1500 });
       },
       error: () => {
         this.recentActivities.set([]);
         this.loadingActivities.set(false);
+        this.toastr.error('Failed to load recent activity', 'Error');
       }
     });
   }

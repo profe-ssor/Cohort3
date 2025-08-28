@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { NgIf, NgFor } from '@angular/common';
 import { Constant } from '../../constant/constant';
 import { HttpClient } from '@angular/common/http';
+import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../environments/environment.development';
 
 
@@ -39,8 +40,8 @@ export class NssDatabaseComponent implements OnInit {
     data: []
   };
   departments: { value: string, label: string }[] = [];
-  startDateError: string = '';
-  constructor(private nssauth: AuthService, private router: Router, private http: HttpClient) {}
+  endDateError: string = '';
+  constructor(private nssauth: AuthService, private router: Router, private http: HttpClient, private _toastr: ToastrService) {}
 
   ngOnInit(): void {
     const userId = localStorage.getItem('user_id');
@@ -56,24 +57,24 @@ export class NssDatabaseComponent implements OnInit {
     });
   }
 
-  validateStartDate(startDate: string): boolean {
-    if (!startDate) return true;
-    const year = parseInt(startDate.slice(0, 4), 10);
+  validateEndDate(endDate: string): boolean {
+    if (!endDate) return true;
+    const year = parseInt(endDate.slice(0, 4), 10);
     const currentYear = new Date().getFullYear();
     if (year !== currentYear) {
-      this.startDateError = `Batch year must be ${currentYear}. You entered ${year}.`;
+      this.endDateError = `Batch year must be ${currentYear}. You entered ${year}.`;
       return false;
     }
-    this.startDateError = '';
+    this.endDateError = '';
     return true;
   }
 
   onSubmit() {
     if (this.isLoading) return;
 
-    // Frontend year validation
-    if (!this.validateStartDate(this.nssdb.start_date)) {
-      alert(this.startDateError);
+    // Frontend year validation now uses end_date
+    if (!this.validateEndDate(this.nssdb.end_date)) {
+      this._toastr.error(this.endDateError);
       this.isLoading = false;
       return;
     }
@@ -83,14 +84,14 @@ export class NssDatabaseComponent implements OnInit {
       next: (res: nss_databaseResponse) => {
         if (res.message) {
           this.successMessage = res.message;
-          window.alert(this.successMessage);
-          console.log(this.successMessage);
+          this._toastr.success(this.successMessage);
           setTimeout(() => this.router.navigate(['/login']), 1500);
         }
       },
       error: (error) => {
-        this.errorMessage = error?.error?.message || 'An error occurred. Please try again.';
-        alert(this.errorMessage);
+        // Backend may return { error: '...' } or { message: '...' }
+        this.errorMessage = error?.error?.error || error?.error?.message || 'An error occurred. Please try again.';
+        this._toastr.error(this.errorMessage);
         console.error('Registration error:', error);
         this.isLoading = false;
       }

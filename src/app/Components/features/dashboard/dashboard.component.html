@@ -86,8 +86,8 @@
                   </div>
                 </div>
                 <div class="chart-container">
-                  @if (personnelSubmissions().length > 0) {
-                    @for (submission of personnelSubmissions(); track submission.personnelId) {
+                  @if (getFilteredPersonnelSubmissions().length > 0) {
+                    @for (submission of getFilteredPersonnelSubmissions(); track submission.personnelId) {
                       <div class="submission-bar">
                         <div class="bar-label">{{ submission.name }}</div>
                         <div class="bar-container">

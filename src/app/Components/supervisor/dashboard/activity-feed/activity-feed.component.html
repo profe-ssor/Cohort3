@@ -1,0 +1,26 @@
+<div class="activity-feed">
+  <div class="header">
+    <h3>Recent Activity</h3>
+    <button class="refresh-btn" (click)="refreshActivities()" [disabled]="loading">
+      {{ loading ? 'Refreshing...' : 'Refresh' }}
+    </button>
+  </div>
+
+  <div class="state" *ngIf="loading">Loading recent activity...</div>
+  <div class="state error" *ngIf="!loading && error">{{ error }}</div>
+  <div class="state empty" *ngIf="!loading && !error && activities.length === 0">No recent activity found.</div>
+
+  <div class="activity-list" *ngIf="!loading && !error && activities.length > 0">
+    <div class="activity-item" *ngFor="let a of activities" [ngClass]="getPriorityClass(a.priority || 'medium')">
+      <div class="icon">{{ getActionIcon(a.action) }}</div>
+      <div class="content">
+        <div class="title">{{ a.title }}</div>
+        <div class="desc">{{ a.description }}</div>
+        <div class="meta">
+          <span class="personnel" *ngIf="a.personnel">{{ a.personnel }}</span>
+          <span class="time">{{ formatTimestamp(a.timestamp as any) }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

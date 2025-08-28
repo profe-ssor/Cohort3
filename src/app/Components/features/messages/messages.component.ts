@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, computed, signal } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { IAvailableRecipient, IMessage } from '../../../model/interface/message';
@@ -17,6 +18,8 @@ export class MessagesComponent implements OnInit {
   selectedCategory = signal<string>('all');
   searchQuery = '';
   showComposeModal = false;
+  showDeleteConfirm = false;
+  messagePendingDelete: IMessage | null = null;
 
   messages = signal<IMessage[]>([]);
   recipients = signal<IAvailableRecipient[]>([]);
@@ -32,7 +35,8 @@ export class MessagesComponent implements OnInit {
 
   constructor(
     private messageService: MessageService,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -54,6 +58,7 @@ export class MessagesComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading messages:', err);
+        this.toastr.error('Failed to load messages');
       }
     });
   }
@@ -177,15 +182,32 @@ applyFilters() {
     this.showComposeModal = true;
   }
 
-  deleteMessage(message: IMessage) {
-    if (confirm('Are you sure you want to delete this message?')) {
-      this.messageService.deleteMessage(message.id).subscribe({
-        next: () => {
-          this.messages.update(msgs => msgs.filter(m => m.id !== message.id));
-        },
-        error: (err) => console.error('Failed to delete message:', err)
-      });
-    }
+  openDeleteConfirm(message: IMessage) {
+    this.messagePendingDelete = message;
+    this.showDeleteConfirm = true;
+  }
+
+  cancelDelete() {
+    this.showDeleteConfirm = false;
+    this.messagePendingDelete = null;
+  }
+
+  confirmDelete() {
+    if (!this.messagePendingDelete) return;
+    const toDelete = this.messagePendingDelete;
+    this.messageService.deleteMessage(toDelete.id).subscribe({
+      next: () => {
+        this.messages.update(msgs => msgs.filter(m => m.id !== toDelete.id));
+        this.toastr.success('Message deleted successfully');
+        this.cancelDelete();
+      },
+      error: (err) => {
+        console.error('Failed to delete message:', err);
+        const detail = (err?.error && (err.error.detail || err.error.message)) || 'Failed to delete message';
+        this.toastr.error(detail);
+        this.cancelDelete();
+      }
+    });
   }
 
   markAllAsRead() {
@@ -200,7 +222,7 @@ applyFilters() {
 
   sendMessage() {
     if (!this.composeForm.recipient || !this.composeForm.subject || !this.composeForm.content) {
-      alert('Please fill in all required fields.');
+      this.toastr.warning('Please fill in all required fields.');
       return;
     }
 
@@ -227,7 +249,8 @@ applyFilters() {
       },
       error: (err) => {
         console.error('Failed to send message:', err);
-        alert('Failed to send message.');
+        const detail = (err?.error && (err.error.detail || err.error.message)) || 'Failed to send message';
+        this.toastr.error(detail);
       }
     });
   }
