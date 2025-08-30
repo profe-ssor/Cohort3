@@ -43,9 +43,11 @@
             }
           ],
           "outputHashing": "all",
-          "styles": [
-            "src/styles.css",
-            "src/global_styles.css"
+          "fileReplacements": [
+            {
+              "replace": "src/environments/environment.ts",
+              "with": "src/environments/environment.prod.ts"
+            }
           ],
           "optimization": {
             "fonts": false
