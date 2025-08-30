@@ -83,11 +83,11 @@ export class ProfileSettingsComponent implements OnInit {
     if (!this.userId) return;
     let url = '';
     if (this.userType === 'admin') {
-      url = `${environment.API_URL}nss_admin/adminsdb/by_user/${this.userId}/`;
+      url = `${environment.apiUrl}nss_admin/adminsdb/by_user/${this.userId}/`;
     } else if (this.userType === 'supervisor') {
-      url = `${environment.API_URL}nss_supervisors/supervisorsdb/${this.userId}/`;
+      url = `${environment.apiUrl}nss_supervisors/supervisorsdb/${this.userId}/`;
     } else {
-      url = `${environment.API_URL}nss_personnel/personnel/${this.userId}/`;
+      url = `${environment.apiUrl}nss_personnel/personnel/${this.userId}/`;
     }
     this.isLoading = true;
     this.http.get<any>(url).subscribe({
@@ -122,11 +122,11 @@ export class ProfileSettingsComponent implements OnInit {
     if (this.profileForm.invalid) return;
     let url = '';
     if (this.userType === 'admin') {
-      url = `${environment.API_URL}nss_admin/adminsdb/${this.adminId}/`;
+      url = `${environment.apiUrl}nss_admin/adminsdb/${this.adminId}/`;
     } else if (this.userType === 'supervisor') {
-      url = `${environment.API_URL}nss_supervisors/update/${this.userId}/`;
+      url = `${environment.apiUrl}nss_supervisors/update/${this.userId}/`;
     } else {
-      url = `${environment.API_URL}nss_personnel/update_personnel/${this.userId}/`;
+      url = `${environment.apiUrl}nss_personnel/update_personnel/${this.userId}/`;
     }
     this.isLoading = true;
     // Exclude user_type from update
@@ -155,7 +155,7 @@ export class ProfileSettingsComponent implements OnInit {
     if (this.passwordForm.invalid) return;
     const payload = this.passwordForm.value;
     this.isPasswordLoading = true;
-    this.http.post<any>(`${environment.API_URL}change-password/`, payload).subscribe({
+    this.http.post<any>(`${environment.apiUrl}change-password/`, payload).subscribe({
       next: () => {
         this.snackBar.open('Password changed successfully', 'Close', { duration: 3000 });
         this.passwordForm.reset();

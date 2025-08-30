@@ -1552,7 +1552,7 @@ export class EditSupervisorDialog implements OnInit {
   }
 
   loadRegions() {
-    this.http.get<any[]>(`${environment.API_URL}regions/`).subscribe({
+    this.http.get<any[]>(`${environment.apiUrl}regions/`).subscribe({
       next: (data) => {
         this.regions = data;
         // Set current region after regions are loaded

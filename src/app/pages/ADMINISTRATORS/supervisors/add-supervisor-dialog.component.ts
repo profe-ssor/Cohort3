@@ -61,11 +61,11 @@ export class AddSupervisorDialogComponent {
   }
 
   loadRegionsAndWorkplaces() {
-    this.http.get<any[]>(environment.API_URL + 'regions/').subscribe({
+    this.http.get<any[]>(environment.apiUrl + 'regions/').subscribe({
       next: (data) => { this.regions = data; },
       error: () => { this.regions = []; }
     });
-    this.http.get<any[]>(environment.API_URL + 'workplaces/').subscribe({
+    this.http.get<any[]>(environment.apiUrl + 'workplaces/').subscribe({
       next: (data) => { this.workplaces = data; },
       error: () => { this.workplaces = []; }
     });

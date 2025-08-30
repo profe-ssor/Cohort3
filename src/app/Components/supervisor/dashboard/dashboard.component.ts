@@ -82,7 +82,7 @@ export class DashboardComponent implements OnInit {
     this.evaluationStatsError = null;
 
     console.log('Fetching evaluation stats...');
-    console.log('API URL:', `${environment.API_URL}evaluations/dashboard/stats/`);
+    console.log('API URL:', `${environment.apiUrl}evaluations/dashboard/stats/`);
     console.log('Auth token:', localStorage.getItem('access_token') ? 'Present' : 'Missing');
 
     this.evaluationService.getDashboardStats().subscribe({

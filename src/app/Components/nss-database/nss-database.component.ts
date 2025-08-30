@@ -51,7 +51,7 @@ export class NssDatabaseComponent implements OnInit {
       this.router.navigate(['/signup']);
     }
     // Fetch department choices
-    this.http.get<{ value: string, label: string }[]>(environment.API_URL + 'nss_personnel/departments/').subscribe({
+    this.http.get<{ value: string, label: string }[]>(environment.apiUrl + 'nss_personnel/departments/').subscribe({
       next: (data) => { this.departments = data; },
       error: (err) => { this.departments = []; }
     });

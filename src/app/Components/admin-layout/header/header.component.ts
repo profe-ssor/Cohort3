@@ -353,7 +353,7 @@ export class HeaderComponent {
   fetchPendingGhostCount() {
     const token = localStorage.getItem('access_token');
     const headers = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-    this.http.get<any>(`${environment.API_URL}ghost-dashboard/?status=pending`, headers).subscribe({
+    this.http.get<any>(`${environment.apiUrl}ghost-dashboard/?status=pending`, headers).subscribe({
       next: (response) => {
         this.notificationCount = response.statistics?.pending_count || 0;
       },

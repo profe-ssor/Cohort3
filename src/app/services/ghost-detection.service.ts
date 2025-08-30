@@ -39,7 +39,7 @@ export class GhostDetectionService {
         await new Promise(resolve => setTimeout(resolve, 800));
       }
       const response: any = await this.http.post(
-        `${environment.API_URL}test-ghost-detection/`,
+        `${environment.apiUrl}test-ghost-detection/`,
         { personnel_id: personnelId },
         { headers }
       ).toPromise();
@@ -62,7 +62,7 @@ export class GhostDetectionService {
   resolveGhostDetection(detectionId: number, resolutionType: string, actionTaken: string, notes: string, token: string | null) {
     const headers = token ? new HttpHeaders().set('Authorization', `Bearer ${token}`) : undefined;
     return this.http.post(
-      `${environment.API_URL}ghost-resolve/${detectionId}/`,
+      `${environment.apiUrl}ghost-resolve/${detectionId}/`,
       {
         resolution_type: resolutionType,
         action_taken: actionTaken,

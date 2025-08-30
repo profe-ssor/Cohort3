@@ -443,7 +443,7 @@ export class EvaluationsComponent implements OnInit {
   viewDetails(e: Evaluation) {
     let url = e.signed_pdf || e.file;
     if (url && !url.startsWith('http')) {
-      url = environment.API_URL + url.replace(/^\//, '');
+      url = environment.apiUrl + url.replace(/^\//, '');
     }
     if (url && url.includes('/media/signed_docs/')) {
       url = url.replace('/media/signed_docs/', '/file_uploads/media/signed_docs/');
@@ -458,7 +458,7 @@ export class EvaluationsComponent implements OnInit {
   openPdfInNewTab(e: Evaluation) {
     let url = e.signed_pdf || e.file;
     if (url && !url.startsWith('http')) {
-      url = environment.API_URL + url.replace(/^\//, '');
+      url = environment.apiUrl + url.replace(/^\//, '');
     }
     if (url && url.includes('/media/signed_docs/')) {
       url = url.replace('/media/signed_docs/', '/file_uploads/media/signed_docs/');
@@ -477,7 +477,7 @@ export class EvaluationsComponent implements OnInit {
   downloadEvaluationFile(e: Evaluation) {
     let file = e.signed_pdf || e.file;
     if (file && !file.startsWith('http')) {
-      file = environment.API_URL + file.replace(/^\//, '');
+      file = environment.apiUrl + file.replace(/^\//, '');
     }
     if (file) {
       // Create a temporary anchor to trigger download

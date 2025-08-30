@@ -29,7 +29,7 @@ export class MessageService {
   sendMessage(messageData: any): Observable<IMessageSendResponse> {
     const headers = this.getAuthHeaders();
     return this.http.post<IMessageSendResponse>(
-      `${environment.API_URL}messageApp/send-message/`,
+      `${environment.apiUrl}messageApp/send-message/`,
       messageData,
       { headers }
     );
@@ -38,7 +38,7 @@ export class MessageService {
   replyToMessage(messageId: number, replyData: IReplyPayload): Observable<IMessageSendResponse> {
     const headers = this.getAuthHeaders();
     return this.http.post<IMessageSendResponse>(
-      `${environment.API_URL}messageApp/reply-message/${messageId}/`,
+      `${environment.apiUrl}messageApp/reply-message/${messageId}/`,
       replyData,
       { headers }
     );
@@ -47,7 +47,7 @@ export class MessageService {
   forwardMessage(messageId: number, forwardData: IForwardPayload): Observable<IMessageSendResponse> {
     const headers = this.getAuthHeaders();
     return this.http.post<IMessageSendResponse>(
-      `${environment.API_URL}messageApp/forward-message/${messageId}/`,
+      `${environment.apiUrl}messageApp/forward-message/${messageId}/`,
       forwardData,
       { headers }
     );
@@ -56,7 +56,7 @@ export class MessageService {
   getInbox(): Observable<IInbox[]> {
     const headers = this.getAuthHeaders();
     return this.http.get<IInbox[]>(
-      `${environment.API_URL}messageApp/inbox/`,
+      `${environment.apiUrl}messageApp/inbox/`,
       { headers }
     );
   }
@@ -64,7 +64,7 @@ export class MessageService {
   getSentMessages(): Observable<IMessage[]> {
     const headers = this.getAuthHeaders();
     return this.http.get<IMessage[]>(
-      `${environment.API_URL}messageApp/sent-messages/`,
+      `${environment.apiUrl}messageApp/sent-messages/`,
       { headers }
     );
   }
@@ -72,7 +72,7 @@ export class MessageService {
   getUnreadMessages(): Observable<IMessage[]> {
     const headers = this.getAuthHeaders();
     return this.http.get<IMessage[]>(
-      `${environment.API_URL}messageApp/unread-messages/`,
+      `${environment.apiUrl}messageApp/unread-messages/`,
       { headers }
     );
   }
@@ -80,7 +80,7 @@ export class MessageService {
   getMessageById(id: number): Observable<IMessage> {
     const headers = this.getAuthHeaders();
     return this.http.get<IMessage>(
-      `${environment.API_URL}messageApp/messages/${id}`,
+      `${environment.apiUrl}messageApp/messages/${id}`,
       { headers }
     );
   }
@@ -88,7 +88,7 @@ export class MessageService {
   viewMessage(id: number): Observable<IInbox> {
     const headers = this.getAuthHeaders();
     return this.http.get<IInbox>(
-      `${environment.API_URL}messageApp/view-message/${id}/`,
+      `${environment.apiUrl}messageApp/view-message/${id}/`,
       { headers }
     );
   }
@@ -96,7 +96,7 @@ export class MessageService {
   getReplies(messageId: number): Observable<IInbox[]> {
     const headers = this.getAuthHeaders();
     return this.http.get<IInbox[]>(
-      `${environment.API_URL}messageApp/message/${messageId}/replies/`,
+      `${environment.apiUrl}messageApp/message/${messageId}/replies/`,
       { headers }
     );
   }
@@ -104,7 +104,7 @@ export class MessageService {
   markAsRead(messageId: number): Observable<{ success: string }> {
     const headers = this.getAuthHeaders();
     return this.http.post<{ success: string }>(
-      `${environment.API_URL}messageApp/mark-message-read/${messageId}/`,
+      `${environment.apiUrl}messageApp/mark-message-read/${messageId}/`,
       {},
       { headers }
     );
@@ -113,7 +113,7 @@ export class MessageService {
   markAllAsRead(): Observable<{ success: string }> {
     const headers = this.getAuthHeaders();
     return this.http.post<{ success: string }>(
-      `${environment.API_URL}messageApp/mark-all-read/`,
+      `${environment.apiUrl}messageApp/mark-all-read/`,
       {},
       { headers }
     );
@@ -122,7 +122,7 @@ export class MessageService {
   deleteMessage(messageId: number): Observable<{ success: string }> {
     const headers = this.getAuthHeaders();
     return this.http.delete<{ success: string }>(
-      `${environment.API_URL}messageApp/delete-message/${messageId}/`,
+      `${environment.apiUrl}messageApp/delete-message/${messageId}/`,
       { headers }
     );
   }
@@ -130,19 +130,19 @@ export class MessageService {
   filterMessagesByType(type: string): Observable<IMessage[]> {
     const headers = this.getAuthHeaders();
     return this.http.get<IMessage[]>(
-      `${environment.API_URL}messageApp/messages/filter/?type=${type}`,
+      `${environment.apiUrl}messageApp/messages/filter/?type=${type}`,
       { headers }
     );
   }
 
   getAvailableRecipients(): Observable<IAvailableRecipient[]> {
     const headers = this.getAuthHeaders();
-  return this.http.get<IAvailableRecipient[]>(`${environment.API_URL}messageApp/available-recipients/`,   { headers });
+  return this.http.get<IAvailableRecipient[]>(`${environment.apiUrl}messageApp/available-recipients/`,   { headers });
 }
 
   getMessageStats(): Observable<IMessageStats> {
     const headers = this.getAuthHeaders();
-    return this.http.get<IMessageStats>(`${environment.API_URL}/messageApp/stats/`, { headers });
+    return this.http.get<IMessageStats>(`${environment.apiUrl}/messageApp/stats/`, { headers });
   }
 
 

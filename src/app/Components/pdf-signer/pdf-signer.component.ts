@@ -65,7 +65,7 @@ export class PdfSignerComponent implements OnInit {
     this.uploadedPdf = pdf;
     this.pdfLoadError = null;
 
-    const apiUrl = environment.API_URL.endsWith('/') ? environment.API_URL : environment.API_URL + '/';
+    const apiUrl = environment.apiUrl.endsWith('/') ? environment.apiUrl : environment.apiUrl + '/';
     const pdfPath = pdf.file.startsWith('/') ? pdf.file.substring(1) : pdf.file;
     const pdfUrl = pdf.file.startsWith('http') ? pdf.file : apiUrl + pdfPath;
 
@@ -106,7 +106,7 @@ export class PdfSignerComponent implements OnInit {
   onPageChange(page: number) {
     this.selectedSignaturePage = page;
     if (this.uploadedPdf) {
-      const apiUrl = environment.API_URL.endsWith('/') ? environment.API_URL : environment.API_URL + '/';
+      const apiUrl = environment.apiUrl.endsWith('/') ? environment.apiUrl : environment.apiUrl + '/';
       const pdfPath = this.uploadedPdf.file.startsWith('/') ? this.uploadedPdf.file.substring(1) : this.uploadedPdf.file;
       const pdfUrl = this.uploadedPdf.file.startsWith('http') ? this.uploadedPdf.file : apiUrl + pdfPath;
       this.loadAndRenderPDF(pdfUrl, page);

@@ -26,9 +26,9 @@ export class PdfService {
       }
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
       console.log('🔄 PDF Service: Calling getPdfs() endpoint');
-      console.log('🌐 PDF Service: URL:', `${environment.API_URL}file_uploads/pdf/list/`);
+      console.log('🌐 PDF Service: URL:', `${environment.apiUrl}file_uploads/pdf/list/`);
 
-      return this.http.get<PDF[]>(`${environment.API_URL}file_uploads/pdf/list/`,  {headers}).pipe(
+      return this.http.get<PDF[]>(`${environment.apiUrl}file_uploads/pdf/list/`,  {headers}).pipe(
         tap({
           next: (data) => {
             console.log('✅ PDF Service: getPdfs() response received:', data);
@@ -48,7 +48,7 @@ export class PdfService {
         return new Observable<PDF>(observer => observer.error({ error: "Unauthorised"}));
       }
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-      return this.http.get<PDF>(`${environment.API_URL}file_uploads/pdf/${id}/`, {headers});
+      return this.http.get<PDF>(`${environment.apiUrl}file_uploads/pdf/${id}/`, {headers});
     }
 
     // upload new pdf file
@@ -65,7 +65,7 @@ export class PdfService {
       formData.append('file_name', fileName);
       formData.append('file', file);
 
-      const req = new HttpRequest('POST', `${environment.API_URL}file_uploads/pdf/upload/`, formData, {
+      const req = new HttpRequest('POST', `${environment.apiUrl}file_uploads/pdf/upload/`, formData, {
         reportProgress: true,
         headers: new HttpHeaders().set('Authorization', `Bearer ${token}`)
       });
@@ -98,11 +98,11 @@ export class PdfService {
       const role = (localStorage.getItem('userRole') || '').toLowerCase();
       let endpoint = '';
       if (role.includes('supervisor')) {
-        endpoint = `${environment.API_URL}file_uploads/pdf/sign/supervisor/${pdfId}/`;
+        endpoint = `${environment.apiUrl}file_uploads/pdf/sign/supervisor/${pdfId}/`;
       } else if (role.includes('admin')) {
-        endpoint = `${environment.API_URL}file_uploads/pdf/sign/admin/${pdfId}/`;
+        endpoint = `${environment.apiUrl}file_uploads/pdf/sign/admin/${pdfId}/`;
       } else if (role.includes('nss') || role.includes('user')) { // Accept both 'nss' and 'user'
-        endpoint = `${environment.API_URL}file_uploads/pdf/sign/nss/${pdfId}/`;
+        endpoint = `${environment.apiUrl}file_uploads/pdf/sign/nss/${pdfId}/`;
       } else {
         throw new Error('User role not recognized. Cannot sign PDF.');
       }
@@ -118,7 +118,7 @@ export class PdfService {
   }
   const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-  return this.http.get<PdfSignResponse | PDF[]>(`${environment.API_URL}file_uploads/signed/`, { headers }).pipe(
+  return this.http.get<PdfSignResponse | PDF[]>(`${environment.apiUrl}file_uploads/signed/`, { headers }).pipe(
     map(response => {
       // Handle both array responses and object responses with data property
       if (Array.isArray(response)) {
@@ -152,7 +152,7 @@ SendEvaluationForm(
     formData.append('priority', priority);
     formData.append('receiver_id', receiverId.toString());
 
-    const req = new HttpRequest('POST', `${environment.API_URL}file_uploads/evaluation-form/send/`, formData, {
+    const req = new HttpRequest('POST', `${environment.apiUrl}file_uploads/evaluation-form/send/`, formData, {
       reportProgress: true,
       headers: new HttpHeaders().set('Authorization', `Bearer ${token}`)
     });
@@ -165,7 +165,7 @@ SendEvaluationForm(
     if (!token) return new Observable(observer => observer.error({ error: "Unauthorised" }));
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    let url = `${environment.API_URL}file_uploads/evaluation-forms/`;
+    let url = `${environment.apiUrl}file_uploads/evaluation-forms/`;
     if (formType) url += `?form_type=${formType}`;
 
     return this.http.get<{ data: PDF[] }>(url, { headers }).pipe(map(res => res.data));
@@ -176,7 +176,7 @@ SendEvaluationForm(
     if (!token) return new Observable(observer => observer.error({ error: "Unauthorised" }));
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    let url = `${environment.API_URL}file_uploads/evaluation-forms/received/`;
+    let url = `${environment.apiUrl}file_uploads/evaluation-forms/received/`;
     if (formType) url += `?form_type=${formType}`;
 
     return this.http.get<{ data: PDF[] }>(url, { headers }).pipe(map(res => res.data));
@@ -202,7 +202,7 @@ SendEvaluationForm(
   const body = { status };
 
   return this.http.patch<{ data: PDF }>(
-    `${environment.API_URL}file_uploads/evaluation-forms/${pdfId}/update-status/`,
+    `${environment.apiUrl}file_uploads/evaluation-forms/${pdfId}/update-status/`,
     body,
     { headers }
   ).pipe(map(response => response.data));
@@ -214,7 +214,7 @@ updateAdminPdfFormStatus(pdfId: number, status: 'pending' | 'approved' | 'reject
   const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
   const body = { status };
   return this.http.patch<{ data: PDF }>(
-    `${environment.API_URL}file_uploads/admin/evaluation-forms/${pdfId}/update-status/`,
+    `${environment.apiUrl}file_uploads/admin/evaluation-forms/${pdfId}/update-status/`,
     body,
     { headers }
   ).pipe(map(response => response.data));

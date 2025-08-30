@@ -879,7 +879,7 @@ export class ReportsComponent implements OnInit {
     this.loading = true;
     console.log('🔄 Loading ghost detections...');
 
-    let url = `${environment.API_URL}ghost-dashboard/`;
+    let url = `${environment.apiUrl}ghost-dashboard/`;
     const params: string[] = [];
 
     if (this.statusFilter) {
@@ -926,7 +926,7 @@ export class ReportsComponent implements OnInit {
       'Authorization': `Bearer ${localStorage.getItem('access_token')}`
     });
 
-    this.http.post<any>(`${environment.API_URL}ghost-investigate/${detectionId}/`, {}, { headers }).subscribe({
+    this.http.post<any>(`${environment.apiUrl}ghost-investigate/${detectionId}/`, {}, { headers }).subscribe({
       next: (response) => {
         this.loadDetections(); // Refresh the data
         this.addNotification('Ghost Detection', 'Investigation initiated for a potential ghost personnel.', 'ghost');

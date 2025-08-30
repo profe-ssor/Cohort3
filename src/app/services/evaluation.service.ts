@@ -39,21 +39,21 @@ export class EvaluationService {
       }
     }
     return this.http.get<EvaluationListResponse>(
-      `${environment.API_URL}evaluations/supervisor/evaluations/?${query.toString()}`,
+      `${environment.apiUrl}evaluations/supervisor/evaluations/?${query.toString()}`,
       { headers: this.getAuthHeaders() }
     );
   }
 
   getEvaluationDetail(id: number): Observable<Evaluation> {
     return this.http.get<Evaluation>(
-      `${environment.API_URL}evaluations/${id}/`,
+      `${environment.apiUrl}evaluations/${id}/`,
       { headers: this.getAuthHeaders() }
     );
   }
 
   updateEvaluationStatus(id: number, update: EvaluationStatusUpdate): Observable<Evaluation> {
     return this.http.patch<Evaluation>(
-      `${environment.API_URL}evaluations/${id}/update-status/`,
+      `${environment.apiUrl}evaluations/${id}/update-status/`,
       update,
       { headers: this.getAuthHeaders() }
     );
@@ -61,7 +61,7 @@ export class EvaluationService {
 
   bulkUpdateStatus(payload: BulkStatusUpdate): Observable<{ message: string; updated_count: number; status: string }> {
     return this.http.post<{ message: string; updated_count: number; status: string }>(
-      `${environment.API_URL}evaluations/bulk-update/`,
+      `${environment.apiUrl}evaluations/bulk-update/`,
       payload,
       { headers: this.getAuthHeaders() }
     );
@@ -69,14 +69,14 @@ export class EvaluationService {
 
   getDashboardStats(): Observable<EvaluationDashboardStats> {
     return this.http.get<EvaluationDashboardStats>(
-      `${environment.API_URL}evaluations/dashboard/stats/`,
+      `${environment.apiUrl}evaluations/dashboard/stats/`,
       { headers: this.getAuthHeaders() }
     );
   }
 
   getPersonnelSubmissions(): Observable<any[]> {
     return this.http.get<any[]>(
-      `${environment.API_URL}evaluations/personnel-submissions/`,
+      `${environment.apiUrl}evaluations/personnel-submissions/`,
       { headers: this.getAuthHeaders() }
     );
   }
@@ -89,7 +89,7 @@ export class EvaluationService {
       }
     }
     return this.http.get<EvaluationListResponse>(
-      `${environment.API_URL}evaluations/personnel/evaluations/?${query.toString()}`,
+      `${environment.apiUrl}evaluations/personnel/evaluations/?${query.toString()}`,
       { headers: this.getAuthHeaders() }
     );
   }
@@ -107,7 +107,7 @@ export class EvaluationService {
   }
 
   getAdminDashboardStats(): Observable<DashboardStats> {
-    const url = `${environment.API_URL}evaluations/admin/dashboard/stats/`;
+    const url = `${environment.apiUrl}evaluations/admin/dashboard/stats/`;
     console.log('🔍 DEBUG: Calling admin dashboard stats API:', url);
 
     return this.http.get<DashboardStats>(
@@ -133,7 +133,7 @@ export class EvaluationService {
         query.set(key, String(params[key as keyof typeof params]));
       }
     }
-    const url = `${environment.API_URL}evaluations/admin/evaluations/?${query.toString()}`;
+    const url = `${environment.apiUrl}evaluations/admin/evaluations/?${query.toString()}`;
     console.log('🔍 DEBUG: Calling admin evaluations API:', url);
 
     return this.http.get<EvaluationListResponse>(
@@ -155,7 +155,7 @@ export class EvaluationService {
 
   updateAdminEvaluationStatus(id: number, update: EvaluationStatusUpdate): Observable<Evaluation> {
     return this.http.patch<Evaluation>(
-      `${environment.API_URL}evaluations/admin/evaluations/${id}/update-status/`,
+      `${environment.apiUrl}evaluations/admin/evaluations/${id}/update-status/`,
       update,
       { headers: this.getAuthHeaders() }
     );
@@ -163,7 +163,7 @@ export class EvaluationService {
 
   updateAdminPdfFormStatus(id: number, status: string): Observable<any> {
     return this.http.patch<any>(
-      `${environment.API_URL}file_uploads/admin/evaluation-forms/${id}/update-status/`,
+      `${environment.apiUrl}file_uploads/admin/evaluation-forms/${id}/update-status/`,
       { status },
       { headers: this.getAuthHeaders() }
     );

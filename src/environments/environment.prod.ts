@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  API_URL: 'https://nssapi.onrender.com/'
+  apiUrl: 'https://nssapi.onrender.com/'
 };

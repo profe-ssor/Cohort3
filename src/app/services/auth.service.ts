@@ -36,7 +36,7 @@ export class AuthService {
 
   // Register a new user
   register(userData: registerUser): Observable<registerResponse> {
-    return this.http.post<registerResponse>(`${environment.API_URL}register/`, userData).pipe(
+    return this.http.post<registerResponse>(`${environment.apiUrl}register/`, userData).pipe(
       tap(response => {
         if (response.id){
           localStorage.setItem('user_id', response.id.toString());
@@ -47,16 +47,16 @@ export class AuthService {
 
   // otp verification
   verifyOtp(userData: OtpVerification): Observable<OtpResponse> {
-    return this.http.post<OtpResponse>(`${environment.API_URL}verify-otp/`, userData);
+    return this.http.post<OtpResponse>(`${environment.apiUrl}verify-otp/`, userData);
   }
 
   // supervisor_dashboard
   supervisorDatabase(userData: supervisor_database): Observable<supervisors_databaseResponse > {
-    return this.http.post<supervisors_databaseResponse>(`${environment.API_URL}supervisor-dashboard/`, userData);
+    return this.http.post<supervisors_databaseResponse>(`${environment.apiUrl}supervisor-dashboard/`, userData);
   }
   // nss_database
   nssDatabase(userData: nss_database): Observable<nss_databaseResponse > {
-    return this.http.post<nss_databaseResponse>(`${environment.API_URL}nss_personnel/nssdb/`, userData);
+    return this.http.post<nss_databaseResponse>(`${environment.apiUrl}nss_personnel/nssdb/`, userData);
   }
   // Store the JWT token in localStorage
   storeJwtToken(token: string): void {
@@ -80,7 +80,7 @@ export class AuthService {
       return throwError(() => new Error('No refresh token available'));
     }
 
-    return this.http.post<any>(`${environment.API_URL}token/refresh/`, {
+    return this.http.post<any>(`${environment.apiUrl}token/refresh/`, {
       refresh: refreshToken
     }).pipe(
       tap(response => {
@@ -108,7 +108,7 @@ export class AuthService {
   }
   // Login a user
 login(userData: Credentials): Observable<LoginResponse> {
-  return this.http.post<LoginResponse>(`${environment.API_URL}login/`, userData)
+  return this.http.post<LoginResponse>(`${environment.apiUrl}login/`, userData)
     .pipe(
       tap(response => {
         console.log('API Response:', response);
@@ -165,7 +165,7 @@ login(userData: Credentials): Observable<LoginResponse> {
 
   // get all regions from the server
 getRegions(): Observable<any> {
-    return this.http.get(`${environment.API_URL}regions/`);
+    return this.http.get(`${environment.apiUrl}regions/`);
   }
 
 getUserRole(): string | null {
@@ -220,7 +220,7 @@ logout(): Observable<LogoutResponse> {
   }
 
   return this.http.post<LogoutResponse>(
-    `${environment.API_URL}logout/`,
+    `${environment.apiUrl}logout/`,
     { refresh_token: refreshToken },
     { headers: headers }
   ).pipe(
@@ -253,7 +253,7 @@ logout(): Observable<LogoutResponse> {
       return throwError(() => new Error("Unauthorized"));
     }
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.get<UserCounts>(`${environment.API_URL}user-counts/`, { headers })
+    return this.http.get<UserCounts>(`${environment.apiUrl}user-counts/`, { headers })
       .pipe(
         tap(response => console.log('Raw API response:', response)),
         catchError((error) => this.handleError(error)) // Fixed: Wrap in arrow function
@@ -284,13 +284,13 @@ logout(): Observable<LogoutResponse> {
 
   // resend otp token
   resendOtp(userData: ResendOTP): Observable<ResendOtpResponse> {
-    return this.http.post<ResendOtpResponse>(`${environment.API_URL}resend-otp/`, userData);
+    return this.http.post<ResendOtpResponse>(`${environment.apiUrl}resend-otp/`, userData);
   }
 
   // Password management methods
   changePassword(passwordData: PasswordChangeRequest): Observable<PasswordChangeResponse> {
     return this.http.post<PasswordChangeResponse>(
-      `${environment.API_URL}change-password/`,
+      `${environment.apiUrl}change-password/`,
       passwordData,
       { headers: this.getAuthHeaders() }
     );
@@ -298,14 +298,14 @@ logout(): Observable<LogoutResponse> {
 
   requestPasswordReset(resetData: PasswordResetRequest): Observable<PasswordResetRequestResponse> {
     return this.http.post<PasswordResetRequestResponse>(
-      `${environment.API_URL}request-password-reset/`,
+      `${environment.apiUrl}request-password-reset/`,
       resetData
     );
   }
 
   confirmPasswordReset(confirmData: PasswordResetConfirm): Observable<PasswordResetConfirmResponse> {
     return this.http.post<PasswordResetConfirmResponse>(
-      `${environment.API_URL}confirm-password-reset/`,
+      `${environment.apiUrl}confirm-password-reset/`,
       confirmData
     );
   }

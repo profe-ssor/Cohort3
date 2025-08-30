@@ -17,7 +17,7 @@ return this.currentUserSubject.value;
 
 login(email: string, password: string): Observable<User> {
 // Replace with real authentication API call
-return this.http.post<User>(`${environment.API_URL}auth/login/`, { email, password }).pipe(
+return this.http.post<User>(`${environment.apiUrl}auth/login/`, { email, password }).pipe(
   tap(user => this.currentUserSubject.next(user))
 );
 }
@@ -41,7 +41,7 @@ updateUserProfile(updates: Partial<User>): Observable<User> {
 const currentUser = this.getCurrentUser();
 if (currentUser) {
 // Replace with real API call
-return this.http.patch<User>(`${environment.API_URL}auth/profile/`, updates).pipe(
+return this.http.patch<User>(`${environment.apiUrl}auth/profile/`, updates).pipe(
   tap(user => this.currentUserSubject.next(user))
 );
 }

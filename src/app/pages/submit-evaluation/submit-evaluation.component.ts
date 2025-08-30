@@ -118,7 +118,7 @@ export class SubmitEvaluationComponent implements OnInit {
 
       try {
         await this.http.patch(
-          `${environment.API_URL}file_uploads/pdf/${selectedPdf.id}/update/`,
+          `${environment.apiUrl}file_uploads/pdf/${selectedPdf.id}/update/`,
           { mark_as_signed: true },
           { headers }
         ).toPromise();
@@ -220,7 +220,7 @@ export class SubmitEvaluationComponent implements OnInit {
 
       // Call the actual ghost detection API
       const response = await this.http.post(
-        `${environment.API_URL}test-ghost-detection/`,
+        `${environment.apiUrl}test-ghost-detection/`,
         { personnel_id: this.getCurrentPersonnelId() },
         { headers }
       ).toPromise();
@@ -280,7 +280,7 @@ export class SubmitEvaluationComponent implements OnInit {
 
     let fullUrl = url;
     if (url.startsWith('/')) {
-      fullUrl = `${environment.API_URL.replace(/\/$/, '')}${url}`;
+      fullUrl = `${environment.apiUrl.replace(/\/$/, '')}${url}`;
     }
 
     const response = await fetch(fullUrl, { headers });

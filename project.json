@@ -42,7 +42,14 @@
               "maximumError": "12kB"
             }
           ],
-          "outputHashing": "all"
+          "outputHashing": "all",
+          "styles": [
+            "src/styles.css",
+            "src/global_styles.css"
+          ],
+          "optimization": {
+            "fonts": false
+          }
         },
         "development": {
           "optimization": false,

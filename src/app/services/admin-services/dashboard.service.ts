@@ -32,7 +32,7 @@ export class DashboardService {
   }
 
   getDashboardStats(): Observable<DashboardStats> {
-    const url = `${environment.API_URL}evaluations/admin/dashboard/stats/`;
+    const url = `${environment.apiUrl}evaluations/admin/dashboard/stats/`;
     console.log('🔍 DEBUG: DashboardService calling admin dashboard stats API:', url);
 
     return this.http.get<DashboardStats>(
@@ -46,27 +46,27 @@ export class DashboardService {
   }
 
   getRecentSubmissions(limit: number = 10): Observable<SubmissionData[]> {
-    return this.http.get<SubmissionData[]>(`${environment.API_URL}evaluations/admin/evaluations/?page=1&page_size=${limit}`);
+    return this.http.get<SubmissionData[]>(`${environment.apiUrl}evaluations/admin/evaluations/?page=1&page_size=${limit}`);
   }
 
   getPersonnelData(page: number = 1, limit: number = 10): Observable<{data: PersonnelData[], total: number}> {
-    return this.http.get<{data: PersonnelData[], total: number}>(`${environment.API_URL}admin/personnel/?page=${page}&page_size=${limit}`);
+    return this.http.get<{data: PersonnelData[], total: number}>(`${environment.apiUrl}admin/personnel/?page=${page}&page_size=${limit}`);
   }
 
   getSupervisors(): Observable<SupervisorData[]> {
-    return this.http.get<SupervisorData[]>(`${environment.API_URL}admin/supervisors/`);
+    return this.http.get<SupervisorData[]>(`${environment.apiUrl}admin/supervisors/`);
   }
 
   getRecentActivity(limit: number = 15): Observable<ActivityLog[]> {
-    return this.http.get<ActivityLog[]>(`${environment.API_URL}evaluations/admin/activity/?limit=${limit}`);
+    return this.http.get<ActivityLog[]>(`${environment.apiUrl}evaluations/admin/activity/?limit=${limit}`);
   }
 
   getRegionalData(): Observable<RegionalData[]> {
-    return this.http.get<RegionalData[]>(`${environment.API_URL}dashboard/region-data/`);
+    return this.http.get<RegionalData[]>(`${environment.apiUrl}dashboard/region-data/`);
   }
 
   updateSubmissionStatus(submissionId: string, status: SubmissionStatus): Observable<boolean> {
-    return this.http.patch<boolean>(`${environment.API_URL}evaluations/admin/evaluations/${submissionId}/update-status/`, { status });
+    return this.http.patch<boolean>(`${environment.apiUrl}evaluations/admin/evaluations/${submissionId}/update-status/`, { status });
   }
 
   // Method to refresh activity feed - emits an event that components can listen to

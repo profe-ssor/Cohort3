@@ -73,7 +73,7 @@ export class ApprovedEvaluationsComponent implements OnInit {
   fetchEvaluations() {
     this.loading = true;
     console.log('[DEBUG] fetchEvaluations called');
-    this.http.get<any>(environment.API_URL + 'evaluations/personnel/approved-evaluations/').subscribe({
+    this.http.get<any>(environment.apiUrl + 'evaluations/personnel/approved-evaluations/').subscribe({
       next: (res) => {
         console.log('[DEBUG] fetchEvaluations response:', res);
         this.evaluations = res.results || [];
@@ -102,7 +102,7 @@ export class ApprovedEvaluationsComponent implements OnInit {
     if (!pdfPath) return '';
     if (pdfPath.startsWith('http')) return pdfPath;
     if (pdfPath.startsWith('/media/')) {
-      return environment.API_URL.replace(/\/$/, '') + pdfPath;
+      return environment.apiUrl.replace(/\/$/, '') + pdfPath;
     }
     return pdfPath;
   }

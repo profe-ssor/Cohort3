@@ -8,7 +8,7 @@ import { environment } from '../../environments/environment.development';
   providedIn: 'root'
 })
 export class ActivityFeedService {
-  private apiUrl = `${environment.API_URL}nss_supervisors/recent-activity/`;
+  private apiUrl = `${environment.apiUrl}nss_supervisors/recent-activity/`;
 
   constructor(private http: HttpClient) {}
 
