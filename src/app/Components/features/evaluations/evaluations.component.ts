@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, signal, computed, OnInit, inject, Input } from '@angular/core';
+import { environment } from '../../../../environments/environment';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { EvaluationService } from '../../../services/evaluation.service';
@@ -442,7 +443,7 @@ export class EvaluationsComponent implements OnInit {
   viewDetails(e: Evaluation) {
     let url = e.signed_pdf || e.file;
     if (url && !url.startsWith('http')) {
-      url = 'http://127.0.0.1:8000/' + url.replace(/^\//, '');
+      url = environment.API_URL + url.replace(/^\//, '');
     }
     if (url && url.includes('/media/signed_docs/')) {
       url = url.replace('/media/signed_docs/', '/file_uploads/media/signed_docs/');
@@ -457,7 +458,7 @@ export class EvaluationsComponent implements OnInit {
   openPdfInNewTab(e: Evaluation) {
     let url = e.signed_pdf || e.file;
     if (url && !url.startsWith('http')) {
-      url = 'http://127.0.0.1:8000/' + url.replace(/^\//, '');
+      url = environment.API_URL + url.replace(/^\//, '');
     }
     if (url && url.includes('/media/signed_docs/')) {
       url = url.replace('/media/signed_docs/', '/file_uploads/media/signed_docs/');
@@ -476,7 +477,7 @@ export class EvaluationsComponent implements OnInit {
   downloadEvaluationFile(e: Evaluation) {
     let file = e.signed_pdf || e.file;
     if (file && !file.startsWith('http')) {
-      file = 'http://127.0.0.1:8000/' + file.replace(/^\//, '');
+      file = environment.API_URL + file.replace(/^\//, '');
     }
     if (file) {
       // Create a temporary anchor to trigger download
