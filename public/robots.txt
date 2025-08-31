@@ -1,0 +1,26 @@
+User-agent: *
+
+# Allow public pages
+Allow: /
+Allow: /login
+Allow: /signup
+Allow: /password-reset
+Allow: /nssdb
+
+# Block protected/private areas
+Disallow: /admin-dashboard
+Disallow: /supervisor-dashboard
+Disallow: /personnel
+Disallow: /otp-verify
+Disallow: /resend-otp
+Disallow: /change-password
+Disallow: /received-messages
+Disallow: /message-detail
+Disallow: /admin
+
+# Block sensitive files
+Disallow: /*.json$
+Disallow: /assets/config/
+
+# Sitemap location
+Sitemap: https://nss-dems.vercel.app/sitemap.xml
