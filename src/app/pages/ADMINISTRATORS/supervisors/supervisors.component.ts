@@ -18,7 +18,7 @@ import { nss_database } from '../../../model/interface/auth';
 import { MatSelectModule } from '@angular/material/select';
 import { AddSupervisorDialogComponent } from './add-supervisor-dialog.component';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../../environments/environment.development';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-supervisors',

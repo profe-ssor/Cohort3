@@ -7,7 +7,7 @@ import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { NssPersonelService } from '../../services/nss_personel.service';
 import { ISupervisorDatabase } from '../../model/interface/supervisor';
 import { IAdminDatabase } from '../../model/interface/admin';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({

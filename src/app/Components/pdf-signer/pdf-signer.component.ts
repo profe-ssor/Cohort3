@@ -4,7 +4,7 @@ import { PdfService } from '../../services/pdf.service';
 import { PdfUploaderComponent } from "../pdf-uploader/pdf-uploader.component";
 import { SignatureChooserComponent } from "../signature-chooser/signature-chooser.component";
 import { NgStyle, NgIf, NgFor } from '@angular/common';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist/build/pdf.mjs';
 import { FormsModule } from '@angular/forms';

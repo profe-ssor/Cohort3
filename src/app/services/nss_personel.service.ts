@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { BehaviorSubject, Observable, throwError } from "rxjs";
-import { environment } from "../../environments/environment.development";
+import { environment } from "../../environments/environment";
 import { ISupervisorDatabase } from "../model/interface/supervisor";
 import { IAdminDatabase } from "../model/interface/admin";
 import { LoginResponse, nss_database, nss_databaseResponse } from "../model/interface/auth";

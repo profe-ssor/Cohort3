@@ -5,7 +5,7 @@ import { PdfService } from '../../services/pdf.service';
 import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 import { Evaluation, EvaluationStatus, EvaluationType } from '../../model/interface/evaluation';
 import { EvaluationService } from '../../services/evaluation.service';
 import { interval, Subscription } from 'rxjs';

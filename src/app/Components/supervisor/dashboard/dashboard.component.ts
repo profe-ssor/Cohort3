@@ -6,7 +6,7 @@ import { LogoutResponse } from '../../../model/interface/auth';
 import { NssPersonelService } from '../../../services/nss_personel.service';
 import { EvaluationService } from '../../../services/evaluation.service';
 import { EvaluationDashboardStats } from '../../../model/interface/evaluation';
-import { environment } from '../../../../environments/environment.development';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-dashboard',

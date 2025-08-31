@@ -3,7 +3,7 @@ import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { environment } from '../../../../../environments/environment.development';
+import { environment } from '../../../../../environments/environment';
 import { NssPersonelService } from '../../../../services/nss_personel.service';
 import { PdfService } from '../../../../services/pdf.service';
 import { GhostDetectionService } from '../../../../services/ghost-detection.service';

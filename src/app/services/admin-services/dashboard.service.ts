@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, BehaviorSubject, of, delay, map, catchError, tap } from 'rxjs';
 import { ActivityLog, ActivitySeverity, DashboardStats, PersonnelData, PersonnelStatus, RegionalData, SubmissionData, SubmissionStatus, SupervisorData, SupervisorStatus } from '../../model/interface/dashboard.models';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 import { AuthService } from '../auth.service';
 
 @Injectable({

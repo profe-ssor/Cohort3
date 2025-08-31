@@ -10,7 +10,7 @@ import {
   IAvailableRecipient,
   IMessageStats
 } from '../model/interface/message';
-import { environment } from '../../environments/environment.development';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'

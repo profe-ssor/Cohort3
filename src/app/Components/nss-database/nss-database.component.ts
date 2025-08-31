@@ -7,7 +7,7 @@ import { NgIf, NgFor } from '@angular/common';
 import { Constant } from '../../constant/constant';
 import { HttpClient } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 
 
 @Component({
