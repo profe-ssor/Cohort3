@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
-import { environment } from '../../environments/environment.development';
+import { environment } from '../../environments/environment';
 import { tap, catchError, timeout } from 'rxjs/operators';
 import { Credentials, LoginResponse,  LogoutResponse,  nss_database,  nss_databaseResponse,  OtpResponse, OtpVerification, registerResponse, registerUser, ResendOTP, ResendOtpResponse,  supervisor_database,  supervisors_databaseResponse,  UserCounts, PasswordChangeRequest, PasswordChangeResponse, PasswordResetRequest, PasswordResetRequestResponse, PasswordResetConfirm, PasswordResetConfirmResponse } from '../model/interface/auth';
 import { Router } from '@angular/router';
