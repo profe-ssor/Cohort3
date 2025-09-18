@@ -6,11 +6,29 @@ import { SignatureChooserComponent } from "../signature-chooser/signature-choose
 import { NgStyle, NgIf, NgFor } from '@angular/common';
 import { environment } from '../../../environments/environment';
 import { ActivatedRoute, Router } from '@angular/router';
-import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist/build/pdf.mjs';
 import { FormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 
-GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString();
+// Import PDF.js with proper typing
+import * as pdfjsLib from 'pdfjs-dist';
+
+// Configure the worker source
+let isPdfJsInitialized = false;
+
+async function initializePdfJs() {
+  if (!isPdfJsInitialized) {
+    const pdfjsWorker = await import('pdfjs-dist/build/pdf.worker.mjs');
+    const pdfjsWorkerSrc = URL.createObjectURL(
+      new Blob([pdfjsWorker.default], { type: 'application/javascript' })
+    );
+    pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorkerSrc;
+    isPdfJsInitialized = true;
+  }
+  return pdfjsLib;
+}
+
+// Initialize PDF.js when the component loads
+const pdfjsPromise = initializePdfJs();
 
 @Component({
   selector: 'app-pdf-signer',
@@ -84,7 +102,8 @@ export class PdfSignerComponent implements OnInit {
       const ctx = canvas.getContext('2d');
       if (!ctx) throw new Error('Canvas context not available');
 
-      const pdfDoc = await getDocument(url).promise;
+      const pdfjs = await pdfjsPromise;
+      const pdfDoc = await pdfjs.getDocument(url).promise;
       this.pageCount = pdfDoc.numPages;
 
       const page = await pdfDoc.getPage(pageNumber);
