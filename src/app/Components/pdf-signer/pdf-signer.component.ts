@@ -83,9 +83,19 @@ export class PdfSignerComponent implements OnInit {
     this.uploadedPdf = pdf;
     this.pdfLoadError = null;
 
+    // If the file is already a full URL, use it directly
+    if (pdf.file.startsWith('http')) {
+      this.loadAndRenderPDF(pdf.file);
+      return;
+    }
+
+    // Otherwise, construct the full URL
     const apiUrl = environment.apiUrl.endsWith('/') ? environment.apiUrl : environment.apiUrl + '/';
     const pdfPath = pdf.file.startsWith('/') ? pdf.file.substring(1) : pdf.file;
-    const pdfUrl = pdf.file.startsWith('http') ? pdf.file : apiUrl + pdfPath;
+    const pdfUrl = `${apiUrl}${pdfPath.replace(/^\//, '')}`;
+    
+    // Debug log
+    console.log('Constructed PDF URL:', pdfUrl);
 
     setTimeout(() => {
       if (this.pdfCanvasRef) {
@@ -161,9 +171,17 @@ export class PdfSignerComponent implements OnInit {
   onPageChange(page: number) {
     this.selectedSignaturePage = page;
     if (this.uploadedPdf) {
+      // Use the same URL construction logic as in handlePdfUploaded
+      if (this.uploadedPdf.file.startsWith('http')) {
+        this.loadAndRenderPDF(this.uploadedPdf.file, page);
+        return;
+      }
+      
       const apiUrl = environment.apiUrl.endsWith('/') ? environment.apiUrl : environment.apiUrl + '/';
       const pdfPath = this.uploadedPdf.file.startsWith('/') ? this.uploadedPdf.file.substring(1) : this.uploadedPdf.file;
-      const pdfUrl = this.uploadedPdf.file.startsWith('http') ? this.uploadedPdf.file : apiUrl + pdfPath;
+      const pdfUrl = `${apiUrl}${pdfPath.replace(/^\//, '')}`;
+      
+      console.log('Page change - Loading PDF URL:', pdfUrl);
       this.loadAndRenderPDF(pdfUrl, page);
     }
   }
