@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, tap, map } from 'rxjs/operators';
 import { ISupervisorDatabase } from '../model/interface/supervisor';
 import { SupervisorCount } from '../model/interface/supervor';
 import { environment } from '../../environments/environment';
@@ -43,8 +43,11 @@ export class SupervisorService {
 
   // 2. Fetch supervisors assigned to current admin
   getAssignedSupervisors(): Observable<ISupervisorDatabase[]> {
-    return this.http.get<ISupervisorDatabase[]>(`${environment.apiUrl}available-supervisors/`, { headers: this.getAuthHeaders() })
-      .pipe(catchError(this.handleError));
+    return this.http.get<{results: ISupervisorDatabase[]}>(`${environment.apiUrl}available-supervisors/`, { headers: this.getAuthHeaders() })
+      .pipe(
+        map((response: {results: ISupervisorDatabase[]}) => response.results || []),
+        catchError(this.handleError)
+      );
   }
 
   // 3. Assign supervisors to admin
