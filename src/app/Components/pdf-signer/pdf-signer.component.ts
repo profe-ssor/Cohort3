@@ -102,8 +102,44 @@ export class PdfSignerComponent implements OnInit {
       const ctx = canvas.getContext('2d');
       if (!ctx) throw new Error('Canvas context not available');
 
+      this.pdfLoadError = null;
+      
       const pdfjs = await pdfjsPromise;
-      const pdfDoc = await pdfjs.getDocument(url).promise;
+      
+      // Add cache buster to prevent caching issues
+      const cacheBuster = `?t=${Date.now()}`;
+      const pdfUrl = url.includes('?') ? `${url}&${cacheBuster.substring(1)}` : `${url}${cacheBuster}`;
+      
+      try {
+        // First, check if the URL is accessible
+        const response = await fetch(pdfUrl, {
+          method: 'HEAD',
+          credentials: 'include',
+          mode: 'cors'
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
+        }
+      } catch (error) {
+        console.error('Error checking PDF URL:', error);
+        throw new Error(`Cannot access PDF at ${url}. Please check the URL and CORS settings.`);
+      }
+      
+      // Add credentials if needed for CORS
+      const loadingTask = pdfjs.getDocument({
+        url: pdfUrl,
+        withCredentials: true,  // Include credentials for CORS
+        cMapUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/cmaps/',
+        cMapPacked: true,
+      });
+      
+      // Set up error handling for the loading task
+      loadingTask.onProgress = (progress: { loaded: number; total: number }) => {
+        console.log(`Loading PDF: ${Math.round(progress.loaded / progress.total * 100)}%`);
+      };
+      
+      const pdfDoc = await loadingTask.promise;
       this.pageCount = pdfDoc.numPages;
 
       const page = await pdfDoc.getPage(pageNumber);
