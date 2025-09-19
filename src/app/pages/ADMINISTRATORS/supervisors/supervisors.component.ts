@@ -696,22 +696,42 @@ export class AssignToPersonnelDialog implements OnInit {
 
   ngOnInit() {
     this.loading = true;
+    
+    // Load unassigned personnel
     this.nssPersonnelService.getUnassignedPersonnel().subscribe({
       next: (data: nss_database[]) => {
+        console.log('Unassigned personnel loaded:', data);
         this.personnel = data;
         this.loading = false;
+        
+        // If no unassigned personnel, show a message
+        if (this.personnel.length === 0) {
+          console.log('No unassigned personnel found');
+          this.error = 'No unassigned NSS personnel found.';
+        }
       },
       error: (err: any) => {
-        this.error = 'Failed to load NSS personnel.';
+        console.error('Error loading unassigned personnel:', err);
+        this.error = 'Failed to load NSS personnel. Please try again.';
         this.loading = false;
       }
     });
+    
+    // Load all supervisors
     this.supervisorService.getAllSupervisors().subscribe({
       next: (data: ISupervisorDatabase[]) => {
+        console.log('Supervisors loaded:', data);
         this.supervisors = data;
+        
+        // If no supervisors, show an error
+        if (this.supervisors.length === 0) {
+          console.error('No supervisors found');
+          this.error = 'No supervisors available. Please add supervisors first.';
+        }
       },
       error: (err: any) => {
-        this.error = 'Failed to load supervisors.';
+        console.error('Error loading supervisors:', err);
+        this.error = 'Failed to load supervisors. Please try again.';
       }
     });
   }
@@ -727,17 +747,41 @@ export class AssignToPersonnelDialog implements OnInit {
   }
 
   assign() {
-    if (!this.selectedPersonnelId || !this.selectedSupervisorId) return;
+    if (!this.selectedPersonnelId || !this.selectedSupervisorId) {
+      this.error = 'Please select both NSS personnel and a supervisor.';
+      return;
+    }
+    
     this.loading = true;
     this.error = null;
+    
+    console.log(`Assigning supervisor ${this.selectedSupervisorId} to NSS personnel ${this.selectedPersonnelId}`);
+    
     this.supervisorService.assignSupervisorToPersonnel(this.selectedPersonnelId, this.selectedSupervisorId).subscribe({
-      next: () => {
+      next: (response) => {
+        console.log('Assignment successful:', response);
         this.loading = false;
-        this.dialogRef.close(true);
+        // Close the dialog and pass true to indicate success
+        this.dialogRef.close({ 
+          success: true, 
+          personnelId: this.selectedPersonnelId,
+          supervisorId: this.selectedSupervisorId
+        });
       },
       error: (err: any) => {
+        console.error('Error assigning supervisor:', err);
         this.loading = false;
-        this.error = 'Failed to assign supervisor.';
+        
+        // Provide more specific error messages based on the error status
+        if (err.status === 404) {
+          this.error = 'Personnel or supervisor not found. Please refresh and try again.';
+        } else if (err.status === 400) {
+          this.error = 'Invalid request. Please check your input and try again.';
+        } else if (err.status === 403) {
+          this.error = 'You do not have permission to perform this action.';
+        } else {
+          this.error = 'Failed to assign supervisor. Please try again later.';
+        }
       }
     });
   }

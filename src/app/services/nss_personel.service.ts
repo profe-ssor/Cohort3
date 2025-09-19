@@ -2,11 +2,11 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { BehaviorSubject, Observable, throwError } from "rxjs";
+import { catchError, map } from 'rxjs/operators';
 import { environment } from "../../environments/environment";
 import { ISupervisorDatabase } from "../model/interface/supervisor";
 import { IAdminDatabase } from "../model/interface/admin";
 import { LoginResponse, nss_database, nss_databaseResponse } from "../model/interface/auth";
-import { map } from "rxjs/operators";
 
 
 
@@ -174,7 +174,14 @@ export class NssPersonelService {
       return throwError(() => new Error('Unauthorized'));
     }
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.get<nss_database[]>(`${environment.apiUrl}unassigned-nss/`, { headers });
+    return this.http.get<{count: number, results: nss_database[]}>(`${environment.apiUrl}unassigned-nss/`, { headers })
+      .pipe(
+        map(response => response.results), // Extract the results array
+        catchError(error => {
+          console.error('Error fetching unassigned personnel:', error);
+          return throwError(() => error);
+        })
+      );
   }
 
   // Get all archived personnel
