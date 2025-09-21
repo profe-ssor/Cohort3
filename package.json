@@ -24,7 +24,7 @@
     "@angular/router": "^18.2.0",
     "@compdfkit_pdf_sdk/webviewer": "^2.8.1",
     "boostrap": "^2.0.0",
-    "lucide-angular": "^0.515.0",
+    "lucide-angular": "^0.525.0",
     "ngx-file-drop": "^16.0.0",
     "ngx-image-drawing": "^1.2.4",
     "ngx-signaturepad": "^0.0.10",
